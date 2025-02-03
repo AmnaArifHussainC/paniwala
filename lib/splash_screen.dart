@@ -8,6 +8,7 @@ class BoardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return OnBoardingScreen(
         pages: [
+          // pages
           OnBoardingModel(
             image: Image.asset("assets/images/water1.jpg"),
             title: "Business Chat",
