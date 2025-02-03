@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/splash_screen.dart';
 
+import 'onboarding_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
