@@ -9,19 +9,19 @@ class BoardingScreen extends StatelessWidget {
     return OnBoardingScreen(
         pages: [
           OnBoardingModel(
-            image: Image.asset("assets/images/img1.png"),
+            image: Image.asset("assets/images/water1.jpg"),
             title: "Business Chat",
             body:
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
           ),
           OnBoardingModel(
-            image: Image.asset("assets/images/img1.png"),
+            image: Image.asset("assets/images/water1.jpg"),
             title: "Business Chat",
             body:
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
           ),
           OnBoardingModel(
-            image: Image.asset("assets/images/img1.png"),
+            image: Image.asset("assets/images/water1.jpg"),
             title: "Business Chat",
             body:
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
