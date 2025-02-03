@@ -15,13 +15,13 @@ class BoardingScreen extends StatelessWidget {
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
           ),
           OnBoardingModel(
-            image: Image.asset("assets/images/water1.jpg"),
+            image: Image.asset("assets/images/water2.jpg"),
             title: "Business Chat",
             body:
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
           ),
           OnBoardingModel(
-            image: Image.asset("assets/images/water1.jpg"),
+            image: Image.asset("assets/images/water3.jpg"),
             title: "Business Chat",
             body:
             "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
