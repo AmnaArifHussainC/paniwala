@@ -38,7 +38,6 @@ class SignInScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-
                 // Centered "Sign In" Title
                 const Center(
                   child: Text(
@@ -65,6 +64,22 @@ class SignInScreen extends StatelessWidget {
                   hintText: "Password",
                   icon: Icons.lock,
                   obscureText: true,
+                ),
+
+
+                // Forgot Password? Link
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      // Navigate to the Forgot Password screen (you will need to implement this screen)
+                      debugPrint("Forgot Password Pressed");
+                    },
+                    child: const Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -96,14 +111,20 @@ class SignInScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
+
+
                 // Register Option
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don’t have an account?"),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegisterScreen()),
+                        );
                       },
                       child: const Text(
                         "Register",

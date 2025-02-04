@@ -67,6 +67,19 @@ class SupplerLoginScreen extends StatelessWidget {
                   icon: Icons.lock,
                   obscureText: true,
                 ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      // Navigate to the Forgot Password screen (you will need to implement this screen)
+                      debugPrint("Forgot Password Pressed");
+                    },
+                    child: const Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 20),
 
                 // Sign In Button
