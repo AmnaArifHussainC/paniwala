@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding_intro_screen/onboarding_screen.dart';
-import 'package:paniwala/view/user_auth/signin.dart';
+import 'package:paniwala/choose_account_screen.dart';
 
 class BoardingScreen extends StatelessWidget {
   const BoardingScreen({super.key});
@@ -43,7 +43,7 @@ class BoardingScreen extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => SignInScreen(),
+                builder: (context) => ChooseAccountScreen(),
               ));
         });
   }
