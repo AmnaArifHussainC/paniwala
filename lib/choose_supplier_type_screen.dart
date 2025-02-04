@@ -42,7 +42,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // Supplier Type Buttons
+
                   Column(
                     children: [
                       _buildAccountCard(
