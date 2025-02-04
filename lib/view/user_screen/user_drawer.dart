@@ -48,6 +48,14 @@ class CustomUserDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(CupertinoIcons.heart_fill),
+            title: Text('Favorite'),
+            onTap: () {
+              // Implement navigation when the user taps on Home
+              Navigator.pushReplacementNamed(context, '/home');
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.account_circle),
             title: Text('Profile'),
             onTap: () {

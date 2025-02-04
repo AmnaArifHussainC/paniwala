@@ -34,79 +34,96 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600; // Define small screen width threshold
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon: const Icon(Icons.shopping_cart, color: Colors.white),
             onPressed: () {},
           ),
         ],
       ),
       drawer: CustomUserDrawer(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Deliver to\n📍 Lorem-500032",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                const Text("8 Suppliers Found", style: TextStyle(color: Colors.grey)),
-              ],
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header Row (Deliver and Suppliers)
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Deliver to\n📍 Lorem-500032",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                  const Text("8 Suppliers Found", style: TextStyle(color: Colors.grey)),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: suppliers.length,
-              itemBuilder: (context, index) {
-                final supplier = suppliers[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(supplier['image']),
-                  ),
-                  title: Text(supplier['name']),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(supplier['services'], style: const TextStyle(fontSize: 12)),
-                      Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.amber, size: 16),
-                          Text("${supplier['rating']} (${supplier['reviews']} reviews)"),
-                        ],
-                      ),
-                    ],
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      supplier['isFavorite'] ? Icons.favorite : Icons.favorite_border,
-                      color: supplier['isFavorite'] ? Colors.red : Colors.grey,
+
+            // Search Bar
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  hintText: 'Search...',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
+                  focusedBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
+                  enabledBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
+                ),
+              ),
+            ),
+
+            // Suppliers List
+            Expanded(
+              child: ListView.builder(
+                itemCount: suppliers.length,
+                itemBuilder: (context, index) {
+                  final supplier = suppliers[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(supplier['image']),
                     ),
-                    onPressed: () {},
-                  ),
-                );
-              },
+                    title: Text(supplier['name']),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(supplier['services'], style: const TextStyle(fontSize: 12)),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            Text("${supplier['rating']} (${supplier['reviews']} reviews)"),
+                          ],
+                        ),
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        supplier['isFavorite']
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: supplier['isFavorite'] ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: () {},
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "HOME",),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: "FAVORITES"),
-          BottomNavigationBarItem(icon: Icon(Icons.filter_list), label: "FILTER"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "CART"),
-        ],
+          ],
+        ),
       ),
     );
   }
