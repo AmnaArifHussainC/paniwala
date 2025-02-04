@@ -7,7 +7,6 @@ class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
 
   // controllers
-
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -94,6 +93,24 @@ class RegisterScreen extends StatelessWidget {
                     debugPrint("Register Pressed");
                   },
                   color: Colors.blue,
+                ),
+
+                // Google Sign In Button
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    debugPrint("Google Sign In Pressed");
+                  },
+                  icon: Image.asset("assets/images/google.png", height: 24),
+                  label: const Text("Sign up with Google"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: const BorderSide(color: Colors.grey),
+                  ),
                 ),
 
                 // Already have an account? Text
