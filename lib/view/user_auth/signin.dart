@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/user_auth/register.dart';
 
+import '../../widgets/custome_btn_auth.dart';
 import '../../widgets/custome_text_field.dart';
 
 class SignInScreen extends StatelessWidget {
-  const SignInScreen({super.key});
+   SignInScreen({super.key});
+
+   final TextEditingController emailcontroller  = TextEditingController();
+   final TextEditingController passcontroller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,28 +27,37 @@ class SignInScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             CustomTextField(
+              controller: emailcontroller,
               hintText: "Email",
               icon: Icons.email,
             ),
             const SizedBox(height: 10),
             CustomTextField(
+              controller: passcontroller,
               hintText: "Password",
               icon: Icons.lock,
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+              text: "Signin",
               onPressed: () {
-                debugPrint("Sign In Pressed");
+                debugPrint("Register Pressed");
               },
-              child: const Text("Sign In"),
+              color: Colors.blue,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
-              child: const Text("Don't have an account? Register"),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Dont have an account?"),
+                TextButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>RegisterScreen()));
+                    },
+                    child: Text("Register")
+                )
+              ],
+            )
           ],
         ),
       ),
