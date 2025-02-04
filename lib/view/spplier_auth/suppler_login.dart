@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
+
 import '../../widgets/custome_btn_auth.dart';
 import '../../widgets/custome_text_field.dart';
 
-class RiderSignInScreen extends StatelessWidget {
-  RiderSignInScreen({super.key});
+class SupplerLoginScreen extends StatelessWidget {
+   SupplerLoginScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
@@ -37,10 +39,11 @@ class RiderSignInScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+
                 // Centered "Sign In" Title
                 const Center(
                   child: Text(
-                    "Rider Sign In",
+                    "Sign In",
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -70,12 +73,46 @@ class RiderSignInScreen extends StatelessWidget {
                 CustomButton(
                   text: "Sign In",
                   onPressed: () {
-                    debugPrint("Rider Sign In Pressed");
+                    debugPrint("Sign In Pressed");
                   },
                   color: Colors.blue,
                 ),
                 const SizedBox(height: 10),
 
+                // Google Sign In Button
+                ElevatedButton.icon(
+                  onPressed: () {
+                    debugPrint("Google Sign In Pressed");
+                  },
+                  icon: Image.asset("assets/images/google.png", height: 24),
+                  label: const Text("Sign in with Google"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Register Option
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Don’t have an account?"),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierRegisterScreen()));
+                      },
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

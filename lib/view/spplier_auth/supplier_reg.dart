@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/spplier_auth/suppler_login.dart';
+import 'package:paniwala/view/user_auth/signin.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
   @override
@@ -143,10 +145,10 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     const Text("Already have an account?"),
                     TextButton(
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => SignInScreen()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
+                        );
                       },
                       child: const Text(
                         "Login",
