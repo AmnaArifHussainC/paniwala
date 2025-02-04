@@ -6,13 +6,12 @@ class ChooseAccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text(
           "Paniwala",
@@ -42,8 +41,8 @@ class ChooseAccountScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-            
-                  // Account Type Buttons (Responsive Design)
+
+                  // Account Type Buttons
                   Column(
                     children: [
                       _buildAccountCard(
@@ -66,11 +65,15 @@ class ChooseAccountScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-            
+
                   const SizedBox(height: 30),
 
+                  // Updated: Navigate to SignInScreen
                   GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, "/login"),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignInScreen()),
+                    ),
                     child: const Text(
                       "Already have an account? Log in",
                       style: TextStyle(
@@ -95,63 +98,52 @@ class ChooseAccountScreen extends StatelessWidget {
     required String description,
     required VoidCallback onTap,
   }) {
-    // LayoutBuilder for responsive design
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        // Define card width based on screen width (responsive)
-        double cardWidth = constraints.maxWidth * 0.8;
-
-        return GestureDetector(
-          onTap: onTap,
-          child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            elevation: 3,
-            color: AppColors.aliceBlue,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0), // Reduced padding
-              child: Container(
-                width: cardWidth, // Set width based on screen size
-                child: Row(
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 3,
+        color: AppColors.aliceBlue,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              // Image
+              Image.asset(
+                image,
+                height: 60,
+                width: 60,
+                fit: BoxFit.contain,
+              ),
+              const SizedBox(width: 16),
+              // Title and Description
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image
-                    Image.asset(
-                      image,
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.contain,
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    // Column for title and description (wrapped in Expanded for responsiveness)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            description,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 8),
+                    Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
