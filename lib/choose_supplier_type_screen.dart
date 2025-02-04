@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/const/colors.dart';
-import 'package:paniwala/view/user_auth/signin.dart';
+import 'package:paniwala/view/rider_auth/rider_login.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
   @override
@@ -58,8 +58,12 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                         image: "assets/images/rider.png",
                         title: "Rider",
                         description: "Join as a water delivery rider",
-                        onTap: () => Navigator.pushNamed(context, "/rider_login"),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RiderSignInScreen()),
+                        ),
                       ),
+
                     ],
                   ),
                 ],
