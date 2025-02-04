@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
+import 'package:paniwala/view/user_auth/forget_password.dart';
 
 import '../../widgets/custome_btn_auth.dart';
 import '../../widgets/custome_text_field.dart';
@@ -67,12 +68,16 @@ class SupplerLoginScreen extends StatelessWidget {
                   icon: Icons.lock,
                   obscureText: true,
                 ),
+                // Forgot Password? Link
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Navigate to the Forgot Password screen (you will need to implement this screen)
-                      debugPrint("Forgot Password Pressed");
+                      // Navigate to Forgot Password screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                      );
                     },
                     child: const Text(
                       "Forgot Password?",

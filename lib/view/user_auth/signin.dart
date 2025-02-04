@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/user_auth/forget_password.dart';
 import 'package:paniwala/view/user_auth/register.dart';
 import '../../widgets/custome_btn_auth.dart';
 import '../../widgets/custome_text_field.dart';
@@ -38,7 +39,6 @@ class SignInScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Centered "Sign In" Title
                 const Center(
                   child: Text(
                     "Sign In",
@@ -66,14 +66,16 @@ class SignInScreen extends StatelessWidget {
                   obscureText: true,
                 ),
 
-
                 // Forgot Password? Link
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Navigate to the Forgot Password screen (you will need to implement this screen)
-                      debugPrint("Forgot Password Pressed");
+                      // Navigate to Forgot Password screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                      );
                     },
                     child: const Text(
                       "Forgot Password?",
@@ -109,7 +111,6 @@ class SignInScreen extends StatelessWidget {
                     side: const BorderSide(color: Colors.grey),
                   ),
                 ),
-                const SizedBox(height: 20),
 
 
 
