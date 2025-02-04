@@ -68,7 +68,7 @@ class ChooseAccountScreen extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // Updated: Navigate to SignInScreen
+
                   GestureDetector(
                     onTap: () => Navigator.push(
                       context,
