@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/choose_supplier_type_screen.dart';
 import 'package:paniwala/const/colors.dart';
 import 'package:paniwala/view/user_auth/signin.dart';
 
-
-class ChooseAccountScreen extends StatelessWidget {
+class ChooseSupplierTypeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -34,7 +32,7 @@ class ChooseAccountScreen extends StatelessWidget {
                 children: [
                   // Subheading
                   const Text(
-                    "Choose your account type",
+                    "Choose Supplier Type",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -44,48 +42,25 @@ class ChooseAccountScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // Account Type Buttons
+                  // Supplier Type Buttons
                   Column(
                     children: [
                       _buildAccountCard(
                         context,
-                        image: "assets/images/consumer.png",
-                        title: "Consumer",
-                        description: "Order fresh water online",
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignInScreen()),
-                        ),
+                        image: "assets/images/companyowner.png",
+                        title: "Company Owner",
+                        description: "Register your water company",
+                        onTap: () => Navigator.pushNamed(context, "/company_owner_login"),
                       ),
                       const SizedBox(height: 20),
                       _buildAccountCard(
                         context,
-                        image: "assets/images/supplier.png",
-                        title: "Supplier",
-                        description: "Register your water business",
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ChooseSupplierTypeScreen()),
-                        ),
+                        image: "assets/images/rider.png",
+                        title: "Rider",
+                        description: "Join as a water delivery rider",
+                        onTap: () => Navigator.pushNamed(context, "/rider_login"),
                       ),
                     ],
-                  ),
-
-                  const SizedBox(height: 30),
-
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignInScreen()),
-                    ),
-                    child: const Text(
-                      "Already have an account? Log in",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                   ),
                 ],
               ),
