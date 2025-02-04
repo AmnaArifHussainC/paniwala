@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
 import 'package:paniwala/choose_supplier_type_screen.dart';
-import 'package:paniwala/view/user_auth/signin.dart';
+import 'package:paniwala/view/auth/user_auth/signin.dart';
 import 'package:paniwala/widgets/choose_screen_cards.dart';  // Import the custom widget
 
 class ChooseAccountScreen extends StatelessWidget {
+  const ChooseAccountScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

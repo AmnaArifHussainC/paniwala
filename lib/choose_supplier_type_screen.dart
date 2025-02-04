@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/rider_auth/rider_login.dart';
-import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
+import 'package:paniwala/view/auth/rider_auth/rider_login.dart';
+import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
 import 'package:paniwala/widgets/choose_screen_cards.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
