@@ -68,7 +68,10 @@ class RegisterScreen extends StatelessWidget {
                     onPressed: (){
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInScreen()));
                     },
-                    child: Text("Login")
+                    child: Text("Login",
+                      style: TextStyle(
+                          color: Colors.blue
+                      ),)
                 )
               ],
             )
