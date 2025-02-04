@@ -6,6 +6,8 @@ import '../../widgets/custome_text_field.dart';
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
 
+  // controllers
+
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
