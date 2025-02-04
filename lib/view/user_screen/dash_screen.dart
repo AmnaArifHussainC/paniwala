@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/user_screen/user_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   final List<Map<String, dynamic>> suppliers = [
@@ -35,6 +36,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         elevation: 0,
@@ -45,6 +47,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+      drawer: CustomUserDrawer(),
       body: Column(
         children: [
           Padding(

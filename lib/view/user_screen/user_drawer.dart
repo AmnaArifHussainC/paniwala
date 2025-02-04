@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
+import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
 
 class CustomUserDrawer extends StatelessWidget {
   @override
@@ -21,13 +24,18 @@ class CustomUserDrawer extends StatelessWidget {
                   "User Name",  // Replace with actual user name or dynamic data
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 ),
-                SizedBox(height: 5),
-                Text(
-                  "user@example.com",  // Replace with actual user email or dynamic data
-                  style: TextStyle(color: Colors.white),
-                ),
               ],
             ),
+          ),
+
+          // "Login as Supplier" button
+          ListTile(
+            leading: Icon(Icons.business),
+            title: Text('Login as Supplier'),
+            onTap: () {
+              // Implement navigation to Supplier login screen
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>SupplierRegisterScreen()));
+            },
           ),
 
           // List of Drawer Items
@@ -45,6 +53,14 @@ class CustomUserDrawer extends StatelessWidget {
             onTap: () {
               // Implement navigation when the user taps on Profile
               Navigator.pushReplacementNamed(context, '/profile');
+            },
+          ),
+          ListTile(
+            leading: Icon(CupertinoIcons.shopping_cart),
+            title: Text('Order History'),
+            onTap: () {
+              // Implement navigation when the user taps on Order History
+              Navigator.pushReplacementNamed(context, '/order_history');
             },
           ),
           ListTile(
