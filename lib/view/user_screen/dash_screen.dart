@@ -82,6 +82,7 @@ class HomeScreen extends StatelessWidget {
                   border: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
                   focusedBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
                   enabledBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
+                  suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward_ios, )),
                 ),
               ),
             ),
