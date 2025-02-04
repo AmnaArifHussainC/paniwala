@@ -24,6 +24,7 @@ class SignInScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+
                 // Centered "Sign In" Title
                 const Center(
                   child: Text(
