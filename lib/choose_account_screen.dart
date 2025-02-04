@@ -37,7 +37,7 @@ class ChooseAccountScreen extends StatelessWidget {
 
             SizedBox(height: 20),
 
-            // Tagline Below Header
+
             Text(
               "Pakistan's #1 Water Delivery App",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
