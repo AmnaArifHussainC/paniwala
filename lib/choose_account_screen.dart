@@ -68,8 +68,7 @@ class ChooseAccountScreen extends StatelessWidget {
                   ),
             
                   const SizedBox(height: 30),
-            
-                  // Login Text
+
                   GestureDetector(
                     onTap: () => Navigator.pushNamed(context, "/login"),
                     child: const Text(
