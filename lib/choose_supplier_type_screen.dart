@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/const/colors.dart';
 import 'package:paniwala/view/rider_auth/rider_login.dart';
+import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
+import 'package:paniwala/widgets/choose_screen_cards.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
   @override
@@ -30,7 +31,6 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Subheading
                   const Text(
                     "Choose Supplier Type",
                     style: TextStyle(
@@ -42,88 +42,27 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-
+                  // Supplier Type Buttons
                   Column(
                     children: [
-                      _buildAccountCard(
-                        context,
+                      AccountCard(
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",
                         description: "Register your water company",
-                        onTap: () => Navigator.pushNamed(context, "/company_owner_login"),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierRegisterScreen())),
                       ),
                       const SizedBox(height: 20),
-                      _buildAccountCard(
-                        context,
+                      AccountCard(
                         image: "assets/images/rider.png",
                         title: "Rider",
                         description: "Join as a water delivery rider",
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => RiderSignInScreen()),
-                        ),
+                        onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (context) => RiderSignInScreen())),
                       ),
-
                     ],
                   ),
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAccountCard(BuildContext context, {
-    required String image,
-    required String title,
-    required String description,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 3,
-        color: AppColors.aliceBlue,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              // Image
-              Image.asset(
-                image,
-                height: 60,
-                width: 60,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 16),
-              // Title and Description
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),

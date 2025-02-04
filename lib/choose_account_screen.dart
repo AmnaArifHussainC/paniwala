@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/spplier_auth/supplier_reg.dart';
 import 'package:paniwala/choose_supplier_type_screen.dart';
-import 'package:paniwala/const/colors.dart';
 import 'package:paniwala/view/user_auth/signin.dart';
-
+import 'package:paniwala/widgets/choose_screen_cards.dart';  // Import the custom widget
 
 class ChooseAccountScreen extends StatelessWidget {
   @override
@@ -32,7 +32,6 @@ class ChooseAccountScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Subheading
                   const Text(
                     "Choose your account type",
                     style: TextStyle(
@@ -47,8 +46,7 @@ class ChooseAccountScreen extends StatelessWidget {
                   // Account Type Buttons
                   Column(
                     children: [
-                      _buildAccountCard(
-                        context,
+                      AccountCard(
                         image: "assets/images/consumer.png",
                         title: "Consumer",
                         description: "Order fresh water online",
@@ -58,8 +56,7 @@ class ChooseAccountScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      _buildAccountCard(
-                        context,
+                      AccountCard(
                         image: "assets/images/supplier.png",
                         title: "Supplier",
                         description: "Register your water business",
@@ -90,61 +87,6 @@ class ChooseAccountScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAccountCard(BuildContext context, {
-    required String image,
-    required String title,
-    required String description,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 3,
-        color: AppColors.aliceBlue,
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              // Image
-              Image.asset(
-                image,
-                height: 60,
-                width: 60,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 16),
-              // Title and Description
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
           ),
         ),
       ),
