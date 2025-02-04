@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-
+import 'package:paniwala/view/user_auth/signin.dart';
+import '../../widgets/custome_btn_auth.dart';
 import '../../widgets/custome_text_field.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+   RegisterScreen({super.key});
+
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,39 +28,50 @@ class RegisterScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             CustomTextField(
+              controller: fullNameController,
               hintText: "Full Name",
               icon: Icons.person,
             ),
             const SizedBox(height: 10),
             CustomTextField(
+              controller: emailController,
               hintText: "Email",
               icon: Icons.email,
             ),
             const SizedBox(height: 10),
             CustomTextField(
+              controller: passwordController,
               hintText: "Password",
               icon: Icons.lock,
               obscureText: true,
             ),
             const SizedBox(height: 10),
             CustomTextField(
+              controller: confirmPasswordController,
               hintText: "Confirm Password",
               icon: Icons.lock,
               obscureText: true,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
+            CustomButton(
+              text: "Register",
               onPressed: () {
                 debugPrint("Register Pressed");
               },
-              child: const Text("Register"),
+              color: Colors.blue,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Already have an account? Sign In"),
-            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Already have an account?"),
+                TextButton(
+                    onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>SignInScreen()));
+                    },
+                    child: Text("Login")
+                )
+              ],
+            )
           ],
         ),
       ),
