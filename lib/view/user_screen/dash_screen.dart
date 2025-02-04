@@ -37,6 +37,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         elevation: 0,
