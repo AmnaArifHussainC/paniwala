@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/const/colors.dart';
 
 class AccountTypeCard extends StatelessWidget {
   final String image;
@@ -23,6 +24,7 @@ class AccountTypeCard extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Card(
+          color: Colors.white,
           elevation: 4,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
