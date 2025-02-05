@@ -1,129 +1,160 @@
-// import 'package:flutter/material.dart';
-// import 'package:onboarding_intro_screen/onboarding_screen.dart';
-// import 'package:paniwala/choose_account_screen.dart';
-//
-// class BoardingScreen extends StatelessWidget {
-//   const BoardingScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return OnBoardingScreen(
-//         pages: [
-//           // pages
-//           OnBoardingModel(
-//             image: Image.asset("assets/images/water1.jpg"),
-//             title: "Business Chat",
-//             body:
-//                 "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
-//           ),
-//           OnBoardingModel(
-//             image: Image.asset("assets/images/water2.jpg"),
-//             title: "Business Chat",
-//             body:
-//                 "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
-//           ),
-//           OnBoardingModel(
-//             image: Image.asset("assets/images/water3.jpg"),
-//             title: "Business Chat",
-//             body:
-//                 "First impressions are everything in business, even in chat service. It’s important to show professionalism and courtesy from the start",
-//           ),
-//         ],
-//         showPrevNextButton: true,
-//         showIndicator: true,
-//         backgourndColor: Colors.white,
-//         activeDotColor: Colors.blue,
-//         deactiveDotColor: Colors.grey,
-//         iconColor: Colors.black,
-//         leftIcon: Icons.arrow_circle_left_rounded,
-//         rightIcon: Icons.arrow_circle_right_rounded,
-//         iconSize: 30,
-//         onSkip: () {
-//           debugPrint("On Skip Called....");
-//           Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => ChooseAccountScreen(),
-//               ));
-//         });
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-
 import 'choose_account_screen.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  final PageController _pageController = PageController();
+  int _currentIndex = 0;
+
+  final List<Map<String, String>> onboardingData = [
+    {
+      "title": "Welcome to Paniwala!",
+      "subtitle":
+      "Get fresh and pure water delivered to your doorstep.\nStart your journey with us today!",
+      "lottie": "assets/lottie/delivery.json",
+    },
+    {
+      "title": "Track Your Orders",
+      "subtitle":
+      "Real-time tracking of your water deliveries for a seamless experience.",
+      "lottie": "assets/lottie/bottle.json",
+    },
+    {
+      "title": "Easy Payments",
+      "subtitle": "Hassle-free and secure payment options to save your time.",
+      "lottie": "assets/lottie/Animation - 1738763010793.json",
+    },
+  ];
+
+  void _goToNextPage() {
+    if (_currentIndex < onboardingData.length - 1) {
+      _pageController.nextPage(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChooseAccountScreen(),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Lottie Animation
-                Lottie.asset(
-                  'assets/lottie/delivery.json', // Path to your Lottie file
-                  width: 300, // Adjust width for responsiveness
-                  height: 300, // Adjust height for responsiveness
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 30),
-
-                // Title
-                const Text(
-                  'Welcome to Paniwala!',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 10),
-
-                // Description
-                const Text(
-                  'Get fresh and pure water delivered to your doorstep. \nStart your journey with us today!',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: 30),
-
-                // Navigation Button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChooseAccountScreen()));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+        child: Column(
+          children: [
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: onboardingData.length,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final onboardingItem = onboardingData[index];
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenWidth * 0.05,
+                        vertical: screenHeight * 0.02),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          flex: 4,
+                          child: Lottie.asset(
+                            onboardingItem["lottie"]!,
+                            width: screenWidth * 0.8,
+                            height: screenHeight * 0.4,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(height: screenHeight * 0.03),
+                        Text(
+                          onboardingItem["title"]!,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.06,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: screenHeight * 0.01),
+                        Text(
+                          onboardingItem["subtitle"]!,
+                          style: TextStyle(
+                            fontSize: screenWidth * 0.04,
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                  ),
-                  child: const Text(
-                    'Get Started',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  );
+                },
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                onboardingData.length,
+                    (index) => AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
+                  height: screenHeight * 0.01,
+                  width: _currentIndex == index
+                      ? screenWidth * 0.05
+                      : screenWidth * 0.02,
+                  decoration: BoxDecoration(
+                    color: _currentIndex == index ? Colors.blue : Colors.grey,
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(height: screenHeight * 0.05),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+              child: ElevatedButton(
+                onPressed: _goToNextPage,
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(
+                    vertical: screenHeight * 0.02,
+                    horizontal: screenWidth * 0.1,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  backgroundColor: Colors.blue,
+                ),
+                child: Text(
+                  _currentIndex == onboardingData.length - 1
+                      ? "Get Started"
+                      : "Next",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.045,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: screenHeight * 0.05),
+          ],
         ),
       ),
     );
