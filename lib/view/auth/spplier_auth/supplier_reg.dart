@@ -1,6 +1,4 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
@@ -23,23 +21,25 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void openFile(PlatformFile file){
-  OpenFile.open(file.path);
-  }
+
+
+  // void openFile(PlatformFile file){
+  // OpenFile.open(file.path);
+  // }
   // Function to pick PDF file
-  Future<void> pickFile() async {
-   final result = await FilePicker.platform.pickFiles();
-   if(result == null) return;
-  //  open single file
-    final file = result.files.first;
-    openFile(file);
-  //   openfile (file)
-    print("Name: ${file.name}");
-   print("Byte: ${file.bytes}");
-   print("Size: ${file.size}");
-   print("Extention: ${file.extension}");
-   print("Path: ${file.path}");
-  }
+  // Future<void> pickFile() async {
+  //  final result = await FilePicker.platform.pickFiles();
+  //  if(result == null) return;
+  // //  open single file
+  //   final file = result.files.first;
+  //   openFile(file);
+  // //   openfile (file)
+  //   print("Name: ${file.name}");
+  //  print("Byte: ${file.bytes}");
+  //  print("Size: ${file.size}");
+  //  print("Extention: ${file.extension}");
+  //  print("Path: ${file.path}");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,12 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     validator: (value) => value == null || value.isEmpty ? 'Please upload a certificate' : null,
                   ),
                   ElevatedButton(
-                    onPressed: pickFile,
+                    onPressed: ()async {
+                      // FilePickerResult? result = await FilePicker.platform.pickFiles();
+                      // if(result!=null){
+                      //   print(result.paths);
+                      // }
+                    },
                     child: Text("Upload PDF Certificate"),
                   ),
                   const SizedBox(height: 20),
