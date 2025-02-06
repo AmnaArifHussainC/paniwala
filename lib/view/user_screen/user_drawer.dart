@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/services/auth/customer_auth.dart';
 import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
+import 'package:paniwala/view/auth/user_auth/signin.dart';
 
 class CustomUserDrawer extends StatelessWidget {
   const CustomUserDrawer({super.key});
@@ -83,8 +85,10 @@ class CustomUserDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
-            onTap: () {
-              // Implement logout functionality here
+            onTap: () async{
+              final authservise = AuthService();
+              authservise.signOut();
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SignInScreen()), (route)=> false);
               Navigator.pushReplacementNamed(context, '/login');
             },
           ),
