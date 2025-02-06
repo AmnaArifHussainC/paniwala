@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/utils/auth_validation/user_validation.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
+
+import '../../../utils/auth_validation/validations.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -12,6 +13,25 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+
+
+  // Form Key
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+  void _userRegister(BuildContext context) {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Perform registration logic here
+      debugPrint("Registration successful!");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Registration successful!")),
+      );
+    } else {
+      // If validation fails, show a general error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please correct the errors in the form.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,136 +57,143 @@ class RegisterScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08), // Dynamic padding based on screen width
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Title
-                const Text(
-                  "Register",
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-
-                // Full Name Text Field
-                CustomTextField(
-                  controller: fullNameController,
-                  hintText: "Full Name",
-                  icon: Icons.person,
-                ),
-                const SizedBox(height: 10),
-
-                // Email Text Field
-                CustomTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  icon: Icons.email,
-                ),
-                const SizedBox(height: 10),
-
-                // Password Text Field
-                CustomTextField(
-                  controller: passwordController,
-                  hintText: "Password",
-                  icon: Icons.lock,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 10),
-
-                // Confirm Password Text Field
-                CustomTextField(
-                  controller: confirmPasswordController,
-                  hintText: "Confirm Password",
-                  icon: Icons.lock,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
-
-                // Register Button
-                // Inside the onPressed of the Register Button
-                CustomButton(
-                  text: "Register",
-                  onPressed: () {
-                    final fullNameError = UserValidationUtils.validateFullName(fullNameController.text);
-                    final emailError = UserValidationUtils.validateEmail(emailController.text);
-                    final passwordError = UserValidationUtils.validatePassword(passwordController.text);
-                    final confirmPasswordError = UserValidationUtils.validateConfirmPassword(
-                      passwordController.text,
-                      confirmPasswordController.text,
-                    );
-                    if (fullNameError != null) {
-                      debugPrint(fullNameError);
-                      // Show error in a dialog or Toast
-                      return;
-                    }
-
-                    if (emailError != null) {
-                      debugPrint(emailError);
-                      // Show error in a dialog or Toast
-                      return;
-                    }
-
-                    if (passwordError != null) {
-                      debugPrint(passwordError);
-                      // Show error in a dialog or Toast
-                      return;
-                    }
-
-                    if (confirmPasswordError != null) {
-                      debugPrint(confirmPasswordError);
-                      // Show error in a dialog or Toast
-                      return;
-                    }
-
-                    debugPrint("All validations passed. Proceed with registration.");
-                  },
-                  color: Colors.blue,
-                ),
-
-
-                // Google Sign In Button
-                const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    debugPrint("Google Sign In Pressed");
-                  },
-                  icon: Image.asset("assets/images/google.png", height: 24),
-                  label: const Text("Sign up with Google"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Title
+                  const Text(
+                    "Register",
+                    style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold
                     ),
-                    side: const BorderSide(color: Colors.grey),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-
-                // Already have an account? Text
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account?"),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignInScreen()),
-                        );
-                      },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.blue),
+                  const SizedBox(height: 20),
+              
+                  // Full Name Text Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validateFullName(value),
+                    controller: fullNameController,
+                    hintText: "Full Name",
+                    icon: Icons.person,
+                  ),
+                  const SizedBox(height: 10),
+              
+                  // Email Text Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validateEmail(value),
+                    controller: emailController,
+                    hintText: "Email",
+                    icon: Icons.email,
+                  ),
+                  const SizedBox(height: 10),
+              
+                  // Password Text Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validatePassword(value),
+                    controller: passwordController,
+                    hintText: "Password",
+                    icon: Icons.lock,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 10),
+              
+                  // Confirm Password Text Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validateConfirmPassword(passwordController.text, value),
+                    controller: confirmPasswordController,
+                    hintText: "Confirm Password",
+                    icon: Icons.lock,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
+              
+                  // Register Button
+                  // Inside the onPressed of the Register Button
+                  CustomButton(
+                    text: "Register",
+                    onPressed: () {
+                      final fullNameError = ValidationUtils.validateFullName(fullNameController.text);
+                      final emailError = ValidationUtils.validateEmail(emailController.text);
+                      final passwordError = ValidationUtils.validatePassword(passwordController.text);
+                      final confirmPasswordError = ValidationUtils.validateConfirmPassword(
+                        passwordController.text,
+                        confirmPasswordController.text,
+                      );
+                      if (fullNameError != null) {
+                        debugPrint(fullNameError);
+                        // Show error in a dialog or Toast
+                        return;
+                      }
+              
+                      if (emailError != null) {
+                        debugPrint(emailError);
+                        // Show error in a dialog or Toast
+                        return;
+                      }
+              
+                      if (passwordError != null) {
+                        debugPrint(passwordError);
+                        // Show error in a dialog or Toast
+                        return;
+                      }
+              
+                      if (confirmPasswordError != null) {
+                        debugPrint(confirmPasswordError);
+                        // Show error in a dialog or Toast
+                        return;
+                      }
+              
+                      debugPrint("All validations passed. Proceed with registration.");
+                    },
+                    color: Colors.blue,
+                  ),
+              
+              
+                  // Google Sign In Button
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      debugPrint("Google Sign In Pressed");
+                    },
+                    icon: Image.asset("assets/images/google.png", height: 24),
+                    label: const Text("Sign up with Google"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      side: const BorderSide(color: Colors.grey),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+              
+                  // Already have an account? Text
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account?"),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SignInScreen()),
+                          );
+                        },
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

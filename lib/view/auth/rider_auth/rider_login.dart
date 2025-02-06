@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 
+import '../../../utils/auth_validation/validations.dart';
+
 class RiderSignInScreen extends StatelessWidget {
   RiderSignInScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
+
+  // Form Key
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,50 +38,55 @@ class RiderSignInScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Centered "Sign In" Title
-                const Center(
-                  child: Text(
-                    "Rider Sign In",
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Centered "Sign In" Title
+                  const Center(
+                    child: Text(
+                      "Rider Sign In",
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                // Email Field
-                CustomTextField(
-                  controller: emailController,
-                  hintText: "Email",
-                  icon: Icons.email,
-                ),
-                const SizedBox(height: 10),
+                  // Email Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validateEmail(value),
+                    controller: emailController,
+                    hintText: "Email",
+                    icon: Icons.email,
+                  ),
+                  const SizedBox(height: 10),
 
-                // Password Field
-                CustomTextField(
-                  controller: passController,
-                  hintText: "Password",
-                  icon: Icons.lock,
-                  obscureText: true,
-                ),
-                const SizedBox(height: 20),
+                  // Password Field
+                  CustomTextField(
+                    validator: (value) => ValidationUtils.validatePassword(value),
+                    controller: passController,
+                    hintText: "Password",
+                    icon: Icons.lock,
+                    obscureText: true,
+                  ),
+                  const SizedBox(height: 20),
 
-                // Sign In Button
-                CustomButton(
-                  text: "Sign In",
-                  onPressed: () {
-                    debugPrint("Rider Sign In Pressed");
-                  },
-                  color: Colors.blue,
-                ),
-                const SizedBox(height: 10),
+                  // Sign In Button
+                  CustomButton(
+                    text: "Sign In",
+                    onPressed: () {
+                      debugPrint("Rider Sign In Pressed");
+                    },
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(height: 10),
 
-              ],
+                ],
+              ),
             ),
           ),
         ),

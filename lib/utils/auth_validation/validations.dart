@@ -1,4 +1,4 @@
-class UserValidationUtils {
+class ValidationUtils {
   // Validate Full Name
   static String? validateFullName(String? value) {
     if (value == null || value.trim().isEmpty) {

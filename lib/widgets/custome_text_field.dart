@@ -5,9 +5,11 @@ class CustomTextField extends StatefulWidget {
   final IconData icon;
   final bool obscureText;
   final TextEditingController controller;
+  final String? Function(String?)? validator;
 
   const CustomTextField({
     super.key,
+    required this.validator,
     required this.hintText,
     required this.icon,
     this.obscureText = false,
@@ -30,9 +32,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
           _isFocused = hasFocus;
         });
       },
-      child: TextField(
+      child: TextFormField(
         controller: widget.controller,
         obscureText: widget.obscureText ? _isObscured : false,
+        validator: widget.validator,  // Use the validator here
         decoration: InputDecoration(
           hintText: widget.hintText,
           prefixIcon: Icon(widget.icon, color: _isFocused ? Colors.blue : Colors.grey),
