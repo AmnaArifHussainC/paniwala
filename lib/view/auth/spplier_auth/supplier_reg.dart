@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:open_file/open_file.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
@@ -18,28 +20,30 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController filterCertificateController = TextEditingController();
 
-  // Form Key
+  String? selectedFilePath; // Store the selected file path
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  // Function to pick a PDF file
+  Future<void> pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'], // Allow only PDFs
+    );
 
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        selectedFilePath = result.files.first.path;
+        filterCertificateController.text = result.files.first.name; // Show file name in text field
+      });
+    }
+  }
 
-  // void openFile(PlatformFile file){
-  // OpenFile.open(file.path);
-  // }
-  // Function to pick PDF file
-  // Future<void> pickFile() async {
-  //  final result = await FilePicker.platform.pickFiles();
-  //  if(result == null) return;
-  // //  open single file
-  //   final file = result.files.first;
-  //   openFile(file);
-  // //   openfile (file)
-  //   print("Name: ${file.name}");
-  //  print("Byte: ${file.bytes}");
-  //  print("Size: ${file.size}");
-  //  print("Extention: ${file.extension}");
-  //  print("Path: ${file.path}");
-  // }
+  // Function to open the selected file
+  void openSelectedFile() {
+    if (selectedFilePath != null) {
+      OpenFile.open(selectedFilePath);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Centered Title
                   const Center(
                     child: Text(
                       "Register your business",
@@ -83,44 +86,36 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // CNIC Field
                   CustomTextField(
                     controller: cnicController,
                     hintText: "CNIC (National Identity)",
                     icon: Icons.card_membership,
                     validator: (value) => ValidationUtils.validateEmail(value),
-
                   ),
                   const SizedBox(height: 10),
 
-                  // Phone Number Field
                   CustomTextField(
                     controller: phoneController,
                     hintText: "Phone Number",
                     icon: Icons.phone,
                     validator: (value) => ValidationUtils.validateEmail(value),
-
                   ),
                   const SizedBox(height: 10),
 
-                  // Email Field
                   CustomTextField(
                     controller: emailController,
                     hintText: "Email",
                     icon: Icons.email,
                     validator: (value) => ValidationUtils.validateEmail(value),
-
                   ),
                   const SizedBox(height: 10),
 
-                  // Password Field
                   CustomTextField(
                     controller: passwordController,
                     hintText: "Password",
                     icon: Icons.lock,
                     obscureText: true,
                     validator: (value) => ValidationUtils.validateEmail(value),
-
                   ),
                   const SizedBox(height: 10),
 
@@ -131,28 +126,35 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     icon: Icons.file_copy,
                     validator: (value) => value == null || value.isEmpty ? 'Please upload a certificate' : null,
                   ),
-                  ElevatedButton(
-                    onPressed: ()async {
-                      // FilePickerResult? result = await FilePicker.platform.pickFiles();
-                      // if(result!=null){
-                      //   print(result.paths);
-                      // }
-                    },
-                    child: Text("Upload PDF Certificate"),
+
+                  const SizedBox(height: 10),
+
+                  ElevatedButton.icon(
+                    onPressed: pickFile,
+                    icon: const Icon(Icons.upload_file),
+                    label: const Text("Upload PDF Certificate"),
                   ),
+
+                  if (selectedFilePath != null)
+                    TextButton(
+                      onPressed: openSelectedFile,
+                      child: const Text("Open Selected File"),
+                    ),
+
                   const SizedBox(height: 20),
 
-                  // Register Button
                   CustomButton(
                     text: "Register Supplier",
                     onPressed: () {
-                      debugPrint("Registering Supplier");
+                      if (_formKey.currentState!.validate()) {
+                        debugPrint("Registering Supplier");
+                        debugPrint("Uploaded File Path: $selectedFilePath");
+                      }
                     },
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 20),
 
-                  // Navigate to Sign In Screen
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
