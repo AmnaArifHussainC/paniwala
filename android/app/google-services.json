@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "956743805834",
+    "project_id": "paniwala-b8f1a",
+    "storage_bucket": "paniwala-b8f1a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956743805834:android:f8a15c1bd2a5b5b7003673",
+        "android_client_info": {
+          "package_name": "com.example.paniwala"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvIaz8bkjru3Vyrh5yAR5iY__xMq1AL-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
