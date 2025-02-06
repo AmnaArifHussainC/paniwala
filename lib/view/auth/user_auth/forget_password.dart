@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../widgets/custome_text_field.dart';
+
 class ForgotPasswordScreen extends StatelessWidget {
   ForgotPasswordScreen({super.key});
 
@@ -45,13 +47,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Email Field
-                TextField(
+                CustomTextField(
                   controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    hintText: "Enter your registered email",
-                    prefixIcon: Icon(Icons.email),
-                  ),
+                  hintText: "Email",
+                  icon: Icons.email,
+                  obscureText: false,
                 ),
                 const SizedBox(height: 20),
 
