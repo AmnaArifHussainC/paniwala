@@ -90,7 +90,7 @@ class RiderSignInScreen extends StatelessWidget {
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      _riderLogin;
+                      _riderLogin(context);
                     },
                     color: Colors.blue,
                   ),
