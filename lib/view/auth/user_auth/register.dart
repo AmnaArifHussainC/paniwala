@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/utils/auth_validation/user_validation.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
@@ -86,13 +87,46 @@ class RegisterScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Register Button
+                // Inside the onPressed of the Register Button
                 CustomButton(
                   text: "Register",
                   onPressed: () {
-                    debugPrint("Register Pressed");
+                    final fullNameError = UserValidationUtils.validateFullName(fullNameController.text);
+                    final emailError = UserValidationUtils.validateEmail(emailController.text);
+                    final passwordError = UserValidationUtils.validatePassword(passwordController.text);
+                    final confirmPasswordError = UserValidationUtils.validateConfirmPassword(
+                      passwordController.text,
+                      confirmPasswordController.text,
+                    );
+                    if (fullNameError != null) {
+                      debugPrint(fullNameError);
+                      // Show error in a dialog or Toast
+                      return;
+                    }
+
+                    if (emailError != null) {
+                      debugPrint(emailError);
+                      // Show error in a dialog or Toast
+                      return;
+                    }
+
+                    if (passwordError != null) {
+                      debugPrint(passwordError);
+                      // Show error in a dialog or Toast
+                      return;
+                    }
+
+                    if (confirmPasswordError != null) {
+                      debugPrint(confirmPasswordError);
+                      // Show error in a dialog or Toast
+                      return;
+                    }
+
+                    debugPrint("All validations passed. Proceed with registration.");
                   },
                   color: Colors.blue,
                 ),
+
 
                 // Google Sign In Button
                 const SizedBox(height: 20),
