@@ -65,29 +65,29 @@ class ForgotPasswordScreen extends StatelessWidget {
                   // Reset Password Button
                   ElevatedButton(
                     onPressed: () {
-                      String email = emailController.text.trim();
-                      if (email.isEmpty) {
-                        // Show an alert if the email field is empty
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please enter your email")),
-                        );
-                      } else {
-                        // Call your password reset function here
+                      if (_formKey.currentState?.validate() ?? false) {
+                        // Proceed with sending the reset link
+                        String email = emailController.text.trim();
                         debugPrint("Password reset request for: $email");
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Password reset link sent",)),
+                          const SnackBar(content: Text("Password reset link sent")),
+                        );
+                      } else {
+                        // If validation fails, show an error message
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Please enter a valid email")),
                         );
                       }
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 15),
-                      child: Text("Send Reset Link", style: TextStyle(color: Colors.white),),
+                      child: Text("Send Reset Link", style: TextStyle(color: Colors.white)),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
                 ],

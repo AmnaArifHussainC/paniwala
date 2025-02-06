@@ -14,10 +14,9 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  
+
   void _userRegister(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
       // Perform registration logic here
@@ -54,7 +53,7 @@ class RegisterScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08), // Dynamic padding based on screen width
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -63,7 +62,6 @@ class RegisterScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Title
                   const Text(
                     "Register",
                     style: TextStyle(
@@ -73,7 +71,7 @@ class RegisterScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Full Name Text Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validateFullName(value),
@@ -82,7 +80,7 @@ class RegisterScreen extends StatelessWidget {
                     icon: Icons.person,
                   ),
                   const SizedBox(height: 10),
-              
+
                   // Email Text Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validateEmail(value),
@@ -91,7 +89,7 @@ class RegisterScreen extends StatelessWidget {
                     icon: Icons.email,
                   ),
                   const SizedBox(height: 10),
-              
+
                   // Password Text Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validatePassword(value),
@@ -101,7 +99,7 @@ class RegisterScreen extends StatelessWidget {
                     obscureText: true,
                   ),
                   const SizedBox(height: 10),
-              
+
                   // Confirm Password Text Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validateConfirmPassword(passwordController.text, value),
@@ -111,51 +109,19 @@ class RegisterScreen extends StatelessWidget {
                     obscureText: true,
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Register Button
-                  // Inside the onPressed of the Register Button
                   CustomButton(
                     text: "Register",
                     onPressed: () {
-                      final fullNameError = ValidationUtils.validateFullName(fullNameController.text);
-                      final emailError = ValidationUtils.validateEmail(emailController.text);
-                      final passwordError = ValidationUtils.validatePassword(passwordController.text);
-                      final confirmPasswordError = ValidationUtils.validateConfirmPassword(
-                        passwordController.text,
-                        confirmPasswordController.text,
-                      );
-                      if (fullNameError != null) {
-                        debugPrint(fullNameError);
-                        // Show error in a dialog or Toast
-                        return;
-                      }
-              
-                      if (emailError != null) {
-                        debugPrint(emailError);
-                        // Show error in a dialog or Toast
-                        return;
-                      }
-              
-                      if (passwordError != null) {
-                        debugPrint(passwordError);
-                        // Show error in a dialog or Toast
-                        return;
-                      }
-              
-                      if (confirmPasswordError != null) {
-                        debugPrint(confirmPasswordError);
-                        // Show error in a dialog or Toast
-                        return;
-                      }
-              
-                      debugPrint("All validations passed. Proceed with registration.");
+                      _userRegister(context);  // Trigger form validation
                     },
                     color: Colors.blue,
                   ),
-              
-              
-                  // Google Sign In Button
+
                   const SizedBox(height: 20),
+
+                  // Google Sign In Button
                   ElevatedButton.icon(
                     onPressed: () {
                       debugPrint("Google Sign In Pressed");
@@ -171,7 +137,7 @@ class RegisterScreen extends StatelessWidget {
                       side: const BorderSide(color: Colors.grey),
                     ),
                   ),
-              
+
                   // Already have an account? Text
                   const SizedBox(height: 20),
                   Row(

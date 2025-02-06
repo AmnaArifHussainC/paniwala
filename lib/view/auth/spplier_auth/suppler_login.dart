@@ -15,6 +15,22 @@ class SupplerLoginScreen extends StatelessWidget {
 
    // Form Key
    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+   void _suppliersignIn(BuildContext context) {
+     if (_formKey.currentState?.validate() ?? false) {
+       // Perform sign-in logic here
+       debugPrint("Sign In successful!");
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text("Sign In successful!")),
+       );
+     } else {
+       // If validation fails, show a general error message
+       ScaffoldMessenger.of(context).showSnackBar(
+         const SnackBar(content: Text("Please correct the errors in the form.")),
+       );
+     }
+   }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -99,6 +115,7 @@ class SupplerLoginScreen extends StatelessWidget {
                     text: "Sign In",
                     onPressed: () {
                       debugPrint("Sign In Pressed");
+                      _suppliersignIn;
                     },
                     color: Colors.blue,
                   ),

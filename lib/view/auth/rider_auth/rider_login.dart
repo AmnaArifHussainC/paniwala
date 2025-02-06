@@ -13,6 +13,17 @@ class RiderSignInScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  void _riderLogin(BuildContext context){
+    if (_formKey.currentState?.validate() ?? false) {
+      // Proceed with the sign-in process
+      debugPrint("Rider Sign In Pressed");
+    } else {
+      // If validation fails, show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in valid credentials")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,12 +90,11 @@ class RiderSignInScreen extends StatelessWidget {
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      debugPrint("Rider Sign In Pressed");
+                      _riderLogin;
                     },
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 10),
-
                 ],
               ),
             ),

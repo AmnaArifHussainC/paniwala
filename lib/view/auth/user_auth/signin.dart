@@ -15,6 +15,21 @@ class SignInScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  void _signIn(BuildContext context) {
+    if (_formKey.currentState?.validate() ?? false) {
+      // Perform sign-in logic here
+      debugPrint("Sign In successful!");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Sign In successful!")),
+      );
+    } else {
+      // If validation fails, show a general error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please correct the errors in the form.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -55,7 +70,7 @@ class SignInScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Email Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validateEmail(value),
@@ -64,7 +79,7 @@ class SignInScreen extends StatelessWidget {
                     icon: Icons.email,
                   ),
                   const SizedBox(height: 10),
-              
+
                   // Password Field
                   CustomTextField(
                     validator: (value) => ValidationUtils.validatePassword(value),
@@ -72,9 +87,8 @@ class SignInScreen extends StatelessWidget {
                     hintText: "Password",
                     icon: Icons.lock,
                     obscureText: true,
-
                   ),
-              
+
                   // Forgot Password? Link
                   Align(
                     alignment: Alignment.centerRight,
@@ -93,17 +107,17 @@ class SignInScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-              
+
                   // Sign In Button
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      debugPrint("Sign In Pressed");
+                      _signIn(context);  // Trigger form validation
                     },
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 10),
-              
+
                   // Google Sign In Button
                   ElevatedButton.icon(
                     onPressed: () {
@@ -120,9 +134,7 @@ class SignInScreen extends StatelessWidget {
                       side: const BorderSide(color: Colors.grey),
                     ),
                   ),
-              
-              
-              
+
                   // Register Option
                   const SizedBox(height: 20),
                   Row(
