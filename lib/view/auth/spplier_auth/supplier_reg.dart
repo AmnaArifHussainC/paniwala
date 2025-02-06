@@ -130,15 +130,22 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      side: BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      )
+                    ),
                     onPressed: pickFile,
-                    icon: const Icon(Icons.upload_file),
-                    label: const Text("Upload PDF Certificate"),
+                    icon: const Icon(Icons.upload_file, color: Colors.blue,),
+                    label: const Text("Upload PDF Certificate", style: TextStyle(color: Colors.blue),),
                   ),
 
                   if (selectedFilePath != null)
                     TextButton(
+
                       onPressed: openSelectedFile,
-                      child: const Text("Open Selected File"),
+                      child: const Text("Open Selected File", style: TextStyle(color: Colors.blue),),
                     ),
 
                   const SizedBox(height: 20),
