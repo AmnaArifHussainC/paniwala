@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
+import 'package:paniwala/view/user_screen/dash_screen.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 
+import '../../../services/auth/customer_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -17,20 +19,33 @@ class RegisterScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _userRegister(BuildContext context) {
+  final AuthService _authService = AuthService();
+
+  void _registerUser(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Perform registration logic here
-      debugPrint("Registration successful!");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Registration successful!")),
-      );
-    } else {
-      // If validation fails, show a general error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please correct the errors in the form.")),
-      );
+      String email = emailController.text.trim();
+      String password = passwordController.text.trim();
+
+      String? errorMessage = await _authService.signUp(email, password);
+      if (errorMessage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration successful!")),
+        );
+
+        // Navigate to the HomeScreen and clear previous navigation stack
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()), // Replace with your target screen widget
+              (Route<dynamic> route) => false, // Removes all previous routes
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +129,7 @@ class RegisterScreen extends StatelessWidget {
                   CustomButton(
                     text: "Register",
                     onPressed: () {
-                      _userRegister(context);  // Trigger form validation
+                      _registerUser(context);  // Trigger form validation
                     },
                     color: Colors.blue,
                   ),
