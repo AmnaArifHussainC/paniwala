@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
 import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
 
 class CustomUserDrawer extends StatelessWidget {
+  const CustomUserDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -11,7 +12,7 @@ class CustomUserDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           // Drawer Header (you can customize it based on your design)
-          DrawerHeader(
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
@@ -30,58 +31,58 @@ class CustomUserDrawer extends StatelessWidget {
 
           // "Login as Supplier" button
           ListTile(
-            leading: Icon(Icons.business),
-            title: Text('Login as Supplier'),
+            leading: const Icon(Icons.business),
+            title: const Text('Login as Supplier'),
             onTap: () {
               // Implement navigation to Supplier login screen
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>SupplierRegisterScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>const SupplierRegisterScreen()));
             },
           ),
 
           // List of Drawer Items
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text('Home'),
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
             onTap: () {
               // Implement navigation when the user taps on Home
               Navigator.pushReplacementNamed(context, '/home');
             },
           ),
           ListTile(
-            leading: Icon(CupertinoIcons.heart_fill),
-            title: Text('Favorite'),
+            leading: const Icon(CupertinoIcons.heart_fill),
+            title: const Text('Favorite'),
             onTap: () {
               // Implement navigation when the user taps on Home
               Navigator.pushReplacementNamed(context, '/home');
             },
           ),
           ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text('Profile'),
+            leading: const Icon(Icons.account_circle),
+            title: const Text('Profile'),
             onTap: () {
               // Implement navigation when the user taps on Profile
               Navigator.pushReplacementNamed(context, '/profile');
             },
           ),
           ListTile(
-            leading: Icon(CupertinoIcons.shopping_cart),
-            title: Text('Order History'),
+            leading: const Icon(CupertinoIcons.shopping_cart),
+            title: const Text('Order History'),
             onTap: () {
               // Implement navigation when the user taps on Order History
               Navigator.pushReplacementNamed(context, '/order_history');
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
             onTap: () {
               // Implement navigation when the user taps on Settings
               Navigator.pushReplacementNamed(context, '/settings');
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Log out'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Log out'),
             onTap: () {
               // Implement logout functionality here
               Navigator.pushReplacementNamed(context, '/login');

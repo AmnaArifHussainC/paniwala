@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/splash_screen.dart';
-import 'package:paniwala/view/user_screen/dash_screen.dart';
 
 void main() {
   runApp(const MyApp());

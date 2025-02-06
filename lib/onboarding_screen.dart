@@ -34,14 +34,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _goToNextPage() {
     if (_currentIndex < onboardingData.length - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ChooseAccountScreen(),
+          builder: (context) => const ChooseAccountScreen(),
         ),
       );
     }
@@ -113,7 +113,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: List.generate(
                 onboardingData.length,
                     (index) => AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.01),
                   height: screenHeight * 0.01,
                   width: _currentIndex == index

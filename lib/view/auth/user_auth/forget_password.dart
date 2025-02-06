@@ -72,9 +72,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                       );
                     }
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: const Text("Send Reset Link", style: TextStyle(color: Colors.white),),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text("Send Reset Link", style: TextStyle(color: Colors.white),),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

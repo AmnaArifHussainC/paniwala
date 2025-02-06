@@ -121,7 +121,7 @@ class SupplerLoginScreen extends StatelessWidget {
                     const Text("Don’t have an account?"),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierRegisterScreen()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const SupplierRegisterScreen()));
                       },
                       child: const Text(
                         "Register",

@@ -49,7 +49,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",
                         description: "Register your water company",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SupplierRegisterScreen())),
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SupplierRegisterScreen())),
                       ),
                       const SizedBox(height: 20),
                       AccountCard(

@@ -58,14 +58,14 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Row (Deliver and Suppliers)
-            Padding(
-              padding: const EdgeInsets.all(10.0),
+            const Padding(
+              padding: EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Deliver to\n📍 Lorem-500032",
+                  Text("Deliver to\n📍 Lorem-500032",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  const Text("8 Suppliers Found", style: TextStyle(color: Colors.grey)),
+                  Text("8 Suppliers Found", style: TextStyle(color: Colors.grey)),
                 ],
               ),
             ),
@@ -75,14 +75,14 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   hintText: 'Search...',
                   hintStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
-                  focusedBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
-                  enabledBorder: OutlineInputBorder(borderSide: const BorderSide(width: 1)),
-                  suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward_ios, )),
+                  border: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
+                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
+                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
+                  suffixIcon: IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios, )),
                 ),
               ),
             ),

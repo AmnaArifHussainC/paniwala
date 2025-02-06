@@ -44,11 +44,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey),
+            borderSide: const BorderSide(color: Colors.grey),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.blue, width: 2), // Blue Border When Clicked
+            borderSide: const BorderSide(color: Colors.blue, width: 2), // Blue Border When Clicked
           ),
           suffixIcon: widget.obscureText
               ? IconButton(
