@@ -12,7 +12,12 @@
           "package_name": "com.example.paniwala"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "956743805834-ge9l812dg0cs1o9ef1bfvn2qmt5he5q7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAvIaz8bkjru3Vyrh5yAR5iY__xMq1AL-k"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956743805834-ge9l812dg0cs1o9ef1bfvn2qmt5he5q7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "956743805834-mfnkc9vd9u2mmr76qoebtousp1gikqlf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paniwala"
+              }
+            }
+          ]
         }
       }
     }

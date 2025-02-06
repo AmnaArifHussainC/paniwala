@@ -69,6 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '956743805834',
     projectId: 'paniwala-b8f1a',
     storageBucket: 'paniwala-b8f1a.firebasestorage.app',
+    iosClientId: '956743805834-mfnkc9vd9u2mmr76qoebtousp1gikqlf.apps.googleusercontent.com',
     iosBundleId: 'com.example.paniwala',
   );
+
 }
