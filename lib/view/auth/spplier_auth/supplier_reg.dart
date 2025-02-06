@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/widgets/custome_btn_auth.dart';
+import 'package:paniwala/widgets/custome_text_field.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
@@ -20,122 +22,89 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
+        centerTitle: true,
         title: const Text(
           'Supplier Registration',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
         child: Center(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  "Register your business",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                // Centered Title
+                const Center(
+                  child: Text(
+                    "Register your business",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
 
                 // CNIC Field
-                TextField(
+                CustomTextField(
                   controller: cnicController,
-                  decoration: InputDecoration(
-                    labelText: "CNIC (National Identity)",
-                    prefixIcon: const Icon(Icons.card_membership),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  hintText: "CNIC (National Identity)",
+                  icon: Icons.card_membership,
                 ),
                 const SizedBox(height: 10),
 
                 // Phone Number Field
-                TextField(
+                CustomTextField(
                   controller: phoneController,
-                  decoration: InputDecoration(
-                    labelText: "Phone Number",
-                    prefixIcon: const Icon(Icons.phone),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  hintText: "Phone Number",
+                  icon: Icons.phone,
                 ),
                 const SizedBox(height: 10),
 
                 // Email Field
-                TextField(
+                CustomTextField(
                   controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    prefixIcon: const Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  hintText: "Email",
+                  icon: Icons.email,
                 ),
                 const SizedBox(height: 10),
 
                 // Password Field
-                TextField(
+                CustomTextField(
                   controller: passwordController,
+                  hintText: "Password",
+                  icon: Icons.lock,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    prefixIcon: const Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 10),
 
                 // Water Filter Certificate Field
-                TextField(
+                CustomTextField(
                   controller: filterCertificateController,
-                  decoration: InputDecoration(
-                    labelText: "Water Filter Certificate",
-                    prefixIcon: const Icon(Icons.file_copy),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  hintText: "Water Filter Certificate",
+                  icon: Icons.file_copy,
                 ),
                 const SizedBox(height: 20),
 
                 // Register Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add registration logic here
-                      debugPrint("Registering Supplier");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Register Supplier',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                CustomButton(
+                  text: "Register Supplier",
+                  onPressed: () {
+                    debugPrint("Registering Supplier");
+                  },
+                  color: Colors.blue,
                 ),
                 const SizedBox(height: 20),
 
