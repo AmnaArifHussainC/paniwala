@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/user_auth/forget_password.dart';
 import 'package:paniwala/view/auth/user_auth/register.dart';
+import 'package:paniwala/view/user_screen/dash_screen.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 
+import '../../../services/auth/customer_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -15,18 +17,29 @@ class SignInScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _signIn(BuildContext context) {
+  final AuthService _authService = AuthService();
+  void _signinUser(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Perform sign-in logic here
-      debugPrint("Sign In successful!");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Sign In successful!")),
-      );
-    } else {
-      // If validation fails, show a general error message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please correct the errors in the form.")),
-      );
+      String email = emailController.text.trim();
+      String password = passController.text.trim();
+
+      String? errorMessage = await _authService.signIn(email, password);
+      if (errorMessage == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration successful!")),
+        );
+
+        // Navigate to the HomeScreen and clear previous navigation stack
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()), // Replace with your target screen widget
+              (Route<dynamic> route) => false, // Removes all previous routes
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      }
     }
   }
 
@@ -112,7 +125,7 @@ class SignInScreen extends StatelessWidget {
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      _signIn(context);  // Trigger form validation
+                      _signinUser(context);  // Trigger form validation
                     },
                     color: Colors.blue,
                   ),
