@@ -27,6 +27,7 @@ dependencies:
   google_sign_in: ^6.2.2
   geolocator:
   geocoding:
+  google_maps_flutter:
   cloud_firestore:
   permission_handler:
   lottie:

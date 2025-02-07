@@ -1,32 +1,26 @@
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
-class LocationHelper {
-  static Future<String> fetchLocation() async {
+class DetailedAddressService {
+  Future<String> getDetailedAddress(Position position) async {
     try {
-      // Check if location services are enabled
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        return "Location services are disabled.";
-      }
+      // Reverse geocoding
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
 
-      // Check location permissions
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          return "Location permissions are denied.";
-        }
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        // Construct detailed address
+        return "${place.street}, ${place.subLocality}, ${place.locality}, "
+            "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
+      } else {
+        return "Address not found";
       }
-
-      if (permission == LocationPermission.deniedForever) {
-        return "Location permissions are permanently denied.";
-      }
-
-      // Fetch the current position
-      Position position = await Geolocator.getCurrentPosition();
-      return "Lat: ${position.latitude}, Long: ${position.longitude}";
     } catch (e) {
-      return "Failed to fetch location: $e";
+      print("Error fetching address: $e");
+      return "Unable to fetch address";
     }
   }
 }

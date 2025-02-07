@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:paniwala/view/auth/user_auth/forget_password.dart';
 import 'package:paniwala/view/auth/user_auth/register.dart';
 import 'package:paniwala/view/user_screen/dash_screen.dart';
@@ -9,6 +10,8 @@ import '../../../services/auth/customer_auth.dart';
 import '../../../services/firestore/user_db.dart';
 import '../../../services/location/location_permission.dart';
 import '../../../utils/auth_validation/validations.dart';
+import '../../../utils/fetchLocation/fetch_location.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -43,26 +46,29 @@ class _SignInScreenState extends State<SignInScreen> {
         if (errorMessage == null) {
           final userId = _authService.getCurrentUser()?.uid;
           if (userId != null) {
-            // Request and save location
-            LocationService locationService = LocationService();
-            String locationName = await locationService.requestAndSaveLocation(userId);
+            // Fetch user's location
+            PermissionAndPositionService positionService = PermissionAndPositionService();
+            DetailedAddressService addressService = DetailedAddressService();
 
-            // Create or update Firestore document
+            Position position = await positionService.fetchUserPosition();
+            String detailedAddress = await addressService.getDetailedAddress(position);
+
+            // Save location to Firestore
             DatabaseService dbService = DatabaseService();
-            await dbService.createOrUpdateUserDocument(userId, email, locationName);
+            await dbService.createOrUpdateUserDocument(userId, email, detailedAddress);
 
-            // Display location name
+            // Display the location
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Your location: $locationName")),
+              SnackBar(content: Text("Your location: $detailedAddress")),
+            );
+
+            // Navigate to HomeScreen
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+                  (route) => false,
             );
           }
-
-          // Navigate to HomeScreen
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-                (route) => false,
-          );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMessage)),

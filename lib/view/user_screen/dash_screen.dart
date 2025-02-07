@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:paniwala/view/user_screen/user_drawer.dart';
 
+import '../../services/location/location_permission.dart';
 import '../../utils/fetchLocation/fetch_location.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,6 +12,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? location;
+  final PermissionAndPositionService _positionService = PermissionAndPositionService();
+  final DetailedAddressService _addressService = DetailedAddressService();
 
   final List<Map<String, dynamic>> suppliers = [
     {
@@ -44,20 +48,27 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadLocation(); // Fetch location on initialization
+    fetchLocation();
   }
 
-  Future<void> loadLocation() async {
-    String result = await LocationHelper.fetchLocation();
-    setState(() {
-      location = result;
-    });
+  Future<void> fetchLocation() async {
+    try {
+      Position position = await _positionService.fetchUserPosition();
+      String detailedAddress = await _addressService.getDetailedAddress(position);
+      setState(() {
+        location = detailedAddress;
+      });
+    } catch (e) {
+      setState(() {
+        location = "Unable to fetch location";
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 600; // Define small screen width threshold
+    final isSmallScreen = screenWidth < 600;
 
     return Scaffold(
       appBar: AppBar(
@@ -79,7 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Row (Deliver and Suppliers)
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Row(
@@ -87,22 +97,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Flexible(
                     child: Text(
-                      location == null ? "Fetching location..." : "Deliver to\n📍 $location",
+                      location == null
+                          ? "Fetching location..."
+                          : "Deliver to\n📍 $location",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                      softWrap: true, // Enables text wrapping
-                      overflow: TextOverflow.ellipsis, // Prevents overflow if wrapping isn't enough
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const Text(
-                    "8 Suppliers Found",
-                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),
-
             ),
-
-            // Search Bar
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
@@ -121,8 +126,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-
-            // Suppliers List
             Expanded(
               child: ListView.builder(
                 itemCount: suppliers.length,
