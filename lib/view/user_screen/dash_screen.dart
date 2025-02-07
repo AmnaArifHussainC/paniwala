@@ -95,18 +95,18 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(
+                  Expanded(
                     child: Text(
                       location == null
                           ? "Fetching location..."
                           : "Deliver to\n📍 $location",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                       softWrap: true,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
-              ),
+              )
+
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
