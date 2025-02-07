@@ -25,6 +25,9 @@ dependencies:
   file_picker: ^8.3.1
   open_file: ^3.5.10
   google_sign_in: ^6.2.2
+  geolocator:
+  cloud_firestore:
+  permission_handler:
   lottie:
 
 
