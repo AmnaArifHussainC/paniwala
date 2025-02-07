@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
 
 class SupplierDashboardScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey, // Assign the key to the Scaffold
+      drawer: CustomDrawer(),  // Add the custom drawer here
+
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
+        elevation: 0,
         title: const Text(
           'Supplier Dashboard',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.menu,
+            color: Colors.white, // Set the hamburger icon to white
+          ),
+          onPressed: () {
+            _scaffoldKey.currentState?.openDrawer();  // Use the GlobalKey to open the drawer
+          },
         ),
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.bell, color: Colors.white),
             onPressed: () {
-              // Handle notification tap
+              // Handle notifications
             },
           ),
         ],
@@ -129,21 +145,6 @@ class SupplierDashboardScreen extends StatelessWidget {
             const SizedBox(height: 80), // FIX: Extra spacing to avoid overflow
           ],
         ),
-      ),
-
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 0,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: "Orders"),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: "Products"),
-          BottomNavigationBarItem(icon: Icon(Icons.monetization_on), label: "Earnings"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
       ),
 
       // Floating Action Button
