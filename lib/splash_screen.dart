@@ -1,22 +1,56 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paniwala/onboarding_screen.dart';
+import 'package:paniwala/view/auth/user_auth/signin.dart';
+import 'choose_account_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    _navigateAfterSplash();
+  }
+
+  Future<void> _navigateAfterSplash() async {
+    // Delay for splash screen display
+    await Future.delayed(const Duration(seconds: 3));
+
+    // Check if the app is being opened for the first time
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true; // Default to true
+
+    if (isFirstTime) {
+      // Mark as not first time and navigate to OnboardingScreen
+      await prefs.setBool('isFirstTime', false);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
-    });
+    } else {
+      // Check if the user is logged in
+      final User? currentUser = FirebaseAuth.instance.currentUser;
+
+      if (currentUser != null) {
+        // Navigate to ChooseAccountScreen if logged in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
+        );
+      } else {
+        // Navigate to SignInScreen if not logged in
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignInScreen()),
+        );
+      }
+    }
   }
 
   @override
@@ -26,22 +60,16 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // App Logo
             Image.asset('assets/images/icon.png', width: 200),
-
             const SizedBox(height: 20),
-
-            // App Name
             const Text(
-              "Paniwala", // Replace with your app's name
+              "Paniwala",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue, // You can change the color
+                color: Colors.blue,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

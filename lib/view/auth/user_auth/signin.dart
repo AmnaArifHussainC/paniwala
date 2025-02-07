@@ -23,21 +23,30 @@ class SignInScreen extends StatelessWidget {
       String email = emailController.text.trim();
       String password = passController.text.trim();
 
-      String? errorMessage = await _authService.signIn(email, password);
-      if (errorMessage == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Registration successful!")),
-        );
+      try {
+        // Sign in the user
+        String? errorMessage = await _authService.signIn(email, password);
+        if (errorMessage == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Sign-In successful!")),
+          );
 
-        // Navigate to the HomeScreen and clear previous navigation stack
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()), // Replace with your target screen widget
-              (Route<dynamic> route) => false, // Removes all previous routes
-        );
-      } else {
+          // Navigate to the home screen and clear the navigation stack
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+                (route) => false, // Removes all previous routes
+          );
+        } else {
+          // Show error message if sign-in fails
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMessage)),
+          );
+        }
+      } catch (e) {
+        // Catch and display unexpected errors
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
+          SnackBar(content: Text("An unexpected error occurred: $e")),
         );
       }
     }

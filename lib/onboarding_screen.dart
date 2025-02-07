@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'choose_account_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -31,6 +32,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     },
   ];
 
+  Future<void> _completeOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenOnboarding', true);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ChooseAccountScreen(),
+      ),
+    );
+  }
+
   void _goToNextPage() {
     if (_currentIndex < onboardingData.length - 1) {
       _pageController.nextPage(
@@ -38,12 +50,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const ChooseAccountScreen(),
-        ),
-      );
+      _completeOnboarding();
     }
   }
 
@@ -73,7 +80,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         vertical: screenHeight * 0.02),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Flexible(
                           flex: 4,
