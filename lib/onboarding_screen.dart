@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'choose_account_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
+
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }

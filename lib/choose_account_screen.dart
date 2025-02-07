@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/choose_supplier_type_screen.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
-import 'package:paniwala/widgets/choose_screen_cards.dart';  // Import the custom widget
+import 'package:paniwala/widgets/choose_screen_cards.dart';
 
 class ChooseAccountScreen extends StatelessWidget {
   const ChooseAccountScreen({super.key});
