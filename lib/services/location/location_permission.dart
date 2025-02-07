@@ -1,42 +1,40 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geocoding/geocoding.dart';
 
 class LocationService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Request and Save Location
-  Future<void> requestAndSaveLocation(String userId) async {
+  Future<String> requestAndSaveLocation(String userId) async {
     try {
-      // Check and request permissions
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          throw Exception("Location permissions are denied.");
-        }
+      // Request permission
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        throw Exception("Location permission denied");
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        throw Exception(
-          "Location permissions are permanently denied. Cannot request location.",
-        );
-      }
-
-      // Get the current location
+      // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
 
-      // Save the location to Firestore
-      await _firestore.collection('users').doc(userId).update({
-        'location': {
-          'latitude': position.latitude,
-          'longitude': position.longitude,
-          'timestamp': FieldValue.serverTimestamp(),
-        },
-      });
+      // Reverse geocoding to get address
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      // Extract location details
+      Placemark place = placemarks[0];
+      String locationName =
+          "${place.locality}, ${place.subAdministrativeArea}, ${place.country}";
+
+      // Save location to Firestore or log
+      print("Location Name: $locationName");
+      // Add your Firestore save logic here, if needed
+
+      return locationName; // Return the readable location name
     } catch (e) {
-      throw Exception("Failed to fetch or save location: $e");
+      print("Error retrieving location: $e");
+      rethrow;
     }
   }
 }

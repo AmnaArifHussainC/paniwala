@@ -43,13 +43,18 @@ class _SignInScreenState extends State<SignInScreen> {
         if (errorMessage == null) {
           final userId = _authService.getCurrentUser()?.uid;
           if (userId != null) {
-            // Create or update Firestore document
-            DatabaseService dbService = DatabaseService();
-            await dbService.createOrUpdateUserDocument(userId, email);
-
             // Request and save location
             LocationService locationService = LocationService();
-            await locationService.requestAndSaveLocation(userId);
+            String locationName = await locationService.requestAndSaveLocation(userId);
+
+            // Create or update Firestore document
+            DatabaseService dbService = DatabaseService();
+            await dbService.createOrUpdateUserDocument(userId, email, locationName);
+
+            // Display location name
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Your location: $locationName")),
+            );
           }
 
           // Navigate to HomeScreen
@@ -59,13 +64,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 (route) => false,
           );
         } else {
-          // Show error message if sign-in fails
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMessage)),
           );
         }
       } catch (e) {
-        // Handle unexpected errors
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("An unexpected error occurred: $e")),
         );

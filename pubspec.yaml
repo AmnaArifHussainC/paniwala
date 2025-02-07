@@ -26,6 +26,7 @@ dependencies:
   open_file: ^3.5.10
   google_sign_in: ^6.2.2
   geolocator:
+  geocoding:
   cloud_firestore:
   permission_handler:
   lottie:

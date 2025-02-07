@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/user_screen/user_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
+import '../../utils/fetchLocation/fetch_location.dart';
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? location;
+
   final List<Map<String, dynamic>> suppliers = [
     {
       'name': 'Eleanor',
@@ -33,6 +42,19 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    loadLocation(); // Fetch location on initialization
+  }
+
+  Future<void> loadLocation() async {
+    String result = await LocationHelper.fetchLocation();
+    setState(() {
+      location = result;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600; // Define small screen width threshold
@@ -58,16 +80,26 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header Row (Deliver and Suppliers)
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Deliver to\n📍 Lorem-500032",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  Text("8 Suppliers Found", style: TextStyle(color: Colors.grey)),
+                  Flexible(
+                    child: Text(
+                      location == null ? "Fetching location..." : "Deliver to\n📍 $location",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                      softWrap: true, // Enables text wrapping
+                      overflow: TextOverflow.ellipsis, // Prevents overflow if wrapping isn't enough
+                    ),
+                  ),
+                  const Text(
+                    "8 Suppliers Found",
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
+
             ),
 
             // Search Bar
@@ -82,7 +114,10 @@ class HomeScreen extends StatelessWidget {
                   border: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                   focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                   enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                  suffixIcon: IconButton(onPressed: (){}, icon: const Icon(Icons.arrow_forward_ios, )),
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.arrow_forward_ios),
+                  ),
                 ),
               ),
             ),

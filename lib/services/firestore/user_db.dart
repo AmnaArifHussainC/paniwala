@@ -4,7 +4,7 @@ class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Create or Update User Document
-  Future<void> createOrUpdateUserDocument(String userId, String email) async {
+  Future<void> createOrUpdateUserDocument(String userId, String email, String locationName) async {
     try {
       final userDocRef = _firestore.collection('users').doc(userId);
 
@@ -13,13 +13,15 @@ class DatabaseService {
         // Document doesn't exist; create a new one
         await userDocRef.set({
           'email': email,
+          'location': locationName, // Save the location name here
           'createdAt': FieldValue.serverTimestamp(),
           'lastLogin': FieldValue.serverTimestamp(),
         });
       } else {
-        // Update the last login timestamp if the document exists
+        // Update the document if it exists
         await userDocRef.update({
           'lastLogin': FieldValue.serverTimestamp(),
+          'location': locationName, // Update the location name
         });
       }
     } catch (e) {
