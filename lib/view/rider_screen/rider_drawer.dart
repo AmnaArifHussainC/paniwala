@@ -10,11 +10,18 @@ class CustomDrawer extends StatelessWidget {
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue, // Header color
+              color: Colors.blue,
             ),
-            child: Text(
-              'Rider Menu',
-              style: TextStyle(color: Colors.white, fontSize: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.account_circle, size: 80, color: Colors.white),
+                SizedBox(height: 10),
+                Text(
+                  "Rider Name",  // Replace with actual user name or dynamic data
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ],
             ),
           ),
           ListTile(
