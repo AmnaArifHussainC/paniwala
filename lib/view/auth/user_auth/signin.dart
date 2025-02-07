@@ -153,7 +153,7 @@ class SignInScreen extends StatelessWidget {
                       }
                     },
                     icon: Image.asset("assets/images/google.png", height: 24),
-                    label: const Text("SignIn with Google"),
+                    label: const Text("Signin with Google"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
