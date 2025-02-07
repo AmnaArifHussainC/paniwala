@@ -121,23 +121,7 @@ class SupplerLoginScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
 
-                  // Google Sign In Button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      debugPrint("Google Sign In Pressed");
-                    },
-                    icon: Image.asset("assets/images/google.png", height: 24),
-                    label: const Text("Sign in with Google"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      side: const BorderSide(color: Colors.grey),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+
 
                   // Register Option
                   Row(
