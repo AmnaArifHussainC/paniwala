@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "956743805834-ge9l812dg0cs1o9ef1bfvn2qmt5he5q7.apps.googleusercontent.com",
+          "client_id": "956743805834-d4v35o1lf2l2954tq4apnjtvqtlpinoe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.paniwala",
+            "certificate_hash": "0f9d31329cd6b0f6c548aa6c7cedccab39be6356"
+          }
+        },
+        {
+          "client_id": "956743805834-p7sqe1fcsb9udim3ah4uoum0uo6maqts.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
