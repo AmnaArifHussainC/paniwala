@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:paniwala/onboarding_screen.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
-import 'choose_account_screen.dart';
+import 'package:paniwala/view/user_screen/dash_screen.dart'; // Import HomeScreen
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -38,10 +38,10 @@ class _SplashScreenState extends State<SplashScreen> {
       final User? currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser != null) {
-        // Navigate to ChooseAccountScreen if logged in
+        // Navigate to HomeScreen if user is logged in
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       } else {
         // Navigate to SignInScreen if not logged in
