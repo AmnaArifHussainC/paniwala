@@ -32,4 +32,8 @@ class AuthService {
   User? getCurrentUser() {
     return _auth.currentUser;
   }
+
+  googlrLogin() async{
+
+  }
 }
