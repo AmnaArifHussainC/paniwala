@@ -27,7 +27,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   Future<void> pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf'], // Allow only PDFs
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null && result.files.isNotEmpty) {
