@@ -138,11 +138,27 @@ class RegisterScreen extends StatelessWidget {
 
                   // Google Sign In Button
                   ElevatedButton.icon(
-                    onPressed: () {
-                      debugPrint("Google Sign In Pressed");
+                    onPressed: () async {
+                      String? errorMessage = await _authService.googleLogin();
+                      if (errorMessage == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Google Sign-In successful!")),
+                        );
+
+                        // Navigate to the HomeScreen and clear previous navigation stack
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()), // Replace with your target screen widget
+                              (Route<dynamic> route) => false,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(errorMessage)),
+                        );
+                      }
                     },
                     icon: Image.asset("assets/images/google.png", height: 24),
-                    label: const Text("Sign up with Google"),
+                    label: const Text("Continue with Google"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
