@@ -9,9 +9,9 @@ class AuthService {
   Future<String?> signUp(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      return null;  // Return null if successful
+      return null; // Return null if successful
     } catch (e) {
-      return e.toString();  // Return error if any
+      return e.toString(); // Return error if any
     }
   }
 
@@ -19,15 +19,20 @@ class AuthService {
   Future<String?> signIn(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return null;  // Return null if successful
+      return null; // Return null if successful
     } catch (e) {
-      return e.toString();  // Return error if any
+      return e.toString(); // Return error if any
     }
   }
 
   // Sign out
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut(); // Sign out from Firebase
+      await _googleSignIn.signOut(); // Sign out from GoogleSignIn
+    } catch (e) {
+      print("Error during sign-out: $e");
+    }
   }
 
   // Get current user
@@ -42,7 +47,7 @@ class AuthService {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return "User canceled the sign-in";  // Return if user cancels the sign-in
+        return "User canceled the sign-in"; // Return if user cancels the sign-in
       }
 
       // Obtain the auth details from the request
@@ -56,9 +61,19 @@ class AuthService {
 
       // Sign in to Firebase with the Google credentials
       await _auth.signInWithCredential(credential);
-      return null;  // Return null if successful
+      return null; // Return null if successful
     } catch (e) {
-      return e.toString();  // Return error if any
+      return e.toString(); // Return error if any
+    }
+  }
+
+  // Sign out and disconnect Google account
+  Future<void> disconnectGoogleAccount() async {
+    try {
+      await _auth.signOut(); // Sign out from Firebase
+      await _googleSignIn.disconnect(); // Completely disconnect Google account
+    } catch (e) {
+      print("Error during Google account disconnect: $e");
     }
   }
 }

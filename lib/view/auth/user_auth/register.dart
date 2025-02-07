@@ -10,7 +10,7 @@ import '../../../utils/auth_validation/validations.dart';
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
 
-  // controllers
+  // Controllers
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -45,7 +45,6 @@ class RegisterScreen extends StatelessWidget {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "956743805834-m92ohgoqfkaemgnuuldmtm91csq515v1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.paniwala",
+            "certificate_hash": "0d19e1dd6c864b091da697d507ff580ff8cb7eec"
+          }
+        },
+        {
           "client_id": "956743805834-p7sqe1fcsb9udim3ah4uoum0uo6maqts.apps.googleusercontent.com",
           "client_type": 3
         }
