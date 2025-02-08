@@ -46,6 +46,7 @@ class _SignInScreenState extends State<SignInScreen> {
         if (errorMessage == null) {
           final userId = _authService.getCurrentUser()?.uid;
           if (userId != null) {
+
             // Fetch user's location
             PermissionAndPositionService positionService = PermissionAndPositionService();
             DetailedAddressService addressService = DetailedAddressService();
