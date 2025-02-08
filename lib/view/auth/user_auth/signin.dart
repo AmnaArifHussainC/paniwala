@@ -54,7 +54,7 @@ class _SignInScreenState extends State<SignInScreen> {
             Position position = await positionService.fetchUserPosition();
             String detailedAddress = await addressService.getDetailedAddress(position);
 
-            // Save location to Firestore
+            // Save the location to Firestore
             DatabaseService dbService = DatabaseService();
             await dbService.createOrUpdateUserDocument(userId, email, detailedAddress);
 
