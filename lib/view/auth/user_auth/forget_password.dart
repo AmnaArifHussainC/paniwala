@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/auth_validation/validations.dart';
@@ -10,6 +11,10 @@ class ForgotPasswordScreen extends StatelessWidget {
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  forgotPassword()async{
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text.trim());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +74,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                         // Proceed with sending the reset link
                         String email = emailController.text.trim();
                         debugPrint("Password reset request for: $email");
+                        forgotPassword;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Password reset link sent")),
+                          const SnackBar(content: Text("Password reset link has sent to your Email\n Kindly visit you Email Account")),
                         );
                       } else {
                         // If validation fails, show an error message
