@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../services/firestore/supplier_product.dart';
+
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({Key? key}) : super(key: key);
 
@@ -33,7 +35,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
-  void _submitProduct() {
+  final DatabaseService _databaseService = DatabaseService();
+
+  void _submitProduct() async {
     if (_formKey.currentState!.validate()) {
       if (_sizes.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -43,21 +47,42 @@ class _AddProductScreenState extends State<AddProductScreen> {
       }
 
       // Collect product details
-      final productName = _productNameController.text;
-      final description = _descriptionController.text;
-      final price = _priceController.text;
+      final productName = _productNameController.text.trim();
+      final description = _descriptionController.text.trim();
+      final price = double.parse(_priceController.text.trim());
+      final sizes = _sizes;
+      final images = _uploadedImages; // Adjust this as needed for image URLs
 
-      debugPrint('Product Added: $productName, $description, $price, Sizes: $_sizes');
+      try {
+        await _databaseService.addProduct(
+          productName: productName,
+          description: description,
+          price: price,
+          sizes: sizes,
+          // images: images,
+        );
 
-      // Clear the form
-      _formKey.currentState?.reset();
-      _uploadedImages.clear();
-      _sizes.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Product added successfully!")),
+        );
 
-      Navigator.pop(context);
+        // Clear the form after adding product
+        _formKey.currentState?.reset();
+        setState(() {
+          _uploadedImages.clear();
+          _sizes.clear();
+        });
+
+        // Navigate back or refresh
+        Navigator.pop(context);
+      } catch (e) {
+        debugPrint("Error: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to add product. Try again.")),
+        );
+      }
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
