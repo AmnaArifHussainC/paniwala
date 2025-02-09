@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/rider_auth/rider_reg.dart';
 
+import 'drawer/product.dart';
+
 class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white, // Set the background color to white
+      backgroundColor: Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -29,7 +31,6 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.person),
             title: const Text('Profile'),
             onTap: () {
-              // Navigate to Profile screen
               Navigator.pushNamed(context, '/profile');
             },
           ),
@@ -37,7 +38,6 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.attach_money),
             title: const Text('Earnings'),
             onTap: () {
-              // Navigate to Earnings screen
               Navigator.pushNamed(context, '/earnings');
             },
           ),
@@ -45,7 +45,6 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.shopping_cart),
             title: const Text('Orders'),
             onTap: () {
-              // Navigate to Orders screen
               Navigator.pushNamed(context, '/orders');
             },
           ),
@@ -53,16 +52,20 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.category),
             title: const Text('Products'),
             onTap: () {
-              // Navigate to Products screen
-              Navigator.pushNamed(context, '/products');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProductListScreen()),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.person_add),
             title: const Text('Register a Rider'),
             onTap: () {
-              // Navigate to Rider Registration screen
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> RiderRegisterScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RiderRegisterScreen()),
+              );
             },
           ),
           ListTile(

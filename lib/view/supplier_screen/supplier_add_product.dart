@@ -208,7 +208,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         child: TextFormField(
                           controller: _sizeController,
                           decoration: const InputDecoration(
-                            hintText: "Enter size (e.g., 20ml)",
+                            hintText: "Enter size in liters(e.g., 20ml)",
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.blue, width: 2),
                             ),
