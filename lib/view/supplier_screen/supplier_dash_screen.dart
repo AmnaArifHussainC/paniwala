@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:paniwala/view/supplier_screen/supplier_add_product.dart';
 import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
 
 import '../../widgets/supplier_dashboard_card.dart';
@@ -154,7 +155,12 @@ class SupplierDashboardScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddProductScreen(),
+            ),
+          );
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
