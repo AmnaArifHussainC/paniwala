@@ -88,7 +88,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue[800],
+                        color: Colors.blue,
                       ),
                     ),
                   ),
@@ -228,7 +228,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                       child: const Text(
                         "Add Product",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 17),
                       ),
                     ),
                   ),
