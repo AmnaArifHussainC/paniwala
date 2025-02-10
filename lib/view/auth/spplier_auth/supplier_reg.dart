@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
@@ -52,6 +55,26 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
       }
     }
   }
+
+  Future<String?> uploadFileToFirebase(String filePath, String fileName) async {
+    try {
+      File file = File(filePath);
+      Reference storageRef = FirebaseStorage.instance.ref().child('uploads/certificates/$fileName');
+      TaskSnapshot snapshot = await storageRef.putFile(file);
+      String downloadURL = await snapshot.ref.getDownloadURL();
+      return downloadURL;
+    } catch (e) {
+      // Show error message if upload fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error uploading file: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return null;
+    }
+  }
+
 
   // Function to open the selected file
   void openSelectedFile() {
@@ -184,13 +207,26 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                           ),
                         );
 
+                        String? uploadedFileURL;
+                        if (selectedFilePath != null) {
+                          uploadedFileURL = await uploadFileToFirebase(
+                            selectedFilePath!,
+                            filterCertificateController.text.trim(),
+                          );
+
+                          if (uploadedFileURL == null) {
+                            Navigator.of(context).pop(); // Close the loading indicator
+                            return; // Exit if the upload fails
+                          }
+                        }
+
                         // Call the registration function
                         String? result = await authService.registerSupplier(
                           email: emailController.text.trim(),
                           password: passwordController.text.trim(),
                           cnic: cnicController.text.trim(),
                           phone: phoneController.text.trim(),
-                          filterCertificatePath: selectedFilePath, // Pass file path
+                          filterCertificatePath: uploadedFileURL, // Use the file URL from Firebase
                         );
 
                         // Close the loading indicator
@@ -208,8 +244,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                           // Navigate to the next screen
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => SupplerLoginScreen()),
+                            MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
                           );
                         } else {
                           // Show error snackbar
