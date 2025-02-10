@@ -74,7 +74,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                         // Proceed with sending the reset link
                         String email = emailController.text.trim();
                         debugPrint("Password reset request for: $email");
-                        forgotPassword;
+                        forgotPassword();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Password reset link has sent to your Email\n Kindly visit you Email Account")),
                         );
