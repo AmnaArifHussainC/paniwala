@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
-
+import '../../../services/auth/rider_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
 
 class RiderSignInScreen extends StatelessWidget {
@@ -13,12 +13,26 @@ class RiderSignInScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _riderLogin(BuildContext context){
+  void _riderLogin(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Proceed with the sign-in process
-      debugPrint("Rider Sign In Pressed");
+      RiderAuthService authService = RiderAuthService();
+
+      String? result = await authService.signInRider(
+        email: emailController.text.trim(),
+        password: passController.text.trim(),
+      );
+
+      if (result == "Rider signed in successfully") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login successful!")),
+        );
+        Navigator.pushReplacementNamed(context, '/riderDashboard'); // Navigate to the Rider Dashboard
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result ?? "An error occurred")),
+        );
+      }
     } else {
-      // If validation fails, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in valid credentials")),
       );

@@ -75,4 +75,24 @@ class ValidationUtils {
     }
     return null;
   }
+
+  // Validate Delivery Area
+  static String? validateDeliveryArea(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Delivery area is required';
+    }
+    return null;
+  }
+
+  // Validate Commission
+  static String? validateCommission(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Commission is required';
+    }
+    final commissionRegex = RegExp(r'^\d+(\.\d{1,2})?$'); // Validates positive numbers with up to 2 decimal places
+    if (!commissionRegex.hasMatch(value.trim())) {
+      return 'Enter a valid commission (e.g., 10 or 12.5)';
+    }
+    return null;
+  }
 }

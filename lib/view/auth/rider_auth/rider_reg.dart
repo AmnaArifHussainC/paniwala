@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
+import '../../../services/auth/rider_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
 
 class RiderRegisterScreen extends StatefulWidget {
@@ -17,16 +18,33 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
   final TextEditingController commissionController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
-
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _registerRider(BuildContext context) {
+  void _registerRider(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Proceed with the registration process
-      debugPrint("Rider Registered");
+      RiderAuthService authService = RiderAuthService();
+
+      String? result = await authService.registerRider(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        phone: phoneController.text.trim(),
+        deliveryArea: deliveryAreaController.text.trim(),
+        commission: commissionController.text.trim(),
+      );
+
+      if (result == "Rider registered successfully") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Rider registered successfully!")),
+        );
+        Navigator.pop(context); // Navigate back or to another screen
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result ?? "An error occurred")),
+        );
+      }
     } else {
-      // If validation fails, show an error message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in valid details")),
       );
@@ -36,8 +54,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHight = MediaQuery.of(context).size.height;
-
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,7 +73,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHight*0.04),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08, vertical: screenHeight * 0.04),
         child: SingleChildScrollView(
           child: Form(
             key: _formKey,
@@ -77,7 +94,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Rider Name
                 CustomTextField(
-                  validator: (value) => ValidationUtils.validateEmail(value),
+                  validator: (value) => ValidationUtils.validateFullName(value),
                   controller: nameController,
                   hintText: "Rider Name",
                   icon: Icons.person,
@@ -95,11 +112,10 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Phone Number
                 CustomTextField(
-                  validator: (value) => ValidationUtils.validateEmail(value),
+                  validator: (value) => ValidationUtils.validatePhoneNumber(value),
                   controller: phoneController,
                   hintText: "Phone Number",
                   icon: Icons.phone,
-                  // keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 10),
 
@@ -115,12 +131,10 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Confirm Password
                 CustomTextField(
-                  validator: (value) {
-                    if (value != passwordController.text) {
-                      return "Passwords do not match";
-                    }
-                    return null;
-                  },
+                  validator: (value) => ValidationUtils.validateConfirmPassword(
+                    passwordController.text,
+                    value,
+                  ),
                   controller: confirmPasswordController,
                   hintText: "Confirm Password",
                   icon: Icons.lock,
@@ -130,7 +144,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Maximum Delivery Area
                 CustomTextField(
-                  validator: (value) => value == null || value.isEmpty ? "Enter Delivery Area" : null,
+                  validator: (value) => ValidationUtils.validateDeliveryArea(value),
                   controller: deliveryAreaController,
                   hintText: "Maximum Delivery Area (e.g., 10 KM)",
                   icon: Icons.location_on,
@@ -139,15 +153,11 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Commission Percentage
                 CustomTextField(
-                  validator: (value) => value == null || value.isEmpty ? "Enter Commission" : null,
+                  validator: (value) => ValidationUtils.validateCommission(value),
                   controller: commissionController,
                   hintText: "Commission (%)",
                   icon: Icons.monetization_on,
-                  // keyboardType: TextInputType.number,
                 ),
-                const SizedBox(height: 10),
-
-
                 const SizedBox(height: 20),
 
                 // Register Button

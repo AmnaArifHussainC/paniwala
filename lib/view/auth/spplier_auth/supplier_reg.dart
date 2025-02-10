@@ -56,15 +56,28 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
     }
   }
 
+  // Function to upload a file to Firebase
   Future<String?> uploadFileToFirebase(String filePath, String fileName) async {
     try {
+      print("Starting upload for file: $filePath"); // Log file path
       File file = File(filePath);
-      Reference storageRef = FirebaseStorage.instance.ref().child('uploads/certificates/$fileName');
+
+      Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('uploads/certificates/$fileName');
+
       TaskSnapshot snapshot = await storageRef.putFile(file);
-      String downloadURL = await snapshot.ref.getDownloadURL();
-      return downloadURL;
+
+      if (snapshot.state == TaskState.success) {
+        String downloadURL = await snapshot.ref.getDownloadURL();
+        print("File uploaded successfully. Download URL: $downloadURL");
+        return downloadURL;
+      } else {
+        print("File upload failed: ${snapshot.state}");
+        return null;
+      }
     } catch (e) {
-      // Show error message if upload fails
+      print("Error during file upload: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Error uploading file: $e"),
@@ -74,7 +87,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
       return null;
     }
   }
-
 
   // Function to open the selected file
   void openSelectedFile() {
@@ -157,7 +169,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Water Filter Certificate Field
                   CustomTextField(
                     controller: filterCertificateController,
                     hintText: "Water Filter Certificate (PDF)",
@@ -168,7 +179,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
 
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: Colors.blue,
                         width: 2,
                       ),
@@ -198,7 +209,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                       if (_formKey.currentState!.validate()) {
                         final authService = SupplierAuthService();
 
-                        // Display loading indicator while processing
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -215,25 +225,22 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                           );
 
                           if (uploadedFileURL == null) {
-                            Navigator.of(context).pop(); // Close the loading indicator
-                            return; // Exit if the upload fails
+                            Navigator.of(context).pop();
+                            return;
                           }
                         }
 
-                        // Call the registration function
                         String? result = await authService.registerSupplier(
                           email: emailController.text.trim(),
                           password: passwordController.text.trim(),
                           cnic: cnicController.text.trim(),
                           phone: phoneController.text.trim(),
-                          filterCertificatePath: uploadedFileURL, // Use the file URL from Firebase
+                          filterCertificatePath: uploadedFileURL,
                         );
 
-                        // Close the loading indicator
                         Navigator.of(context).pop();
 
                         if (result == null) {
-                          // Show success snackbar
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Supplier registered successfully!"),
@@ -241,13 +248,11 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                             ),
                           );
 
-                          // Navigate to the next screen
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
                           );
                         } else {
-                          // Show error snackbar
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(result),
@@ -269,8 +274,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => SupplierDashboardScreen()),
+                            MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
                           );
                         },
                         child: const Text(
