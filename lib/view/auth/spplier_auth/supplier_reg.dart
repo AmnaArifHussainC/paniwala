@@ -31,12 +31,26 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
     );
 
     if (result != null && result.files.isNotEmpty) {
-      setState(() {
-        selectedFilePath = result.files.first.path;
-        filterCertificateController.text = result.files.first.name; // Show file name in text field
-      });
+      String filePath = result.files.first.path!;
+      String fileExtension = filePath.split('.').last.toLowerCase();
+
+      if (fileExtension == 'pdf') {
+        setState(() {
+          selectedFilePath = filePath;
+          filterCertificateController.text = result.files.first.name; // Show file name in text field
+        });
+      } else {
+        // Show error if a non-PDF file is selected
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please select a valid PDF file"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
+
 
   // Function to open the selected file
   void openSelectedFile() {
