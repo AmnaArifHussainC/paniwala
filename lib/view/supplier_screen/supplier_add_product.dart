@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../services/firestore/supplier_product.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String supplierId;
 
-  const AddProductScreen({Key? key, required this.supplierId}) : super(key: key);
+  const AddProductScreen({Key? key, required this.supplierId})
+      : super(key: key);
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -108,8 +108,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: const Text("Add Product", style: TextStyle(color: Colors.white),),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Add Product", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -122,20 +122,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
               TextFormField(
                 controller: _productNameController,
                 decoration: InputDecoration(
-                  labelText: "Product Name",
-                  labelStyle: const TextStyle(color: Colors.blue),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.blue),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                    labelText: "Product Name",
+                    labelStyle: const TextStyle(color: Colors.blue),
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.blue),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2))),
                 validator: (value) =>
-                value == null || value.isEmpty ? "Enter a name" : null,
+                    value == null || value.isEmpty ? "Enter a name" : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2)
+                  ),
                   labelText: "Description",
                   labelStyle: const TextStyle(color: Colors.blue),
                   border: OutlineInputBorder(
@@ -144,8 +148,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
                 maxLines: 3,
-                validator: (value) =>
-                value == null || value.isEmpty ? "Enter a description" : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? "Enter a description"
+                    : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -157,12 +162,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     borderSide: const BorderSide(color: Colors.blue),
                     borderRadius: BorderRadius.circular(8),
                   ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2)
+                  ),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) =>
-                value == null || double.tryParse(value) == null
-                    ? "Enter a valid price"
-                    : null,
+                    value == null || double.tryParse(value) == null
+                        ? "Enter a valid price"
+                        : null,
               ),
               const SizedBox(height: 16),
               Row(
@@ -171,6 +179,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     child: TextFormField(
                       controller: _sizeController,
                       decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blue, width: 2)
+                        ),
                         labelText: "Size",
                         labelStyle: const TextStyle(color: Colors.blue),
                         border: OutlineInputBorder(
@@ -186,7 +197,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                     ),
-                    child: const Text("Add", style: TextStyle(color: Colors.white),),
+                    child: const Text("Add",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -196,11 +208,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 children: _sizes
                     .map(
                       (size) => Chip(
-                    label: Text(size),
-                    onDeleted: () => _removeSize(_sizes.indexOf(size)),
-                    backgroundColor: Colors.blue.shade100,
-                  ),
-                )
+                        label: Text(size),
+                        onDeleted: () => _removeSize(_sizes.indexOf(size)),
+                        backgroundColor: Colors.blue.shade100,
+                      ),
+                    )
                     .toList(),
               ),
               const SizedBox(height: 16),
@@ -209,7 +221,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
-                child: const Text("Upload Images", style: TextStyle(color: Colors.white),),
+                child: const Text("Upload Images",
+                    style: TextStyle(color: Colors.white)),
               ),
               const SizedBox(height: 16),
               Wrap(
@@ -217,12 +230,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 children: _uploadedImages
                     .map(
                       (image) => Image.file(
-                    image,
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
-                )
+                        image,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    )
                     .toList(),
               ),
               const SizedBox(height: 16),
@@ -231,7 +244,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
-                child: const Text("Submit", style: TextStyle(color: Colors.white),),
+                child:
+                    const Text("Submit", style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
