@@ -1,56 +1,25 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:paniwala/onboarding_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:paniwala/choose_account_screen.dart';
 import 'package:paniwala/view/auth/user_auth/signin.dart';
-import 'package:paniwala/view/user_screen/dash_screen.dart'; // Import HomeScreen
+import 'package:paniwala/view/rider_screen/rider_dash.dart';
+import 'package:paniwala/view/supplier_screen/supplier_dash_screen.dart';
+import 'package:paniwala/view/user_screen/dash_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _navigateAfterSplash();
-  }
-
-  Future<void> _navigateAfterSplash() async {
-    // Delay for splash screen display
-    await Future.delayed(const Duration(seconds: 3));
-
-    // Check if the app is being opened for the first time
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('isFirstTime') ?? true; // Default to true
-
-    if (isFirstTime) {
-      // Mark as not first time and navigate to OnboardingScreen
-      await prefs.setBool('isFirstTime', false);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
-      );
-    } else {
-      // Check if the user is logged in
-      final User? currentUser = FirebaseAuth.instance.currentUser;
-
-      if (currentUser != null) {
-        // Navigate to HomeScreen if user is logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      } else {
-        // Navigate to SignInScreen if not logged in
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
-        );
-      }
-    }
+    _navigateAfterSplash(); // Start navigation after splash
   }
 
   @override
@@ -74,6 +43,72 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _navigateAfterSplash() async {
+    await Future.delayed(const Duration(seconds: 3)); // Delay for splash screen
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+
+    if (isFirstTime) {
+      await prefs.setBool('isFirstTime', false);
+      _navigateToScreen(OnboardingScreen());
+      return;
+    }
+
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser != null) {
+      try {
+        String userId = currentUser.uid;
+
+        // Check collections in order
+        if (await _checkCollection('suppliers', userId)) {
+          _navigateToScreen(SupplierDashboardScreen());
+          return;
+        }
+
+        if (await _checkCollection('riders', userId)) {
+          _navigateToScreen(RiderDashboard());
+          return;
+        }
+
+        if (await _checkCollection('users', userId)) {
+          _navigateToScreen(HomeScreen());
+          return;
+        }
+
+        // If user is not found in any collection
+        _navigateToScreen(SignInScreen());
+      } catch (e) {
+        print("Error during role check: $e");
+        _navigateToScreen(SignInScreen());
+      }
+    } else {
+      // Navigate to SignInScreen if not logged in
+      _navigateToScreen(ChooseAccountScreen());
+    }
+  }
+
+  Future<bool> _checkCollection(String collectionName, String userId) async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(userId)
+          .get();
+      return userDoc.exists;
+    } catch (e) {
+      print("Error checking $collectionName: $e");
+      return false;
+    }
+  }
+
+  void _navigateToScreen(Widget screen) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/choose_supplier_type_screen.dart';
 import 'package:paniwala/services/auth/rider_auth.dart';
 import 'package:paniwala/utils/auth_validation/validations.dart';
 
@@ -52,8 +53,11 @@ class CustomDrawer extends StatelessWidget {
             leading: Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () async{
-              await authservice.signOut();
-              Navigator.of(context);
+              await authservice.signOut(); // Sign out the user
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ChooseSupplierTypeScreen()),
+              );
             },
           ),
         ],

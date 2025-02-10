@@ -20,8 +20,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: SplashScreen(),
-      home: SupplierDashboardScreen(),
+      home: SplashScreen(),
+      // home: SupplierDashboardScreen(),
     );
   }
 }
