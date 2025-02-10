@@ -3,6 +3,7 @@ import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 import '../../../services/auth/rider_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
+import '../../rider_screen/rider_dash.dart';
 
 class RiderSignInScreen extends StatelessWidget {
   RiderSignInScreen({super.key});
@@ -26,7 +27,10 @@ class RiderSignInScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Login successful!")),
         );
-        Navigator.pushReplacementNamed(context, '/riderDashboard'); // Navigate to the Rider Dashboard
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) =>  RiderDashboard()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result ?? "An error occurred")),
