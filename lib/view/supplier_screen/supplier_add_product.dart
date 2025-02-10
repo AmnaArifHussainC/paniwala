@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 import '../../services/firestore/supplier_product.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -107,135 +108,132 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Product"),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: const Text("Add Product", style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      controller: _productNameController,
-                      decoration: const InputDecoration(
-                        labelText: "Product Name",
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (value) =>
-                      value == null || value.isEmpty ? "Enter a name" : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: "Description",
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                      validator: (value) => value == null || value.isEmpty
-                          ? "Enter a description"
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _priceController,
-                      decoration: const InputDecoration(
-                        labelText: "Price",
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) =>
-                      value == null || double.tryParse(value) == null
-                          ? "Enter a valid price"
-                          : null,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _sizeController,
-                            decoration: const InputDecoration(
-                              labelText: "Size",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: _addSize,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                          ),
-                          child: const Text("Add"),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      children: _sizes
-                          .map((size) => Chip(
-                        label: Text(size),
-                        onDeleted: () =>
-                            _removeSize(_sizes.indexOf(size)),
-                      ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _pickImages,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: const Text("Pick Images"),
-                    ),
-                    const SizedBox(height: 16),
-                    Wrap(
-                      spacing: 8,
-                      children: _uploadedImages
-                          .map(
-                            (image) => ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.file(
-                            image,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: _submitProduct,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                          horizontal: 40,
-                        ),
-                      ),
-                      child: const Text(
-                        "Submit",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _productNameController,
+                decoration: InputDecoration(
+                  labelText: "Product Name",
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                validator: (value) =>
+                value == null || value.isEmpty ? "Enter a name" : null,
               ),
-            ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: "Description",
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                maxLines: 3,
+                validator: (value) =>
+                value == null || value.isEmpty ? "Enter a description" : null,
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _priceController,
+                decoration: InputDecoration(
+                  labelText: "Price",
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) =>
+                value == null || double.tryParse(value) == null
+                    ? "Enter a valid price"
+                    : null,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _sizeController,
+                      decoration: InputDecoration(
+                        labelText: "Size",
+                        labelStyle: const TextStyle(color: Colors.blue),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _addSize,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
+                    child: const Text("Add", style: TextStyle(color: Colors.white),),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                children: _sizes
+                    .map(
+                      (size) => Chip(
+                    label: Text(size),
+                    onDeleted: () => _removeSize(_sizes.indexOf(size)),
+                    backgroundColor: Colors.blue.shade100,
+                  ),
+                )
+                    .toList(),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _pickImages,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: const Text("Upload Images", style: TextStyle(color: Colors.white),),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                children: _uploadedImages
+                    .map(
+                      (image) => Image.file(
+                    image,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
+                  ),
+                )
+                    .toList(),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _submitProduct,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                ),
+                child: const Text("Submit", style: TextStyle(color: Colors.white),),
+              ),
+            ],
           ),
         ),
       ),
