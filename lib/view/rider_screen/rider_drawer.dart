@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/services/auth/rider_auth.dart';
+import 'package:paniwala/utils/auth_validation/validations.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
+  final RiderAuthService authservice = RiderAuthService();
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.white, // Set the background color to white
@@ -48,8 +51,9 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: const Text('Logout'),
-            onTap: () {
-              // Handle Logout click
+            onTap: () async{
+              await authservice.signOut();
+              Navigator.of(context);
             },
           ),
         ],
