@@ -75,13 +75,28 @@ class DatabaseService {
 
   /// Upload image to Firebase Storage
   Future<String> uploadImage(String supplierId, File image) async {
+    if (!await image.exists()) {
+      throw Exception("File does not exist: ${image.path}");
+    }
+
+    if (supplierId.isEmpty) {
+      throw Exception("Supplier ID is empty.");
+    }
+
     try {
       final storageRef = FirebaseStorage.instance
           .ref()
-          .child('suppliers/$supplierId/products/${DateTime.now()}.jpg');
+          .child('suppliers/$supplierId/products/${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      print("Uploading to path: ${storageRef.fullPath}");
+
       final uploadTask = await storageRef.putFile(image);
-      return await storageRef.getDownloadURL();
+      final downloadUrl = await uploadTask.ref.getDownloadURL();
+
+      print("Upload successful. File URL: $downloadUrl");
+      return downloadUrl;
     } catch (e) {
+      print("Error during image upload: $e");
       throw Exception("Error uploading image: $e");
     }
   }

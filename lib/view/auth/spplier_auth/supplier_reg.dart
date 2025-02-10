@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:open_file/open_file.dart';
+import 'package:paniwala/view/supplier_screen/supplier_dash_screen.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
+import '../../../services/auth/supplier_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
@@ -50,7 +52,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
       }
     }
   }
-
 
   // Function to open the selected file
   void openSelectedFile() {
@@ -104,7 +105,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     controller: cnicController,
                     hintText: "CNIC (National Identity)",
                     icon: Icons.card_membership,
-                    validator: (value) => ValidationUtils.validateEmail(value),
+                    validator: (value) => ValidationUtils.validateCNIC(value),
                   ),
                   const SizedBox(height: 10),
 
@@ -112,7 +113,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     controller: phoneController,
                     hintText: "Phone Number",
                     icon: Icons.phone,
-                    validator: (value) => ValidationUtils.validateEmail(value),
+                    validator: (value) => ValidationUtils.validatePhoneNumber(value),
                   ),
                   const SizedBox(height: 10),
 
@@ -129,7 +130,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     hintText: "Password",
                     icon: Icons.lock,
                     obscureText: true,
-                    validator: (value) => ValidationUtils.validateEmail(value),
+                    validator: (value) => ValidationUtils.validatePassword(value),
                   ),
                   const SizedBox(height: 10),
 
@@ -138,9 +139,8 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     controller: filterCertificateController,
                     hintText: "Water Filter Certificate (PDF)",
                     icon: Icons.file_copy,
-                    validator: (value) => value == null || value.isEmpty ? 'Please upload a certificate' : null,
+                    validator: (value) => ValidationUtils.validatePDFUpload(value),
                   ),
-
                   const SizedBox(height: 10),
 
                   ElevatedButton.icon(
@@ -148,28 +148,78 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                       side: BorderSide(
                         color: Colors.blue,
                         width: 2,
-                      )
+                      ),
                     ),
                     onPressed: pickFile,
-                    icon: const Icon(Icons.upload_file, color: Colors.blue,),
-                    label: const Text("Upload PDF Certificate", style: TextStyle(color: Colors.blue),),
+                    icon: const Icon(Icons.upload_file, color: Colors.blue),
+                    label: const Text(
+                      "Upload PDF Certificate",
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
 
                   if (selectedFilePath != null)
                     TextButton(
-
                       onPressed: openSelectedFile,
-                      child: const Text("Open Selected File", style: TextStyle(color: Colors.blue),),
+                      child: const Text(
+                        "Open Selected File",
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
 
                   const SizedBox(height: 20),
 
                   CustomButton(
                     text: "Register Supplier",
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        debugPrint("Registering Supplier");
-                        debugPrint("Uploaded File Path: $selectedFilePath");
+                        final authService = SupplierAuthService();
+
+                        // Display loading indicator while processing
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+
+                        // Call the registration function
+                        String? result = await authService.registerSupplier(
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                          cnic: cnicController.text.trim(),
+                          phone: phoneController.text.trim(),
+                          filterCertificatePath: selectedFilePath, // Pass file path
+                        );
+
+                        // Close the loading indicator
+                        Navigator.of(context).pop();
+
+                        if (result == null) {
+                          // Show success snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Supplier registered successfully!"),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+
+                          // Navigate to the next screen
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SupplerLoginScreen()),
+                          );
+                        } else {
+                          // Show error snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(result),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
                       }
                     },
                     color: Colors.blue,
@@ -184,7 +234,8 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => SupplierDashboardScreen()),
                           );
                         },
                         child: const Text(

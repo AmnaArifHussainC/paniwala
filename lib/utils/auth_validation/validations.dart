@@ -4,9 +4,6 @@ class ValidationUtils {
     if (value == null || value.trim().isEmpty) {
       return 'Full name is required';
     }
-    // if (value.trim().length < 8) {
-    //   return 'Full name must be at least 8 characters';
-    // }
     return null;
   }
 
@@ -40,6 +37,41 @@ class ValidationUtils {
     }
     if (password != confirmPassword) {
       return 'Passwords do not match';
+    }
+    return null;
+  }
+
+  // Validate CNIC
+  static String? validateCNIC(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'CNIC is required';
+    }
+    final cnicRegex = RegExp(r'^\d{13}$'); // Validates 13 numeric characters
+    if (!cnicRegex.hasMatch(value.trim())) {
+      return 'Enter a valid CNIC (13 digits)';
+    }
+    return null;
+  }
+
+  // Validate Phone Number
+  static String? validatePhoneNumber(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Phone number is required';
+    }
+    final phoneRegex = RegExp(r'^\d{10,11}$'); // Validates 10-11 numeric characters
+    if (!phoneRegex.hasMatch(value.trim())) {
+      return 'Enter a valid phone number (10-11 digits)';
+    }
+    return null;
+  }
+
+  // Validate PDF Upload
+  static String? validatePDFUpload(String? fileName) {
+    if (fileName == null || fileName.trim().isEmpty) {
+      return 'Water filter certificate is required';
+    }
+    if (!fileName.endsWith('.pdf')) {
+      return 'Only PDF files are allowed';
     }
     return null;
   }
