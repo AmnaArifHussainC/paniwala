@@ -155,10 +155,13 @@ class SupplierDashboardScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
+          // Replace 'supplierId' with the actual supplier ID from your app's state or data
+          String supplierId = "exampleSupplierId"; // Fetch or set the supplier ID dynamically
+
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const AddProductScreen(),
+              builder: (context) => AddProductScreen(supplierId: supplierId),
             ),
           );
         },
