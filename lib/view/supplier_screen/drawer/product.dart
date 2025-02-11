@@ -10,9 +10,10 @@ class ProductListScreen extends StatelessWidget {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Function to delete a product
   Future<void> _deleteProduct(String productId, BuildContext context) async {
     try {
-      // Delete product from supplier's subcollection
+      // Delete product from the supplier's subcollection
       await _firestore
           .collection('suppliers')
           .doc(supplierId)

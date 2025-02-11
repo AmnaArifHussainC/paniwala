@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/rider_auth/rider_reg.dart';
-import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart'; // Import the login screen
-
+import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
 import '../../services/auth/supplier_auth.dart';
 import 'drawer/product.dart';
 
 class CustomDrawer extends StatelessWidget {
-  final SupplierAuthService _authService = SupplierAuthService(); // Create an instance of AuthService
+  final String supplierId; // Supplier ID passed to the drawer
+  final SupplierAuthService _authService = SupplierAuthService(); // AuthService instance
 
-  CustomDrawer({super.key});
+  CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,10 +58,12 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.category),
             title: const Text('Products'),
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ProductListScreen(supplierId: supplierId)),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductListScreen(supplierId: supplierId),
+                ),
+              );
             },
           ),
           ListTile(

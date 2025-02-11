@@ -18,7 +18,7 @@ class SupplierDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(),
+      drawer: CustomDrawer(supplierId: supplierId,),
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
