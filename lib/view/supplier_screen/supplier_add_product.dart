@@ -109,6 +109,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         title: const Text("Add Product", style: TextStyle(color: Colors.white),),
         centerTitle: true,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
