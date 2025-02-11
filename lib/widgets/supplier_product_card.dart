@@ -22,50 +22,53 @@ class SupplierProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  productName,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                TextButton(
-                    onPressed: onDelete,
-                    child: Text(
-                      "Delete",
-                      style: TextStyle(color: Colors.red.shade800,),
-                    )),
-                // IconButton(
-                //   icon: const Icon(Icons.delete, color: Colors.red),
-                //   onPressed: onDelete, // Trigger the delete action
-                // ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              description,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Price: \$${price.toStringAsFixed(2)}",
-              style: const TextStyle(fontSize: 16, color: Colors.blue),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              "Sizes: ${sizes.join(", ")}",
-              style: const TextStyle(fontSize: 14),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    productName,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                      onPressed: onDelete,
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(color: Colors.red.shade800,),
+                      )),
+                  // IconButton(
+                  //   icon: const Icon(Icons.delete, color: Colors.red),
+                  //   onPressed: onDelete, // Trigger the delete action
+                  // ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Price: \$${price.toStringAsFixed(2)}",
+                style: const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Sizes: ${sizes.join(", ")}",
+                style: const TextStyle(fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ),
     );
