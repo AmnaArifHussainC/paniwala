@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore for fetching products
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/supplier_screen/supplier_add_product.dart';
 import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
-
 import '../../widgets/supplier_dashboard_card.dart';
 import '../../widgets/supplire_dash_order_card.dart';
 
-class SupplierDashboardScreen extends StatelessWidget {
+class SupplierDashboardScreen extends StatefulWidget {
+  @override
+  State<SupplierDashboardScreen> createState() => _SupplierDashboardScreenState();
+}
+
+class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
+  int _totalProducts = 0;
+  String? _supplierId;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Future<int> getProductCount(String supplierId) async {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('products')
-        .where('supplierId', isEqualTo: supplierId)
-        .get();
-    return snapshot.docs.length;
-  }
 
   @override
   Widget build(BuildContext context) {
-    // Get the supplier's ID dynamically
     final User? currentUser = FirebaseAuth.instance.currentUser;
-    final String supplierId = currentUser?.uid ?? "unknownSupplierId"; // Use a fallback value if null
+    final String supplierId = currentUser?.uid ?? "unknownSupplierId";
 
     return Scaffold(
       key: _scaffoldKey,
@@ -81,61 +79,14 @@ class SupplierDashboardScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    DashboardCard(
-                      title: "Earnings",
-                      value: "Rs. 6002",
-                      percentage: "+5%",
-                      icon: Icons.attach_money,
-                    ),
-                    DashboardCard(
-                      title: "Orders",
-                      value: "1043",
-                      percentage: "+15%",
-                      icon: Icons.receipt,
-                    ),
-                    FutureBuilder<int>(
-                      future: getProductCount(supplierId),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return DashboardCard(
-                            title: "Products",
-                            icon: Icons.star_purple500,
-                            items: null,
-                          );
-                        } else if (snapshot.hasError) {
-                          return DashboardCard(
-                            title: "Products",
-                            icon: Icons.error,
-                            items: 0,
-                          );
-                        } else {
-                          return DashboardCard(
-                            title: "Products",
-                            icon: Icons.star_purple500,
-                            items: snapshot.data,
-                          );
-                        }
-                      },
-                    ),
-                  ],
-                ),
 
-              ),
-            ),
-            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "Your Products",
+                    "Your Orders",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
@@ -170,8 +121,8 @@ class SupplierDashboardScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AddProductScreen(supplierId: supplierId),
