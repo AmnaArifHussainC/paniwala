@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+
 // Dashboard Card Widget
 class DashboardCard extends StatelessWidget {
   final String title;
-  final String value;
-  final String percentage;
+  final String? value; // Optional value
+  final String? percentage; // Optional percentage
   final IconData icon;
+  final int? items; // Optional items for count-based cards
 
-  DashboardCard({required this.title, required this.value, required this.percentage, required this.icon});
+  DashboardCard({
+    required this.title,
+    this.value,
+    this.percentage,
+    required this.icon,
+    this.items,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +31,26 @@ class DashboardCard extends StatelessWidget {
             children: [
               Icon(icon, size: 30, color: Colors.blue),
               const SizedBox(height: 8),
-              Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              if (items != null) // Show item count if available
+                Text(
+                  "$items",
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                )
+              else if (value != null) // Show value if available
+                Text(
+                  value!,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               Text(title, style: const TextStyle(color: Colors.grey)),
               const SizedBox(height: 4),
-              Text(percentage, style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+              if (percentage != null) // Show percentage if available
+                Text(
+                  percentage!,
+                  style: const TextStyle(
+                      color: Colors.blue, fontWeight: FontWeight.bold),
+                ),
             ],
           ),
         ),

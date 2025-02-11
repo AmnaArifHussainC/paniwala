@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase for user authentication
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore for fetching products
 import 'package:paniwala/view/supplier_screen/supplier_add_product.dart';
 import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
 
@@ -10,6 +11,14 @@ import '../../widgets/supplire_dash_order_card.dart';
 class SupplierDashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<int> getProductCount(String supplierId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('products')
+        .where('supplierId', isEqualTo: supplierId)
+        .get();
+    return snapshot.docs.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get the supplier's ID dynamically
@@ -18,7 +27,7 @@ class SupplierDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      drawer: CustomDrawer(supplierId: supplierId,),
+      drawer: CustomDrawer(supplierId: supplierId),
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
@@ -71,7 +80,6 @@ class SupplierDashboardScreen extends StatelessWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -80,22 +88,44 @@ class SupplierDashboardScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     DashboardCard(
-                        title: "Earnings",
-                        value: "Rs. 6002",
-                        percentage: "+5%",
-                        icon: Icons.attach_money),
+                      title: "Earnings",
+                      value: "Rs. 6002",
+                      percentage: "+5%",
+                      icon: Icons.attach_money,
+                    ),
                     DashboardCard(
-                        title: "Orders",
-                        value: "1043",
-                        percentage: "+15%",
-                        icon: Icons.receipt),
-                    DashboardCard(
-                        title: "Products",
-                        value: "2",
-                        percentage: "+15%",
-                        icon: Icons.star_purple500),
+                      title: "Orders",
+                      value: "1043",
+                      percentage: "+15%",
+                      icon: Icons.receipt,
+                    ),
+                    FutureBuilder<int>(
+                      future: getProductCount(supplierId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return DashboardCard(
+                            title: "Products",
+                            icon: Icons.star_purple500,
+                            items: null,
+                          );
+                        } else if (snapshot.hasError) {
+                          return DashboardCard(
+                            title: "Products",
+                            icon: Icons.error,
+                            items: 0,
+                          );
+                        } else {
+                          return DashboardCard(
+                            title: "Products",
+                            icon: Icons.star_purple500,
+                            items: snapshot.data,
+                          );
+                        }
+                      },
+                    ),
                   ],
                 ),
+
               ),
             ),
             const SizedBox(height: 20),
@@ -112,8 +142,10 @@ class SupplierDashboardScreen extends StatelessWidget {
                     onPressed: () {
                       // Navigate to Product List
                     },
-                    child: const Text("See All",
-                        style: TextStyle(color: Colors.blue)),
+                    child: const Text(
+                      "See All",
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
                 ],
               ),
