@@ -4,11 +4,22 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../widgets/supplier_product_card.dart';
 
 class ProductListScreen extends StatelessWidget {
+  final String supplierId; // Supplier ID passed to the screen
+
+  ProductListScreen({Key? key, required this.supplierId}) : super(key: key);
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _deleteProduct(String productId, BuildContext context) async {
     try {
-      await _firestore.collection('products').doc(productId).delete();
+      // Delete product from supplier's subcollection
+      await _firestore
+          .collection('suppliers')
+          .doc(supplierId)
+          .collection('products')
+          .doc(productId)
+          .delete();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Product deleted successfully')),
       );
@@ -19,18 +30,24 @@ class ProductListScreen extends StatelessWidget {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: const Text('Products', style: TextStyle(color: Colors.white),),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          'Products',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.blue,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('products').snapshots(),
+        // Stream from the supplier's products subcollection
+        stream: _firestore
+            .collection('suppliers')
+            .doc(supplierId)
+            .collection('products')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

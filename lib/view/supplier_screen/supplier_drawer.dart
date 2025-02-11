@@ -58,10 +58,10 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.category),
             title: const Text('Products'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductListScreen()),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProductListScreen(supplierId: supplierId)),
+              // );
             },
           ),
           ListTile(
