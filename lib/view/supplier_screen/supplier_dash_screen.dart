@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase for user authentication
 import 'package:paniwala/view/supplier_screen/supplier_add_product.dart';
 import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
 
 import '../../widgets/supplier_dashboard_card.dart';
 import '../../widgets/supplire_dash_order_card.dart';
+
 class SupplierDashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    // Get the supplier's ID dynamically
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+    final String supplierId = currentUser?.uid ?? "unknownSupplierId"; // Use a fallback value if null
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: CustomDrawer(),
@@ -57,7 +63,10 @@ class SupplierDashboardScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   const Text(
                     'Welcome!',
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -67,8 +76,16 @@ class SupplierDashboardScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 children: [
-                  DashboardCard(title: "Earnings", value: "₹6002", percentage: "+5%", icon: Icons.attach_money),
-                  DashboardCard(title: "Orders", value: "1043", percentage: "+15%", icon: Icons.receipt),
+                  DashboardCard(
+                      title: "Earnings",
+                      value: "₹6002",
+                      percentage: "+5%",
+                      icon: Icons.attach_money),
+                  DashboardCard(
+                      title: "Orders",
+                      value: "1043",
+                      percentage: "+15%",
+                      icon: Icons.receipt),
                 ],
               ),
             ),
@@ -86,7 +103,8 @@ class SupplierDashboardScreen extends StatelessWidget {
                     onPressed: () {
                       // Navigate to Product List
                     },
-                    child: const Text("See All", style: TextStyle(color: Colors.blue)),
+                    child: const Text("See All",
+                        style: TextStyle(color: Colors.blue)),
                   ),
                 ],
               ),
@@ -95,7 +113,7 @@ class SupplierDashboardScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                children:  [
+                children: [
                   OrderCard(
                     orderId: "#202201",
                     date: "3 Feb 2025",
@@ -112,7 +130,6 @@ class SupplierDashboardScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          String supplierId = "exampleSupplierId"; // Replace dynamically
           Navigator.push(
             context,
             MaterialPageRoute(
