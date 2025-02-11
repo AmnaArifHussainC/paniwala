@@ -20,6 +20,32 @@ class SupplierProductCard extends StatelessWidget {
     required this.onDelete,
   }) : super(key: key);
 
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirm Deletion"),
+        content: Text("Are you sure you want to delete '$productName'?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+              onDelete(); // Trigger the delete action
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.white),),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -41,15 +67,12 @@ class SupplierProductCard extends StatelessWidget {
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
-                      onPressed: onDelete,
-                      child: Text(
-                        "Delete",
-                        style: TextStyle(color: Colors.red.shade800,),
-                      )),
-                  // IconButton(
-                  //   icon: const Icon(Icons.delete, color: Colors.red),
-                  //   onPressed: onDelete, // Trigger the delete action
-                  // ),
+                    onPressed: () => _showDeleteConfirmationDialog(context),
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.red.shade800),
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -59,7 +82,7 @@ class SupplierProductCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                "Price: \$${price.toStringAsFixed(2)}",
+                "Price: Rs.${price.toStringAsFixed(2)}",
                 style: const TextStyle(fontSize: 16, color: Colors.blue),
               ),
               const SizedBox(height: 8),
