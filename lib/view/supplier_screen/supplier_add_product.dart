@@ -104,8 +104,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blueAccent,
-        title: const Text("Add Product"),
+        title: const Text("Add Product", style: TextStyle(color: Colors.white),),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -120,6 +121,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 decoration: const InputDecoration(
                   labelText: "Product Name",
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2,
+                    )
+                  )
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -134,6 +141,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 decoration: const InputDecoration(
                   labelText: "Description",
                   border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2,
+                        )
+                    )
                 ),
                 maxLines: 3,
                 validator: (value) {
@@ -149,6 +162,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 decoration: const InputDecoration(
                   labelText: "Price",
                   border: OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2,
+                        )
+                    )
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
@@ -167,14 +186,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       controller: _sizeController,
                       decoration: const InputDecoration(
                         labelText: "Add Size",
-                        border: OutlineInputBorder(),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.blue,
+                                width: 2,
+                              )
+                          )
+
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
                     onPressed: _addSize,
-                    child: const Text("Add"),
+                    child: const Text("Add", style: TextStyle(color: Colors.white),),
                   ),
                 ],
               ),
@@ -216,8 +245,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
                   onPressed: _submitProduct,
-                  child: const Text("Submit Product"),
+                  child: const Text("Submit Product", style: TextStyle(color: Colors.white),),
                 ),
               ),
             ],

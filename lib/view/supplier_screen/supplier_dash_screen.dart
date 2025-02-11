@@ -74,19 +74,27 @@ class SupplierDashboardScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  DashboardCard(
-                      title: "Earnings",
-                      value: "₹6002",
-                      percentage: "+5%",
-                      icon: Icons.attach_money),
-                  DashboardCard(
-                      title: "Orders",
-                      value: "1043",
-                      percentage: "+15%",
-                      icon: Icons.receipt),
-                ],
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    DashboardCard(
+                        title: "Earnings",
+                        value: "Rs. 6002",
+                        percentage: "+5%",
+                        icon: Icons.attach_money),
+                    DashboardCard(
+                        title: "Orders",
+                        value: "1043",
+                        percentage: "+15%",
+                        icon: Icons.receipt),
+                    DashboardCard(
+                        title: "Products",
+                        value: "2",
+                        percentage: "+15%",
+                        icon: Icons.star_purple500),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20),
