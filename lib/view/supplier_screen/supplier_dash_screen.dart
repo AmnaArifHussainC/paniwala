@@ -110,7 +110,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                     orderId: "#202201",
                     date: "3 Feb 2025",
                     customerName: "John Doe",
-                    amount: "₹500.00",
+                    amount: "Rs. 500.00",
                     status: "Delivered",
                   ),
                 ],
