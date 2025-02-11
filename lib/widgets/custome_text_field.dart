@@ -6,9 +6,11 @@ class CustomTextField extends StatefulWidget {
   final bool obscureText;
   final TextEditingController controller;
   final String? Function(String?)? validator;
+  final TextInputType textinputtype;
 
   const CustomTextField({
     super.key,
+    required this.textinputtype,
     required this.validator,
     required this.hintText,
     required this.icon,
@@ -33,17 +35,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
         });
       },
       child: TextFormField(
+        keyboardType: widget.textinputtype, // Corrected property
         controller: widget.controller,
         obscureText: widget.obscureText ? _isObscured : false,
-        validator: widget.validator,  // Use the validator here
+        validator: widget.validator,
         decoration: InputDecoration(
           hintText: widget.hintText,
           prefixIcon: Icon(widget.icon, color: _isFocused ? Colors.blue : Colors.grey),
           filled: true,
-          fillColor: _isFocused ? Colors.blue.withOpacity(0.1) : Colors.white, // Blue Background on Focus
+          fillColor: _isFocused ? Colors.blue.withOpacity(0.1) : Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: _isFocused ? Colors.blue : Colors.grey), // Blue Border on Focus
+            borderSide: BorderSide(color: _isFocused ? Colors.blue : Colors.grey),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
@@ -51,7 +54,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: Colors.blue, width: 2), // Blue Border When Clicked
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
           ),
           suffixIcon: widget.obscureText
               ? IconButton(

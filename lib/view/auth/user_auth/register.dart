@@ -88,6 +88,7 @@ class RegisterScreen extends StatelessWidget {
 
                   // Full Name Text Field
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validateFullName(value),
                     controller: fullNameController,
                     hintText: "Full Name",
@@ -97,6 +98,7 @@ class RegisterScreen extends StatelessWidget {
 
                   // Email Text Field
                   CustomTextField(
+                    textinputtype: TextInputType.emailAddress,
                     validator: (value) => ValidationUtils.validateEmail(value),
                     controller: emailController,
                     hintText: "Email",
@@ -106,6 +108,7 @@ class RegisterScreen extends StatelessWidget {
 
                   // Password Text Field
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validatePassword(value),
                     controller: passwordController,
                     hintText: "Password",
@@ -116,6 +119,7 @@ class RegisterScreen extends StatelessWidget {
 
                   // Confirm Password Text Field
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validateConfirmPassword(passwordController.text, value),
                     controller: confirmPasswordController,
                     hintText: "Confirm Password",

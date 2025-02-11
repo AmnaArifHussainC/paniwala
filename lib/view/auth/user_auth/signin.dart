@@ -132,6 +132,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 20),
                       // Email Field
                       CustomTextField(
+                        textinputtype: TextInputType.emailAddress,
                         validator: (value) => ValidationUtils.validateEmail(value),
                         controller: emailController,
                         hintText: "Email",
@@ -140,6 +141,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       const SizedBox(height: 10),
                       // Password Field
                       CustomTextField(
+                        textinputtype: TextInputType.text,
                         validator: (value) => ValidationUtils.validatePassword(value),
                         controller: passController,
                         hintText: "Password",

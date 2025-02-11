@@ -109,6 +109,7 @@ class SupplerLoginScreen extends StatelessWidget {
 
                   // Email Field
                   CustomTextField(
+                    textinputtype: TextInputType.emailAddress,
                     validator: (value) => ValidationUtils.validateEmail(value),
                     controller: emailController,
                     hintText: "Email",
@@ -118,6 +119,7 @@ class SupplerLoginScreen extends StatelessWidget {
 
                   // Password Field
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validatePassword(value),
                     controller: passController,
                     hintText: "Password",

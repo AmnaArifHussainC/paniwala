@@ -87,6 +87,7 @@ class RiderSignInScreen extends StatelessWidget {
 
                   // Email Field
                   CustomTextField(
+                    textinputtype: TextInputType.emailAddress,
                     validator: (value) => ValidationUtils.validateEmail(value),
                     controller: emailController,
                     hintText: "Email",
@@ -96,6 +97,7 @@ class RiderSignInScreen extends StatelessWidget {
 
                   // Password Field
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validatePassword(value),
                     controller: passController,
                     hintText: "Password",

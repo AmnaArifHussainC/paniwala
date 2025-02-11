@@ -94,6 +94,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Rider Name
                 CustomTextField(
+                  textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validateFullName(value),
                   controller: nameController,
                   hintText: "Rider Name",
@@ -103,6 +104,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Company Email
                 CustomTextField(
+                  textinputtype: TextInputType.emailAddress,
                   validator: (value) => ValidationUtils.validateEmail(value),
                   controller: emailController,
                   hintText: "Company Email",
@@ -112,6 +114,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Phone Number
                 CustomTextField(
+                  textinputtype: TextInputType.phone,
                   validator: (value) => ValidationUtils.validatePhoneNumber(value),
                   controller: phoneController,
                   hintText: "Phone Number",
@@ -121,6 +124,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Password
                 CustomTextField(
+                  textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validatePassword(value),
                   controller: passwordController,
                   hintText: "Password",
@@ -131,6 +135,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
                 // Confirm Password
                 CustomTextField(
+                  textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validateConfirmPassword(
                     passwordController.text,
                     value,
@@ -143,22 +148,23 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 const SizedBox(height: 10),
 
                 // Maximum Delivery Area
-                CustomTextField(
-                  validator: (value) => ValidationUtils.validateDeliveryArea(value),
-                  controller: deliveryAreaController,
-                  hintText: "Maximum Delivery Area (e.g., 10 KM)",
-                  icon: Icons.location_on,
-                ),
-                const SizedBox(height: 10),
+                // CustomTextField(
+                //   validator: (value) => ValidationUtils.validateDeliveryArea(value),
+                //   controller: deliveryAreaController,
+                //   hintText: "Maximum Delivery Area (e.g., 10 KM)",
+                //   icon: Icons.location_on,
+                // ),
+                // const SizedBox(height: 10),
 
                 // Commission Percentage
-                CustomTextField(
-                  validator: (value) => ValidationUtils.validateCommission(value),
-                  controller: commissionController,
-                  hintText: "Commission (%)",
-                  icon: Icons.monetization_on,
-                ),
-                const SizedBox(height: 20),
+                // CustomTextField(
+                //   textinputtype: ,
+                //   validator: (value) => ValidationUtils.validateCommission(value),
+                //   controller: commissionController,
+                //   hintText: "Commission (%)",
+                //   icon: Icons.monetization_on,
+                // ),
+                // const SizedBox(height: 20),
 
                 // Register Button
                 CustomButton(

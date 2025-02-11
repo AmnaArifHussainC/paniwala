@@ -186,6 +186,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     controller: companyNameController,
                     hintText: "Company Name",
                     icon: Icons.business,
@@ -200,6 +201,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 20),
 
                   CustomTextField(
+                    textinputtype: TextInputType.number,
                     controller: cnicController,
                     hintText: "CNIC (National Identity)",
                     icon: Icons.card_membership,
@@ -208,6 +210,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   CustomTextField(
+                    textinputtype: TextInputType.phone,
                     controller: phoneController,
                     hintText: "Phone Number",
                     icon: Icons.phone,
@@ -215,7 +218,9 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
+
                   CustomTextField(
+                    textinputtype: TextInputType.emailAddress,
                     controller: emailController,
                     hintText: "Email",
                     icon: Icons.email,
@@ -224,6 +229,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   CustomTextField(
+                    textinputtype: TextInputType.text,
                     controller: passwordController,
                     hintText: "Password",
                     icon: Icons.lock,

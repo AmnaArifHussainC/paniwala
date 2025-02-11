@@ -59,6 +59,7 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                   // Email Field
                   CustomTextField(
+                    textinputtype: TextInputType.emailAddress,
                     validator: (value) => ValidationUtils.validateEmail(value),
                     controller: emailController,
                     hintText: "Email",
