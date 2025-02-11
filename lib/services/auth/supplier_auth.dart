@@ -14,7 +14,8 @@ class SupplierAuthService {
     required String password,
     required String cnic,
     required String phone,
-    String? filterCertificatePath, // Path of the uploaded PDF
+    required String companyName,
+    // String? filterCertificatePath, // Path of the uploaded PDF
   }) async {
     try {
       // Step 1: Create the user in Firebase Auth
@@ -29,22 +30,23 @@ class SupplierAuthService {
       }
 
       // Step 2: Upload Water Filter Certificate (if provided)
-      String? certificateUrl;
-      if (filterCertificatePath != null) {
-        File certificateFile = File(filterCertificatePath);
-        final ref = _storage
-            .ref()
-            .child('suppliers/${user.uid}/certificate.pdf');
-        final uploadTask = await ref.putFile(certificateFile);
-        certificateUrl = await uploadTask.ref.getDownloadURL();
-      }
+      // String? certificateUrl;
+      // if (filterCertificatePath != null) {
+      //   File certificateFile = File(filterCertificatePath);
+      //   final ref = _storage
+      //       .ref()
+      //       .child('suppliers/${user.uid}/certificate.pdf');
+      //   final uploadTask = await ref.putFile(certificateFile);
+      //   certificateUrl = await uploadTask.ref.getDownloadURL();
+      // }
 
       // Step 3: Save supplier details in Firestore
       await _firestore.collection('suppliers').doc(user.uid).set({
         'email': email,
         'cnic': cnic,
         'phone': phone,
-        'certificateUrl': certificateUrl,
+        'companyName': companyName,
+        // 'certificateUrl': certificateUrl,
         'createdAt': FieldValue.serverTimestamp(),
       });
 

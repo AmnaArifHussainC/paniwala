@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/rider_auth/rider_reg.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
@@ -10,6 +11,21 @@ class CustomDrawer extends StatelessWidget {
 
   CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
 
+  Future<String> _fetchSupplierName() async {
+    try {
+      DocumentSnapshot supplierDoc =
+      await FirebaseFirestore.instance.collection('suppliers').doc(supplierId).get();
+      if (supplierDoc.exists) {
+        return supplierDoc['companyName'] ?? 'Unknown Supplier';
+      } else {
+        return 'Unknown Supplier';
+      }
+    } catch (e) {
+      print('Error fetching supplier name: $e');
+      return 'Error';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -17,18 +33,35 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.account_circle, size: 80, color: Colors.white),
-                SizedBox(height: 10),
-                Text(
-                  "Supplier Name", // Replace with actual user name or dynamic data
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                const Icon(Icons.account_circle, size: 80, color: Colors.white),
+                const SizedBox(height: 10),
+                FutureBuilder<String>(
+                  future: _fetchSupplierName(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text(
+                        "Loading...",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      );
+                    } else if (snapshot.hasError) {
+                      return const Text(
+                        "Error fetching name",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      );
+                    } else {
+                      return Text(
+                        snapshot.data ?? "Unknown Supplier",
+                        style: const TextStyle(color: Colors.white, fontSize: 24),
+                      );
+                    }
+                  },
                 ),
               ],
             ),

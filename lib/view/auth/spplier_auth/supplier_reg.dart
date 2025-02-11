@@ -21,6 +21,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController companyNameController = TextEditingController();
   // final TextEditingController filterCertificateController = TextEditingController();
 
   // String? selectedFilePath; // Store the selected file path
@@ -113,6 +114,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
         password: passwordController.text.trim(),
         cnic: cnicController.text.trim(),
         phone: phoneController.text.trim(),
+        companyName: companyNameController.text.trim(),
         // filterCertificatePath: uploadedFileURL,
       );
 
@@ -181,6 +183,20 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10),
+
+                  CustomTextField(
+                    controller: companyNameController,
+                    hintText: "Company Name",
+                    icon: Icons.business,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your company name";
+                      }
+                      return null;
+                    },
+                  ),
+
                   const SizedBox(height: 20),
 
                   CustomTextField(
