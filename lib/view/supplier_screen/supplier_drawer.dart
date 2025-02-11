@@ -67,19 +67,16 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Profile'),
+            leading: const Icon(Icons.person_add),
+            title: const Text('Register a Rider'),
             onTap: () {
-              Navigator.pushNamed(context, '/profile');
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RiderRegisterScreen()),
+              );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.attach_money),
-            title: const Text('Earnings'),
-            onTap: () {
-              Navigator.pushNamed(context, '/earnings');
-            },
-          ),
+
           ListTile(
             leading: const Icon(Icons.shopping_cart),
             title: const Text('Orders'),
@@ -100,20 +97,10 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.person_add),
-            title: const Text('Register a Rider'),
+            leading: const Icon(Icons.attach_money),
+            title: const Text('Earnings'),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => RiderRegisterScreen()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {
-              // Handle Settings click
+              Navigator.pushNamed(context, '/earnings');
             },
           ),
           ListTile(
