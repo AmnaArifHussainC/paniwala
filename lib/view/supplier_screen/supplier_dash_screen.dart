@@ -5,16 +5,14 @@ import 'package:paniwala/view/supplier_screen/supplier_drawer.dart';
 
 import '../../widgets/supplier_dashboard_card.dart';
 import '../../widgets/supplire_dash_order_card.dart';
-
 class SupplierDashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey, // Assign the key to the Scaffold
-      drawer: CustomDrawer(),  // Add the custom drawer here
-
+      key: _scaffoldKey,
+      drawer: CustomDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 0,
@@ -23,12 +21,9 @@ class SupplierDashboardScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
-          icon: const Icon(
-            Icons.menu,
-            color: Colors.white, // Set the hamburger icon to white
-          ),
+          icon: const Icon(Icons.menu, color: Colors.white),
           onPressed: () {
-            _scaffoldKey.currentState?.openDrawer();  // Use the GlobalKey to open the drawer
+            _scaffoldKey.currentState?.openDrawer();
           },
         ),
         actions: [
@@ -40,15 +35,15 @@ class SupplierDashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView( // FIX: Prevent overflow
+      body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.blue,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
@@ -57,107 +52,67 @@ class SupplierDashboardScreen extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 30,
-                    backgroundImage: AssetImage('assets/images/avatar.png'), // Change to your asset
+                    backgroundImage: AssetImage('assets/images/avatar.png'),
                   ),
                   const SizedBox(width: 12),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Welcome!',
-                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  const Text(
+                    'Welcome!',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            // Dashboard Cards in a Row
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    DashboardCard(title: "Earnings", value: "₹6002", percentage: "+5%", icon: Icons.attach_money),
-                    DashboardCard(title: "Total Orders", value: "1043", percentage: "+15%", icon: Icons.receipt),
-                    DashboardCard(title: "Total Products", value: "107", percentage: "+5%", icon: Icons.production_quantity_limits),
-                  ],
-                ),
+              child: Row(
+                children: [
+                  DashboardCard(title: "Earnings", value: "₹6002", percentage: "+5%", icon: Icons.attach_money),
+                  DashboardCard(title: "Orders", value: "1043", percentage: "+15%", icon: Icons.receipt),
+                ],
               ),
             ),
             const SizedBox(height: 20),
-
-            // New Orders Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    "New Order",
+                    "Your Products",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   TextButton(
                     onPressed: () {
-                      // Navigate to all orders
+                      // Navigate to Product List
                     },
-                    child: const Text("See All Orders", style: TextStyle(color: Colors.blue)),
+                    child: const Text("See All", style: TextStyle(color: Colors.blue)),
                   ),
                 ],
               ),
             ),
-
-            // Orders List
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                children: [
+                children:  [
                   OrderCard(
-                    orderId: "#20211028-07104354",
-                    date: "2 Nov 2021 04:24 PM",
-                    customerName: "Ankit Gajera",
-                    amount: "₹230.44",
-                    status: "Placed",
-                  ),
-                  OrderCard(
-                    orderId: "#20211028-07104354",
-                    date: "2 Nov 2021 04:24 PM",
-                    customerName: "Ankit Gajera",
-                    amount: "₹230.44",
-                    status: "Placed",
-                  ),
-                  OrderCard(
-                    orderId: "#20211028-07104354",
-                    date: "2 Nov 2021 04:24 PM",
-                    customerName: "Ankit Gajera",
-                    amount: "₹230.44",
-                    status: "Placed",
-                  ),
-                  OrderCard(
-                    orderId: "#20211028-07104354",
-                    date: "2 Nov 2021 04:24 PM",
-                    customerName: "Ankit Gajera",
-                    amount: "₹230.44",
-                    status: "Placed",
+                    orderId: "#202201",
+                    date: "3 Feb 2025",
+                    customerName: "John Doe",
+                    amount: "₹500.00",
+                    status: "Delivered",
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 80), // FIX: Extra spacing to avoid overflow
           ],
         ),
       ),
-
-      // Floating Action Button
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          // Replace 'supplierId' with the actual supplier ID from your app's state or data
-          String supplierId = "exampleSupplierId"; // Fetch or set the supplier ID dynamically
-
+          String supplierId = "exampleSupplierId"; // Replace dynamically
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -170,4 +125,3 @@ class SupplierDashboardScreen extends StatelessWidget {
     );
   }
 }
-

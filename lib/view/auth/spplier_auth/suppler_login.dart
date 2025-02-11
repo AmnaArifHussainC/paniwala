@@ -4,7 +4,9 @@ import 'package:paniwala/view/auth/user_auth/forget_password.dart';
 import 'package:paniwala/widgets/custome_btn_auth.dart';
 import 'package:paniwala/widgets/custome_text_field.dart';
 
+import '../../../services/auth/supplier_auth.dart';
 import '../../../utils/auth_validation/validations.dart';
+import '../../supplier_screen/supplier_dash_screen.dart';
 
 
 class SupplerLoginScreen extends StatelessWidget {
@@ -16,15 +18,46 @@ class SupplerLoginScreen extends StatelessWidget {
    // Form Key
    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-   void _suppliersignIn(BuildContext context) {
+   void _suppliersignIn(BuildContext context) async {
      if (_formKey.currentState?.validate() ?? false) {
-       // Perform sign-in logic here
-       debugPrint("Sign In successful!");
-       ScaffoldMessenger.of(context).showSnackBar(
-         const SnackBar(content: Text("Sign In successful!")),
+       final authService = SupplierAuthService();
+
+       // Show loading indicator
+       showDialog(
+         context: context,
+         barrierDismissible: false,
+         builder: (context) => const Center(
+           child: CircularProgressIndicator(),
+         ),
        );
+
+       // Perform sign-in logic
+       String? result = await authService.signIn(
+         emailController.text.trim(),
+         passController.text.trim(),
+       );
+
+       // Hide loading indicator
+       Navigator.of(context).pop();
+
+       if (result == null) {
+         // If successful, navigate to dashboard
+         Navigator.pushReplacement(
+           context,
+           MaterialPageRoute(
+             builder: (context) =>  SupplierDashboardScreen(),
+           ),
+         );
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text("Sign In successful!")),
+         );
+       } else {
+         // Show error message
+         ScaffoldMessenger.of(context).showSnackBar(
+           SnackBar(content: Text(result)),
+         );
+       }
      } else {
-       // If validation fails, show a general error message
        ScaffoldMessenger.of(context).showSnackBar(
          const SnackBar(content: Text("Please correct the errors in the form.")),
        );

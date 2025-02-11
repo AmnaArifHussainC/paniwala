@@ -1,13 +1,14 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 import '../../services/firestore/supplier_product.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String supplierId;
 
-  const AddProductScreen({Key? key, required this.supplierId})
-      : super(key: key);
+  const AddProductScreen({Key? key, required this.supplierId}) : super(key: key);
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -20,20 +21,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _sizeController = TextEditingController();
 
-  List<File> _uploadedImages = [];
   List<String> _sizes = [];
   final DatabaseService _databaseService = DatabaseService();
-
-  Future<void> _pickImages() async {
-    final picker = ImagePicker();
-    final pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _uploadedImages =
-            pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
-      });
-    }
-  }
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   void _addSize() {
     final size = _sizeController.text.trim();
@@ -51,6 +42,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
     });
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
   Future<void> _submitProduct() async {
     if (_formKey.currentState!.validate()) {
       if (_sizes.isEmpty) {
@@ -59,30 +59,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
         );
         return;
       }
-      if (_uploadedImages.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please add at least one image.")),
-        );
-        return;
-      }
+
+      // if (_selectedImage == null) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text("Please add an image for the product.")),
+      //   );
+      //   return;
+      // }
 
       final productName = _productNameController.text.trim();
       final description = _descriptionController.text.trim();
       final price = double.parse(_priceController.text.trim());
 
       try {
-        final imageUrls = await Future.wait(
-          _uploadedImages.map((image) =>
-              _databaseService.uploadImage(widget.supplierId, image)),
-        );
-
         await _databaseService.addProduct(
           supplierId: widget.supplierId,
           productName: productName,
           description: description,
           price: price,
           sizes: _sizes,
-          images: imageUrls,
+          // imageFile: _selectedImage!,
         );
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -91,8 +87,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
         _formKey.currentState?.reset();
         setState(() {
-          _uploadedImages.clear();
           _sizes.clear();
+          _selectedImage = null;
         });
 
         Navigator.pop(context);
@@ -108,69 +104,60 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Add Product", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
+        title: const Text("Add Product"),
+        centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 16),
               TextFormField(
                 controller: _productNameController,
-                decoration: InputDecoration(
-                    labelText: "Product Name",
-                    labelStyle: const TextStyle(color: Colors.blue),
-                    border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.blue),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue, width: 2))),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Enter a name" : null,
+                decoration: const InputDecoration(
+                  labelText: "Product Name",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter the product name.";
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 2)
-                  ),
+                decoration: const InputDecoration(
                   labelText: "Description",
-                  labelStyle: const TextStyle(color: Colors.blue),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.blue),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  border: OutlineInputBorder(),
                 ),
                 maxLines: 3,
-                validator: (value) => value == null || value.isEmpty
-                    ? "Enter a description"
-                    : null,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter the product description.";
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               TextFormField(
                 controller: _priceController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Price",
-                  labelStyle: const TextStyle(color: Colors.blue),
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.blue),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2)
-                  ),
+                  border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value == null || double.tryParse(value) == null
-                        ? "Enter a valid price"
-                        : null,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter the product price.";
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               Row(
@@ -178,74 +165,60 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _sizeController,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue, width: 2)
-                        ),
-                        labelText: "Size",
-                        labelStyle: const TextStyle(color: Colors.blue),
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                      decoration: const InputDecoration(
+                        labelText: "Add Size",
+                        border: OutlineInputBorder(),
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: _addSize,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: const Text("Add",
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text("Add"),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
                 children: _sizes
-                    .map(
-                      (size) => Chip(
-                        label: Text(size),
-                        onDeleted: () => _removeSize(_sizes.indexOf(size)),
-                        backgroundColor: Colors.blue.shade100,
-                      ),
-                    )
+                    .map((size) => Chip(
+                  label: Text(size),
+                  onDeleted: () =>
+                      _removeSize(_sizes.indexOf(size)),
+                ))
                     .toList(),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _pickImages,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: _selectedImage == null
+                      ? const Center(
+                    child: Text(
+                      "Tap to add product image",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  )
+                      : Image.file(
+                    _selectedImage!,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: const Text("Upload Images",
-                    style: TextStyle(color: Colors.white)),
               ),
               const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                children: _uploadedImages
-                    .map(
-                      (image) => Image.file(
-                        image,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                    .toList(),
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _submitProduct,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submitProduct,
+                  child: const Text("Submit Product"),
                 ),
-                child:
-                    const Text("Submit", style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
