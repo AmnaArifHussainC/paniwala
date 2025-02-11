@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/rider_auth/rider_reg.dart';
 import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
@@ -115,11 +116,12 @@ class CustomDrawer extends StatelessWidget {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel'),
+                      child: const Text('Cancel', style: TextStyle(color: CupertinoColors.inactiveGray),),
                     ),
-                    TextButton(
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                       onPressed: () => Navigator.pop(context, true),
-                      child: const Text('Logout'),
+                      child: const Text("Logout", style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),
