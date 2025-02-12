@@ -102,7 +102,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
         cnic: cnicController.text.trim(),
         phone: phoneController.text.trim(),
         companyName: companyNameController.text.trim(),
-        // filterCertificatePath: uploadedFileURL, // If adding certificate support
       );
 
       Navigator.of(context).pop(); // Close the loading indicator
@@ -110,7 +109,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
       if (result == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("Supplier registered successfully!"),
+            content: Text("Supplier registere request has beed sent to the admin successfully!"),
             backgroundColor: Colors.green,
           ),
         );

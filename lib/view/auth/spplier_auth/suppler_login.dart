@@ -50,9 +50,21 @@ class SupplerLoginScreen extends StatelessWidget {
           const SnackBar(content: Text("Sign In successful!")),
         );
       } else {
+        // Handle different error messages returned from the backend
+        String message;
+        if (result.contains("blocked")) {
+          message = "Your account has been blocked. Contact admin for support.";
+        } else if (result.contains("rejected")) {
+          message = "Your registration was rejected by the admin.";
+        } else if (result.contains("pending approval")) {
+          message = "Your account is pending approval. Please wait for admin approval.";
+        } else {
+          message = result; // Generic error message
+        }
+
         // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result)),
+          SnackBar(content: Text(message)),
         );
       }
     } else {

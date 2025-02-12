@@ -14,6 +14,17 @@ class SupplierAuthService {
     required String companyName,
   }) async {
     try {
+      // Check if the email is blocked
+      QuerySnapshot blockedQuery = await _firestore
+          .collection('suppliers')
+          .where('email', isEqualTo: email)
+          .where('blocked', isEqualTo: true)
+          .get();
+
+      if (blockedQuery.docs.isNotEmpty) {
+        return "Your account is blocked. You cannot register again.";
+      }
+
       // Create the user in Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -34,6 +45,7 @@ class SupplierAuthService {
         'createdAt': FieldValue.serverTimestamp(),
         'verified': false,
         'blocked': false,
+        'status': "Pending", // Default status
       });
 
       // Add request to the admin's `request` subcollection
@@ -48,7 +60,7 @@ class SupplierAuthService {
         'cnic': cnic,
         'phone': phone,
         'companyName': companyName,
-        'status': "Pending", // Default status is "Pending"
+        'status': "Pending",
       });
 
       return null; // Success
@@ -56,6 +68,7 @@ class SupplierAuthService {
       return e.toString();
     }
   }
+
 
   /// Sign in a supplier
   Future<String?> signIn(String email, String password) async {
@@ -82,8 +95,20 @@ class SupplierAuthService {
 
       final data = supplierDoc.data() as Map<String, dynamic>;
       bool isVerified = data['verified'] ?? false;
+      bool isBlocked = data['blocked'] ?? false;
+      String status = data['status'] ?? 'Pending';
 
-      // Step 3: Check verification status
+      // Step 3: Handle different statuses
+      if (isBlocked) {
+        await _auth.signOut(); // Sign out if blocked
+        return "Your account has been blocked. Contact admin for support.";
+      }
+
+      if (status == 'Rejected') {
+        await _auth.signOut(); // Sign out if rejected
+        return "Your registration was rejected by the admin.";
+      }
+
       if (!isVerified) {
         await _auth.signOut(); // Sign out if not verified
         return "Your account is pending approval. Please wait for admin approval.";
