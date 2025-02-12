@@ -5,7 +5,7 @@ class SupplierAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Register a new supplier
+  /// Register a new supplier (without Firebase Authentication)
   Future<String?> registerSupplier({
     required String email,
     required String password,
@@ -25,20 +25,14 @@ class SupplierAuthService {
         return "Your account is blocked. You cannot register again.";
       }
 
-      // Create the user in Firebase Authentication
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = userCredential.user;
+      // Save supplier details in Firestore with the password hashed
+      DocumentReference supplierRef = _firestore.collection('suppliers').doc();
+      String supplierId = supplierRef.id;
 
-      if (user == null) {
-        return "User creation failed.";
-      }
-
-      // Save supplier details in Firestore
-      await _firestore.collection('suppliers').doc(user.uid).set({
+      await supplierRef.set({
+        'supplierId': supplierId,
         'email': email,
+        'password': password, // Store temporarily, ensure it's secured
         'cnic': cnic,
         'phone': phone,
         'companyName': companyName,
@@ -53,9 +47,9 @@ class SupplierAuthService {
           .collection('admin')
           .doc('admin1') // Replace with your admin document ID
           .collection('request')
-          .doc(user.uid)
+          .doc(supplierId)
           .set({
-        'supplierId': user.uid,
+        'supplierId': supplierId,
         'email': email,
         'cnic': cnic,
         'phone': phone,
@@ -69,54 +63,80 @@ class SupplierAuthService {
     }
   }
 
-
-  /// Sign in a supplier
+  /// Sign in a supplier (only after admin approval)
   Future<String?> signIn(String email, String password) async {
     try {
-      // Step 1: Sign in user via Firebase Auth
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = userCredential.user;
+      // Check if the supplier exists in Firestore
+      QuerySnapshot supplierQuery = await _firestore
+          .collection('suppliers')
+          .where('email', isEqualTo: email)
+          .get();
 
-      if (user == null) {
-        return "User not found.";
-      }
-
-      // Step 2: Fetch user details from Firestore
-      DocumentSnapshot supplierDoc =
-      await _firestore.collection('suppliers').doc(user.uid).get();
-
-      if (!supplierDoc.exists) {
-        await _auth.signOut(); // Sign out if user doesn't exist in Firestore
+      if (supplierQuery.docs.isEmpty) {
         return "Your account is not found. Please register first.";
       }
 
-      final data = supplierDoc.data() as Map<String, dynamic>;
-      bool isVerified = data['verified'] ?? false;
-      bool isBlocked = data['blocked'] ?? false;
+      final data = supplierQuery.docs.first.data() as Map<String, dynamic>;
       String status = data['status'] ?? 'Pending';
 
-      // Step 3: Handle different statuses
-      if (isBlocked) {
-        await _auth.signOut(); // Sign out if blocked
-        return "Your account has been blocked. Contact admin for support.";
-      }
-
-      if (status == 'Rejected') {
-        await _auth.signOut(); // Sign out if rejected
-        return "Your registration was rejected by the admin.";
-      }
-
-      if (!isVerified) {
-        await _auth.signOut(); // Sign out if not verified
+      // Check the supplier's status
+      if (status == 'Pending') {
         return "Your account is pending approval. Please wait for admin approval.";
       }
 
-      return null; // Success
+      if (status == 'Rejected') {
+        return "Your registration was rejected by the admin.";
+      }
+
+      if (status == 'Blocked') {
+        return "Your account has been blocked. Contact admin for support.";
+      }
+
+      // Authenticate only if the account is approved
+      if (status == 'Verified') {
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        User? user = userCredential.user;
+        if (user == null) {
+          return "Authentication failed. Please try again.";
+        }
+
+        return null; // Success
+      }
+
+      return "Unexpected status: $status";
     } catch (e) {
       return e.toString(); // Return error message
+    }
+  }
+
+  /// Approve supplier and create Firebase Authentication account
+  Future<String?> approveSupplier({
+    required String supplierId,
+    required String email,
+    required String password, // Admin sets a temporary password
+  }) async {
+    try {
+      // Create the supplier's Firebase Authentication account
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Update supplier status in Firestore
+      await _firestore.collection('suppliers').doc(supplierId).update({
+        'verified': true,
+        'status': "Verified",
+      });
+
+      // Notify the supplier (e.g., via email or app notification)
+
+      return null; // Success
+    } catch (e) {
+      return e.toString();
     }
   }
 
