@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/choose_supplier_type_screen.dart';
 import 'package:paniwala/services/auth/rider_auth.dart';
 import 'package:paniwala/utils/auth_validation/validations.dart';
+
+import '../startup/choose_supplier_type_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
