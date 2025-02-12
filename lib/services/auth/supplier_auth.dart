@@ -25,14 +25,14 @@ class SupplierAuthService {
         return "Your account is blocked. You cannot register again.";
       }
 
-      // Save supplier details in Firestore with the password hashed
+      // Save supplier details in Firestore with the password temporarily stored
       DocumentReference supplierRef = _firestore.collection('suppliers').doc();
       String supplierId = supplierRef.id;
 
       await supplierRef.set({
         'supplierId': supplierId,
         'email': email,
-        'password': password, // Store temporarily, ensure it's secured
+        'password': password, // Temporarily stored, hash this in production
         'cnic': cnic,
         'phone': phone,
         'companyName': companyName,
@@ -94,17 +94,20 @@ class SupplierAuthService {
 
       // Authenticate only if the account is approved
       if (status == 'Verified') {
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
+        try {
+          UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
 
-        User? user = userCredential.user;
-        if (user == null) {
-          return "Authentication failed. Please try again.";
+          if (userCredential.user == null) {
+            return "Authentication failed. Please try again.";
+          }
+
+          return null; // Success
+        } catch (e) {
+          return "Authentication failed: ${e.toString()}";
         }
-
-        return null; // Success
       }
 
       return "Unexpected status: $status";
@@ -126,13 +129,15 @@ class SupplierAuthService {
         password: password,
       );
 
+      if (userCredential.user == null) {
+        return "Failed to create Firebase account.";
+      }
+
       // Update supplier status in Firestore
       await _firestore.collection('suppliers').doc(supplierId).update({
         'verified': true,
         'status': "Verified",
       });
-
-      // Notify the supplier (e.g., via email or app notification)
 
       return null; // Success
     } catch (e) {
