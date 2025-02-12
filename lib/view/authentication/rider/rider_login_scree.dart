@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/widgets/custome_btn_auth.dart';
-import 'package:paniwala/widgets/custome_text_field.dart';
-import '../../../services/auth/rider_auth.dart';
-import '../../../utils/auth_validation/validations.dart';
-import '../../rider_screen/rider_dash.dart';
+
+import '../../../config/custome_widgets/custome_btn_auth.dart';
+import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/utils/validators.dart';
 
 class RiderSignInScreen extends StatelessWidget {
   RiderSignInScreen({super.key});
@@ -13,35 +12,6 @@ class RiderSignInScreen extends StatelessWidget {
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  void _riderLogin(BuildContext context) async {
-    if (_formKey.currentState?.validate() ?? false) {
-      RiderAuthService authService = RiderAuthService();
-
-      String? result = await authService.signInRider(
-        email: emailController.text.trim(),
-        password: passController.text.trim(),
-      );
-
-      if (result == "Rider signed in successfully") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login successful!")),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) =>  RiderDashboard()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result ?? "An error occurred")),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in valid credentials")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +80,7 @@ class RiderSignInScreen extends StatelessWidget {
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      _riderLogin(context);
+
                     },
                     color: Colors.blue,
                   ),

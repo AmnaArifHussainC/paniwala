@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/auth/rider_auth/rider_login.dart';
-import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
-import 'package:paniwala/widgets/choose_screen_cards.dart';
+
+import '../../config/custome_widgets/choose_screen_cards.dart';
+import '../authentication/rider/rider_login_scree.dart';
+import '../authentication/supplier/supplier_register_screen.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
   @override
@@ -46,17 +47,28 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                   Column(
                     children: [
                       AccountCard(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SupplierRegisterScreen()));
+                        },
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",
                         description: "Register your water company",
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SupplierRegisterScreen())),
                       ),
                       const SizedBox(height: 20),
                       AccountCard(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiderSignInScreen()));
+                        },
                         image: "assets/images/rider.png",
                         title: "Rider",
                         description: "Join as a water delivery rider",
-                        onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (context) => RiderSignInScreen())),
                       ),
                     ],
                   ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
-import 'package:paniwala/view/auth/user_auth/forget_password.dart';
-import 'package:paniwala/widgets/custome_btn_auth.dart';
-import 'package:paniwala/widgets/custome_text_field.dart';
-import '../../../services/auth/supplier_auth.dart';
-import '../../../utils/auth_validation/validations.dart';
-import '../../supplier_screen/supplier_dash_screen.dart';
+
+import '../../../config/custome_widgets/custome_btn_auth.dart';
+import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/utils/validators.dart';
+import '../consumer/consumer_forgot_password.dart';
+
 
 class SupplerLoginScreen extends StatelessWidget {
   SupplerLoginScreen({super.key});
@@ -15,64 +14,6 @@ class SupplerLoginScreen extends StatelessWidget {
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  void _suppliersignIn(BuildContext context) async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final authService = SupplierAuthService();
-
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-
-      // Perform sign-in logic
-      String? result = await authService.signIn(
-        emailController.text.trim(),
-        passController.text.trim(),
-      );
-
-      // Hide loading indicator
-      Navigator.of(context).pop();
-
-      if (result == null) {
-        // If successful, navigate to dashboard
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SupplierDashboardScreen(),
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign In successful!")),
-        );
-      } else {
-        // Handle different error messages returned from the backend
-        String message;
-        if (result.contains("blocked")) {
-          message = "Your account has been blocked. Contact admin for support.";
-        } else if (result.contains("rejected")) {
-          message = "Your registration was rejected by the admin.";
-        } else if (result.contains("pending approval")) {
-          message = "Your account is pending approval. Please wait for admin approval.";
-        } else {
-          message = result; // Generic error message
-        }
-
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please correct the errors in the form.")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,8 +91,7 @@ class SupplerLoginScreen extends StatelessWidget {
                   CustomButton(
                     text: "Sign In",
                     onPressed: () {
-                      debugPrint("Sign In Pressed");
-                      _suppliersignIn(context);
+
                     },
                     color: Colors.blue,
                   ),
@@ -162,13 +102,7 @@ class SupplerLoginScreen extends StatelessWidget {
                       const Text("Don’t have an account?"),
                       TextButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                              const SupplierRegisterScreen(),
-                            ),
-                          );
+
                         },
                         child: const Text(
                           "Register",

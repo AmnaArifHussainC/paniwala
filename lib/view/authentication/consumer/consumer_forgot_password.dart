@@ -1,19 +1,50 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/config/services/auth_service.dart';
 
-import '../../../utils/auth_validation/validations.dart';
-import '../../../widgets/custome_text_field.dart';
+import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/utils/validators.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   ForgotPasswordScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
-
-  // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthService _authservice = AuthService();
 
-  forgotPassword()async{
-    await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text.trim());
+  // Reset Password Function
+  Future<bool> ForgetPassword(String email, BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      bool success = await _authservice.resetPassword(emailController.text.trim());
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Password reset link has been sent to your email. Kindly check your inbox.",
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+        emailController.clear();
+        return true; // ✅ Return true on success
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to send reset link. Please try again."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return false; // ✅ Return false on failure
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please enter a valid email."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false; // ✅ Return false if validation fails
+    }
   }
 
   @override
@@ -37,7 +68,7 @@ class ForgotPasswordScreen extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08), // Dynamic padding
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.08),
         child: Center(
           child: SingleChildScrollView(
             child: Form(
@@ -70,21 +101,8 @@ class ForgotPasswordScreen extends StatelessWidget {
 
                   // Reset Password Button
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        // Proceed with sending the reset link
-                        String email = emailController.text.trim();
-                        debugPrint("Password reset request for: $email");
-                        forgotPassword();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Password reset link has sent to your Email\n Kindly visit you Email Account")),
-                        );
-                      } else {
-                        // If validation fails, show an error message
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please enter a valid email")),
-                        );
-                      }
+                    onPressed: () async {
+                      ForgetPassword(emailController.text.trim(), context);
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 15),

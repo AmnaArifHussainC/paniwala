@@ -1,14 +1,8 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:paniwala/view/auth/spplier_auth/suppler_login.dart';
-import '../../../services/auth/supplier_auth.dart';
-import '../../../utils/auth_validation/validations.dart';
-import '../../../widgets/custome_btn_auth.dart';
-import '../../../widgets/custome_text_field.dart';
+import 'package:paniwala/view/authentication/supplier/supplier_login_screen.dart';
+import '../../../config/custome_widgets/custome_btn_auth.dart';
+import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/utils/validators.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
   const SupplierRegisterScreen({super.key});
@@ -28,108 +22,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   String? selectedFilePath;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // Function to pick a PDF file
-  Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      String filePath = result.files.first.path!;
-      String fileExtension = filePath.split('.').last.toLowerCase();
-
-      if (fileExtension == 'pdf') {
-        setState(() {
-          selectedFilePath = filePath;
-          filterCertificateController.text = result.files.first.name; // Show file name in text field
-        });
-      } else {
-        // Show error if a non-PDF file is selected
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Please select a valid PDF file"),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  // Function to upload a file to Firebase
-  Future<String?> uploadFileToFirebase(String filePath, String fileName) async {
-    try {
-      File file = File(filePath);
-
-      Reference storageRef = FirebaseStorage.instance
-          .ref()
-          .child('uploads/certificates/$fileName');
-
-      TaskSnapshot snapshot = await storageRef.putFile(file);
-
-      if (snapshot.state == TaskState.success) {
-        return await snapshot.ref.getDownloadURL();
-      } else {
-        return null;
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error uploading file: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return null;
-    }
-  }
-
-
-  Future<void> registerSupplier(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      final authService = SupplierAuthService();
-
-      // Show a loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-
-      String? result = await authService.registerSupplier(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        cnic: cnicController.text.trim(),
-        phone: phoneController.text.trim(),
-        companyName: companyNameController.text.trim(),
-      );
-
-      Navigator.of(context).pop(); // Close the loading indicator
-
-      if (result == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Supplier registere request has beed sent to the admin successfully!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        // Navigate to the login screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(result),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +128,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                         width: 2,
                       ),
                     ),
-                    onPressed: pickFile,
+                    onPressed: (){},
                     icon: const Icon(Icons.upload_file, color: Colors.blue),
                     label: const Text(
                       "Upload PDF Certificate",
@@ -257,7 +149,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
 
                   CustomButton(
                     text: "Register Supplier",
-                    onPressed: () => registerSupplier(context),
+                    onPressed: (){},
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 20),

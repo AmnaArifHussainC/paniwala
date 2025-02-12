@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'choose_account_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {

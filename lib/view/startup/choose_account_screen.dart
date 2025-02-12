@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/auth/user_auth/signin.dart';
-import 'package:paniwala/widgets/choose_screen_cards.dart';
 
-import 'choose_supplier_type_screen.dart';
+import '../../config/custome_widgets/choose_screen_cards.dart';
+import '../../view_model/auth_viewmodel.dart';
+import '../../view_model/auth_viewmodel.dart';
+import '../authentication/consumer/consumer_register.dart';
+import 'choose_supplier_rider-screen.dart';
 
 class ChooseAccountScreen extends StatelessWidget {
   const ChooseAccountScreen({super.key});
@@ -49,43 +51,46 @@ class ChooseAccountScreen extends StatelessWidget {
                   Column(
                     children: [
                       AccountCard(
-                        image: "assets/images/consumer.png",
-                        title: "Consumer",
-                        description: "Order fresh water online",
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const SignInScreen()),
-                        ),
-                      ),
+                          image: "assets/images/consumer.png",
+                          title: "Consumer",
+                          description: "Order fresh water online",
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterScreen(
+                                          authViewModel: AuthViewModel(),
+                                        )));
+                          }),
                       const SizedBox(height: 20),
                       AccountCard(
                         image: "assets/images/supplier.png",
                         title: "Supplier",
                         description: "Register your water business",
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => ChooseSupplierTypeScreen()),
-                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChooseSupplierTypeScreen()));
+                        },
                       ),
                     ],
                   ),
 
                   const SizedBox(height: 30),
-
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SignInScreen()),
-                    ),
-                    child: const Text(
-                      "Already have an account? Log in",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  //
+                  // GestureDetector(
+                  //   onTap: (){},
+                  //   child: const Text(
+                  //     "Already have an account? Log in",
+                  //     style: TextStyle(
+                  //       fontSize: 16,
+                  //       color: Colors.blue,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

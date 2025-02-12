@@ -36,6 +36,7 @@ dependencies:
   cloud_firestore:
   permission_handler:
   lottie:
+  firebase_app_check: ^0.3.2+2
 
 
 
