@@ -1,24 +1,20 @@
-import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class SupplierAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  /// Sign up a new supplier with email and password
+  /// Register a new supplier
   Future<String?> registerSupplier({
     required String email,
     required String password,
     required String cnic,
     required String phone,
     required String companyName,
-    // String? filterCertificatePath, // Path of the uploaded PDF
   }) async {
     try {
-      // Step 1: Create the user in Firebase Auth
+      // Create the user in Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -29,40 +25,73 @@ class SupplierAuthService {
         return "User creation failed.";
       }
 
-      // Step 2: Upload Water Filter Certificate (if provided)
-      // String? certificateUrl;
-      // if (filterCertificatePath != null) {
-      //   File certificateFile = File(filterCertificatePath);
-      //   final ref = _storage
-      //       .ref()
-      //       .child('suppliers/${user.uid}/certificate.pdf');
-      //   final uploadTask = await ref.putFile(certificateFile);
-      //   certificateUrl = await uploadTask.ref.getDownloadURL();
-      // }
-
-      // Step 3: Save supplier details in Firestore
+      // Save supplier details in Firestore
       await _firestore.collection('suppliers').doc(user.uid).set({
         'email': email,
         'cnic': cnic,
         'phone': phone,
         'companyName': companyName,
-        // 'certificateUrl': certificateUrl,
         'createdAt': FieldValue.serverTimestamp(),
+        'verified': false,
+        'blocked': false,
       });
 
-      return null; // Return null if successful
+      // Add request to the admin's `request` subcollection
+      await _firestore
+          .collection('admin')
+          .doc('admin1') // Replace with your admin document ID
+          .collection('request')
+          .doc(user.uid)
+          .set({
+        'supplierId': user.uid,
+        'email': email,
+        'cnic': cnic,
+        'phone': phone,
+        'companyName': companyName,
+        'status': "Pending", // Default status is "Pending"
+      });
+
+      return null; // Success
     } catch (e) {
-      return e.toString(); // Return error if any
+      return e.toString();
     }
   }
 
-  /// Sign in with email and password
+  /// Sign in a supplier
   Future<String?> signIn(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return null; // Return null if successful
+      // Step 1: Sign in user via Firebase Auth
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? user = userCredential.user;
+
+      if (user == null) {
+        return "User not found.";
+      }
+
+      // Step 2: Fetch user details from Firestore
+      DocumentSnapshot supplierDoc =
+      await _firestore.collection('suppliers').doc(user.uid).get();
+
+      if (!supplierDoc.exists) {
+        await _auth.signOut(); // Sign out if user doesn't exist in Firestore
+        return "Your account is not found. Please register first.";
+      }
+
+      final data = supplierDoc.data() as Map<String, dynamic>;
+      bool isVerified = data['verified'] ?? false;
+
+      // Step 3: Check verification status
+      if (!isVerified) {
+        await _auth.signOut(); // Sign out if not verified
+        return "Your account is pending approval. Please wait for admin approval.";
+      }
+
+      return null; // Success
     } catch (e) {
-      return e.toString(); // Return error if any
+      return e.toString(); // Return error message
     }
   }
 
@@ -75,7 +104,7 @@ class SupplierAuthService {
     }
   }
 
-  /// Get current user
+  /// Get the current user
   User? getCurrentUser() {
     return _auth.currentUser;
   }

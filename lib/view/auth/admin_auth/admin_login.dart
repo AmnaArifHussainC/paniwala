@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/auth/spplier_auth/supplier_reg.dart';
-import 'package:paniwala/view/auth/user_auth/forget_password.dart';
-import 'package:paniwala/widgets/custome_btn_auth.dart';
-import 'package:paniwala/widgets/custome_text_field.dart';
-import '../../../services/auth/supplier_auth.dart';
-import '../../../utils/auth_validation/validations.dart';
-import '../../supplier_screen/supplier_dash_screen.dart';
+import 'package:paniwala/view/admin_screen/admin.dart';
+import '../../../services/auth/admin_auth.dart';
 
-class SupplerLoginScreen extends StatelessWidget {
-  SupplerLoginScreen({super.key});
+class AdminLoginScreen extends StatelessWidget {
+  AdminLoginScreen({super.key});
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
@@ -16,9 +11,9 @@ class SupplerLoginScreen extends StatelessWidget {
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  void _suppliersignIn(BuildContext context) async {
+  void _adminSignIn(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
-      final authService = SupplierAuthService();
+      final authService = AdminAuthService();
 
       // Show loading indicator
       showDialog(
@@ -39,15 +34,15 @@ class SupplerLoginScreen extends StatelessWidget {
       Navigator.of(context).pop();
 
       if (result == null) {
-        // If successful, navigate to dashboard
+        // If successful, navigate to admin dashboard
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => SupplierDashboardScreen(),
+            builder: (context) =>  AdminMainScreen(),
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign In successful!")),
+          const SnackBar(content: Text("Admin Sign In successful!")),
         );
       } else {
         // Show error message
@@ -74,7 +69,7 @@ class SupplerLoginScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text(
-          "Paniwala",
+          "Admin Login",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -94,7 +89,7 @@ class SupplerLoginScreen extends StatelessWidget {
                 children: [
                   const Center(
                     child: Text(
-                      "Sign In",
+                      "Admin Sign In",
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -102,68 +97,64 @@ class SupplerLoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  CustomTextField(
-                    textinputtype: TextInputType.emailAddress,
-                    validator: (value) => ValidationUtils.validateEmail(value),
+                  // Email Field
+                  TextFormField(
                     controller: emailController,
-                    hintText: "Email",
-                    icon: Icons.email,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your email.";
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return "Please enter a valid email.";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Email",
+                      prefixIcon: const Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  CustomTextField(
-                    textinputtype: TextInputType.text,
-                    validator: (value) => ValidationUtils.validatePassword(value),
+                  // Password Field
+                  TextFormField(
                     controller: passController,
-                    hintText: "Password",
-                    icon: Icons.lock,
+                    keyboardType: TextInputType.text,
                     obscureText: true,
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ForgotPasswordScreen()),
-                        );
-                      },
-                      child: const Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.blue),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your password.";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be at least 6 characters long.";
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Password",
+                      prefixIcon: const Icon(Icons.lock),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
-                  CustomButton(
-                    text: "Sign In",
+                  // Sign In Button
+                  ElevatedButton(
                     onPressed: () {
-                      debugPrint("Sign In Pressed");
-                      _suppliersignIn(context);
+                      _adminSignIn(context);
                     },
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don’t have an account?"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                              const SupplierRegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: const Text(
-                          "Register",
-                          style: TextStyle(color: Colors.blue),
-                        ),
+                    child: const Text("Sign In"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      textStyle: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),

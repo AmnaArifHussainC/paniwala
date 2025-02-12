@@ -96,26 +96,13 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
         ),
       );
 
-      // String? uploadedFileURL;
-      // if (selectedFilePath != null) {
-      //   uploadedFileURL = await uploadFileToFirebase(
-      //     selectedFilePath!,
-      //     filterCertificateController.text.trim(),
-      //   );
-
-      //   if (uploadedFileURL == null) {
-      //     Navigator.of(context).pop(); // Close the loading indicator
-      //     return;
-      //   }
-      // }
-
       String? result = await authService.registerSupplier(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
         cnic: cnicController.text.trim(),
         phone: phoneController.text.trim(),
         companyName: companyNameController.text.trim(),
-        // filterCertificatePath: uploadedFileURL,
+        // filterCertificatePath: uploadedFileURL, // If adding certificate support
       );
 
       Navigator.of(context).pop(); // Close the loading indicator
