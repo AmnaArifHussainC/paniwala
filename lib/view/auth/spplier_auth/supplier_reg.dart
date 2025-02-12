@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -22,67 +23,67 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController companyNameController = TextEditingController();
-  // final TextEditingController filterCertificateController = TextEditingController();
+  final TextEditingController filterCertificateController = TextEditingController();
 
-  // String? selectedFilePath; // Store the selected file path
+  String? selectedFilePath;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // // Function to pick a PDF file
-  // Future<void> pickFile() async {
-  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
-  //     type: FileType.custom,
-  //     allowedExtensions: ['pdf'],
-  //   );
+  // Function to pick a PDF file
+  Future<void> pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
 
-  //   if (result != null && result.files.isNotEmpty) {
-  //     String filePath = result.files.first.path!;
-  //     String fileExtension = filePath.split('.').last.toLowerCase();
+    if (result != null && result.files.isNotEmpty) {
+      String filePath = result.files.first.path!;
+      String fileExtension = filePath.split('.').last.toLowerCase();
 
-  //     if (fileExtension == 'pdf') {
-  //       setState(() {
-  //         selectedFilePath = filePath;
-  //         filterCertificateController.text = result.files.first.name; // Show file name in text field
-  //       });
-  //     } else {
-  //       // Show error if a non-PDF file is selected
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         const SnackBar(
-  //           content: Text("Please select a valid PDF file"),
-  //           backgroundColor: Colors.red,
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
+      if (fileExtension == 'pdf') {
+        setState(() {
+          selectedFilePath = filePath;
+          filterCertificateController.text = result.files.first.name; // Show file name in text field
+        });
+      } else {
+        // Show error if a non-PDF file is selected
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please select a valid PDF file"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
-  // // Function to upload a file to Firebase
-  // Future<String?> uploadFileToFirebase(String filePath, String fileName) async {
-  //   try {
-  //     File file = File(filePath);
+  // Function to upload a file to Firebase
+  Future<String?> uploadFileToFirebase(String filePath, String fileName) async {
+    try {
+      File file = File(filePath);
 
-  //     Reference storageRef = FirebaseStorage.instance
-  //         .ref()
-  //         .child('uploads/certificates/$fileName');
+      Reference storageRef = FirebaseStorage.instance
+          .ref()
+          .child('uploads/certificates/$fileName');
 
-  //     TaskSnapshot snapshot = await storageRef.putFile(file);
+      TaskSnapshot snapshot = await storageRef.putFile(file);
 
-  //     if (snapshot.state == TaskState.success) {
-  //       return await snapshot.ref.getDownloadURL();
-  //     } else {
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text("Error uploading file: $e"),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //     return null;
-  //   }
-  // }
+      if (snapshot.state == TaskState.success) {
+        return await snapshot.ref.getDownloadURL();
+      } else {
+        return null;
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error uploading file: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return null;
+    }
+  }
 
-  // Function to register a supplier
+
   Future<void> registerSupplier(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final authService = SupplierAuthService();
@@ -171,18 +172,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  CustomTextField(
-                    textinputtype: TextInputType.text,
-                    controller: companyNameController,
-                    hintText: "Company Name",
-                    icon: Icons.business,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter your company name";
-                      }
-                      return null;
-                    },
-                  ),
+
 
                   const SizedBox(height: 20),
 
@@ -224,37 +214,44 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // CustomTextField(
-                  //   controller: filterCertificateController,
-                  //   hintText: "Water Filter Certificate (PDF)",
-                  //   icon: Icons.file_copy,
-                  //   validator: (value) => ValidationUtils.validatePDFUpload(value),
-                  // ),
-                  // const SizedBox(height: 10),
+                  CustomTextField(
+                    textinputtype: TextInputType.text, // Ensure this is present
+                    controller: companyNameController,
+                    hintText: "Company Name",
+                    icon: Icons.business,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your company name";
+                      }
+                      return null;
+                    },
+                  ),
 
-                  // ElevatedButton.icon(
-                  //   style: ElevatedButton.styleFrom(
-                  //     side: const BorderSide(
-                  //       color: Colors.blue,
-                  //       width: 2,
-                  //     ),
-                  //   ),
-                  //   onPressed: pickFile,
-                  //   icon: const Icon(Icons.upload_file, color: Colors.blue),
-                  //   label: const Text(
-                  //     "Upload PDF Certificate",
-                  //     style: TextStyle(color: Colors.blue),
-                  //   ),
-                  // ),
+                  const SizedBox(height: 10),
 
-                  // if (selectedFilePath != null)
-                  //   TextButton(
-                  //     onPressed: (){},
-                  //     child: const Text(
-                  //       "Open Selected File",
-                  //       style: TextStyle(color: Colors.blue),
-                  //     ),
-                  //   ),
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      side: const BorderSide(
+                        color: Colors.blue,
+                        width: 2,
+                      ),
+                    ),
+                    onPressed: pickFile,
+                    icon: const Icon(Icons.upload_file, color: Colors.blue),
+                    label: const Text(
+                      "Upload PDF Certificate",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                  ),
+
+                  if (selectedFilePath != null)
+                    TextButton(
+                      onPressed: (){},
+                      child: const Text(
+                        "Open Selected File",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
 
                   const SizedBox(height: 20),
 

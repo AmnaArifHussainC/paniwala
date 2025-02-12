@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (isFirstTime) {
       await prefs.setBool('isFirstTime', false);
-      _navigateToScreen(OnboardingScreen());
+      _navigateToScreen(const OnboardingScreen());
       return;
     }
 
@@ -81,14 +81,14 @@ class _SplashScreenState extends State<SplashScreen> {
         }
 
         // If user is not found in any collection
-        _navigateToScreen(SignInScreen());
+        _navigateToScreen(const SignInScreen());
       } catch (e) {
         print("Error during role check: $e");
-        _navigateToScreen(SignInScreen());
+        _navigateToScreen(const SignInScreen());
       }
     } else {
       // Navigate to SignInScreen if not logged in
-      _navigateToScreen(ChooseAccountScreen());
+      _navigateToScreen(const ChooseAccountScreen());
     }
   }
 

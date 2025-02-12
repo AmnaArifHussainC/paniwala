@@ -54,7 +54,7 @@ class ChooseAccountScreen extends StatelessWidget {
                         description: "Order fresh water online",
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => SignInScreen()),
+                          MaterialPageRoute(builder: (context) => const SignInScreen()),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -75,7 +75,7 @@ class ChooseAccountScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SignInScreen()),
+                      MaterialPageRoute(builder: (context) => const SignInScreen()),
                     ),
                     child: const Text(
                       "Already have an account? Log in",
