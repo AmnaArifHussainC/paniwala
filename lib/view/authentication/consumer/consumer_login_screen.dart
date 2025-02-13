@@ -44,12 +44,30 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    bool success = await widget.authViewModel.signInWithGoogle();
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google Sign-In Successful!')),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+            (route) => false,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google Sign-In failed. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.blue,
         elevation: 0,
         centerTitle: true,
@@ -103,6 +121,20 @@ class _SignInScreenState extends State<SignInScreen> {
                     text: widget.authViewModel.isLoading ? "Signing In..." : "Sign In",
                     onPressed: widget.authViewModel.isLoading ? null : _signInUser,
                     color: Colors.blue,
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    onPressed: widget.authViewModel.isLoading ? null : _signInWithGoogle,
+                    icon: Image.asset("assets/images/google.png", height: 24),
+                    label: const Text("Signin with Google"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      side: const BorderSide(color: Colors.grey),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Row(

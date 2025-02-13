@@ -30,10 +30,8 @@ class AuthViewModel extends ChangeNotifier {
     return false;
   }
 
-
-
   // Register function
-  Future<bool> register(String fullName, String email, String password) async{
+  Future<bool> register(String fullName, String email, String password) async {
     _isLoading = true;
     notifyListeners(); // Notify UI about loading state
 
@@ -60,5 +58,37 @@ class AuthViewModel extends ChangeNotifier {
     _isLoading = false;
     notifyListeners(); // Notify UI to stop loading
     return false;
+  }
+
+  // Google Sign-In function
+  Future<bool> signInWithGoogle() async {
+    _isLoading = true;
+    notifyListeners(); // Notify UI to show loading spinner
+
+    try {
+      final firebaseUser = await _authService.signInWithGoogle();
+      if (firebaseUser != null) {
+        _user = await _authService.getUserData(firebaseUser.uid); // Get user details
+        notifyListeners(); // Notify UI of success
+        return true;
+      }
+    } catch (e) {
+      print("Google Sign-In error: $e");
+    }
+
+    _isLoading = false;
+    notifyListeners(); // Notify UI to stop loading
+    return false;
+  }
+
+  // Sign-Out function
+  Future<void> signOut() async {
+    _isLoading = true;
+    notifyListeners();
+
+    await _authService.signOut();
+    _user = null;
+    _isLoading = false;
+    notifyListeners();
   }
 }
