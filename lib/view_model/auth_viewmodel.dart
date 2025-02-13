@@ -33,7 +33,7 @@ class AuthViewModel extends ChangeNotifier {
 
 
   // Register function
-  Future<bool> register(String email, String password, String fullName) async {
+  Future<bool> register(String fullName, String email, String password) async{
     _isLoading = true;
     notifyListeners(); // Notify UI about loading state
 
