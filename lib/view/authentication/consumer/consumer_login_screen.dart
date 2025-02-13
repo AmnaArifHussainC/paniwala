@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/consumer/consumer_dashboard.dart';
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
@@ -30,7 +31,11 @@ class _SignInScreenState extends State<SignInScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign In Successful!')),
         );
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+              (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login failed. Please try again.')),
