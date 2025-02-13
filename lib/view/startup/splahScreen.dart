@@ -13,24 +13,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _checkUserFirstTime();
+    _startSplashScreen();
   }
 
-  Future<void> _checkUserFirstTime()async{
+  Future<void> _startSplashScreen() async {
+    // Show splash screen for 2 seconds before checking onboarding status
+    await Future.delayed(Duration(seconds: 2));
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+
     if (isFirstTime) {
-      // Mark that onboarding has been seen
       await prefs.setBool('isFirstTime', false);
-      // Navigate to the Onboarding Screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
     } else {
-      // Navigate to the Home Screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
@@ -56,7 +56,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: Colors.blue,
               ),
             ),
-            Image.asset('assets/images/icon.png', width: 200),
           ],
         ),
       ),
