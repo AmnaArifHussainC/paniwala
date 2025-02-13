@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
 
 import '../../config/custome_widgets/choose_screen_cards.dart';
 import '../../view_model/auth_viewmodel.dart';
@@ -58,7 +59,7 @@ class ChooseAccountScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RegisterScreen(
+                                    builder: (context) => SignInScreen(
                                           authViewModel: AuthViewModel(),
                                         )));
                           }),
