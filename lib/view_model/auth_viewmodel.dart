@@ -45,7 +45,7 @@ class AuthViewModel extends ChangeNotifier {
           uid: firebaseUser.uid,
           name: fullName,
           email: email,
-          role: 'customer', // Default role is 'customer'
+          role: 'customer',
           createdAt: DateTime.now(),
         );
 
