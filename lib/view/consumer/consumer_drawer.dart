@@ -32,15 +32,6 @@ class CustomUserDrawer extends StatelessWidget {
             ),
           ),
 
-          // "Login as Supplier" button
-          ListTile(
-            leading: const Icon(Icons.business),
-            title: const Text('Login as Supplier'),
-            onTap: () {
-              // Implement navigation to Supplier login screen
-            },
-          ),
-
           // List of Drawer Items
           ListTile(
             leading: const Icon(Icons.home),
