@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
+import 'package:paniwala/view/consumer/consumer_dashboard.dart';
+import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'choose_account_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'onboarding_screen.dart';
+
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -18,7 +20,6 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _startSplashScreen() async {
-    // Show splash screen for 2 seconds before checking onboarding status
     await Future.delayed(Duration(seconds: 2));
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,10 +31,19 @@ class _SplashScreenState extends State<SplashScreen> {
         context,
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
+      return;
+    }
+
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
       );
     }
   }
