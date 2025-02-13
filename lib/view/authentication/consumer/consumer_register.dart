@@ -20,8 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -33,6 +32,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
+    // Validate email using ValidationUtils
+    final emailError = ValidationUtils.validateEmail(email);
+    if (emailError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(emailError)),
+      );
+      return;
+    }
+
     bool isSuccess = await widget.authViewModel.register(name, email, password);
 
     if (isSuccess) {
@@ -40,11 +48,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SnackBar(content: Text("Registration successful!")),
       );
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SignInScreen(
-                  authViewModel:
-                      AuthViewModel()))); // Navigate to login or another screen
+        context,
+        MaterialPageRoute(
+          builder: (context) => SignInScreen(authViewModel: AuthViewModel()),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Registration failed. Please try again.")),
