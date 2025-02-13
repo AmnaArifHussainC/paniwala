@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../model/supplier_model.dart';
 import '../../model/user_model.dart';
 
 class AuthService {
@@ -24,6 +25,8 @@ class AuthService {
       return null;
     }
   }
+
+
 
 
   // Sign Out Function
@@ -87,7 +90,6 @@ class AuthService {
 
 
 
-
   // User Register Function
   Future<User?> registerUser(String email, String password, String name) async {
     try {
@@ -144,4 +146,40 @@ class AuthService {
     }
     return null;
   }
+
+
+
+
+  // Supplier Register Function
+  Future<User?> registerSupplier(String email, String password, String name, String cnic, String companyName) async {
+    try {
+      // Register the supplier in Firebase Auth
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      // Create a SupplierModel instance
+      SupplierModel supplier = SupplierModel(
+        uid: userCredential.user!.uid,
+        email: email,
+        cnic: cnic,
+        companyName: companyName,
+        role: 'Supplier', // Default role for suppliers
+        createdAt: DateTime.now(),
+      );
+
+      // Save supplier details to Firestore using the model
+      await _firestore
+          .collection('Suppliers')
+          .doc(supplier.uid)
+          .set(supplier.toFirestore());
+      print("Supplier registered successfully.");
+      return userCredential.user;
+    } catch (e) {
+      print("Register Supplier Error: $e");
+      return null;
+    }
+  }
+
 }

@@ -3,6 +3,7 @@ import 'package:paniwala/view/authentication/supplier/supplier_login_screen.dart
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
+import '../../../view_model/auth_viewmodel.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
   const SupplierRegisterScreen({super.key});
@@ -17,11 +18,52 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController companyNameController = TextEditingController();
-  final TextEditingController filterCertificateController = TextEditingController();
-
   String? selectedFilePath;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
+
+  // Instantiate AuthViewModel
+  final AuthViewModel authViewModel = AuthViewModel();
+
+
+  // Function to handle registration
+  Future<void> registerSupplier() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+      bool isSuccess = await authViewModel.registerSupplier(
+        companyNameController.text,
+        emailController.text,
+        passwordController.text,
+        cnicController.text,
+        phoneController.text,
+      );
+      setState(() {
+        isLoading = false;
+      });
+      if (isSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Registration Successful"),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Registration Failed"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +104,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-
-
-
                   const SizedBox(height: 20),
 
                   CustomTextField(
@@ -85,7 +123,6 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     validator: (value) => ValidationUtils.validatePhoneNumber(value),
                   ),
                   const SizedBox(height: 10),
-
 
                   CustomTextField(
                     textinputtype: TextInputType.emailAddress,
@@ -107,7 +144,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   CustomTextField(
-                    textinputtype: TextInputType.text, // Ensure this is present
+                    textinputtype: TextInputType.text,
                     controller: companyNameController,
                     hintText: "Company Name",
                     icon: Icons.business,
@@ -118,17 +155,12 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                       return null;
                     },
                   ),
-
                   const SizedBox(height: 10),
 
                   ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.blue,
-                        width: 2,
-                      ),
-                    ),
-                    onPressed: (){},
+                    onPressed: () {
+                      // Handle file selection logic
+                    },
                     icon: const Icon(Icons.upload_file, color: Colors.blue),
                     label: const Text(
                       "Upload PDF Certificate",
@@ -136,20 +168,11 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     ),
                   ),
 
-                  if (selectedFilePath != null)
-                    TextButton(
-                      onPressed: (){},
-                      child: const Text(
-                        "Open Selected File",
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-
                   const SizedBox(height: 20),
 
                   CustomButton(
-                    text: "Register Supplier",
-                    onPressed: (){},
+                    text: isLoading ? "Requesting..." : "Request has been sent",
+                    onPressed: isLoading ? null : registerSupplier,
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 20),
