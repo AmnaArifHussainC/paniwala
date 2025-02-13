@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
 import 'package:paniwala/view/consumer/consumer_dashboard.dart';
+import 'package:paniwala/view/supplier/supplier_dashboard.dart';
+import 'package:paniwala/view/rider/rider_dashboard.dart';
+import 'package:paniwala/view/admin/admin_dashboard.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -35,11 +39,53 @@ class _SplashScreenState extends State<SplashScreen> {
 
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      _navigateBasedOnRole(user.uid);
+    } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
       );
-    } else {
+    }
+  }
+
+  Future<void> _navigateBasedOnRole(String uid) async {
+    try {
+      DocumentSnapshot userDoc =
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      if (userDoc.exists) {
+        String role = userDoc['role'] ?? 'consumer'; // Default role
+
+        Widget nextScreen;
+        switch (role) {
+          case 'consumer':
+            nextScreen = HomeScreen();
+            break;
+          // case 'supplier':
+          //   nextScreen = SupplierDashboard();
+          //   break;
+          // case 'rider':
+          //   nextScreen = RiderDashboard();
+          //   break;
+          // case 'admin':
+          //   nextScreen = AdminDashboard();
+          //   break;
+          default:
+            nextScreen = HomeScreen();
+        }
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => nextScreen),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
+        );
+      }
+    } catch (e) {
+      print("Error fetching user role: $e");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
@@ -71,4 +117,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-
