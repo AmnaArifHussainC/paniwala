@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
+import '../../../homescreen.dart';
 import '../../../view_model/auth_viewmodel.dart';
 import 'consumer_forgot_password.dart';
 import 'consumer_register.dart';
@@ -29,7 +30,7 @@ class _SignInScreenState extends State<SignInScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign In Successful!')),
         );
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login failed. Please try again.')),
