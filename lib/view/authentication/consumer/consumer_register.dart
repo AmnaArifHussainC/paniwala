@@ -6,7 +6,7 @@ import '../../../config/utils/validators.dart';
 import '../../../view_model/auth_viewmodel.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final AuthViewModel authViewModel; // Pass AuthViewModel as a parameter
+  final AuthViewModel authViewModel;
 
   const RegisterScreen({Key? key, required this.authViewModel})
       : super(key: key);
