@@ -3,30 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/config/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
-import 'package:paniwala/view_model/auth_viewmodel.dart';
 
-import '../authentication/supplier/supplier_login_screen.dart';
-
+import '../authentication/rider/rider_register.dart';
 
 class CustomDrawer extends StatelessWidget {
   final String supplierId; // Supplier ID passed to the drawer
 
   CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
-
-  Future<String> _fetchSupplierName() async {
-    try {
-      DocumentSnapshot supplierDoc =
-      await FirebaseFirestore.instance.collection('suppliers').doc(supplierId).get();
-      if (supplierDoc.exists) {
-        return supplierDoc['companyName'] ?? 'Unknown Supplier';
-      } else {
-        return 'Unknown Supplier';
-      }
-    } catch (e) {
-      print('Error fetching supplier name: $e');
-      return 'Error';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,27 +27,6 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 const Icon(Icons.account_circle, size: 80, color: Colors.white),
                 const SizedBox(height: 10),
-                FutureBuilder<String>(
-                  future: _fetchSupplierName(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text(
-                        "Loading...",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Text(
-                        "Error fetching name",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      );
-                    } else {
-                      return Text(
-                        snapshot.data ?? "Unknown Supplier",
-                        style: const TextStyle(color: Colors.white, fontSize: 24),
-                      );
-                    }
-                  },
-                ),
               ],
             ),
           ),
@@ -72,10 +34,12 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.person_add),
             title: const Text('Register a Rider'),
             onTap: () {
-
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => RiderRegisterScreen()));
             },
           ),
-
           ListTile(
             leading: const Icon(Icons.shopping_cart),
             title: const Text('Orders'),
@@ -86,9 +50,7 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Products'),
-            onTap: () {
-
-            },
+            onTap: () {},
           ),
           ListTile(
             leading: const Icon(Icons.attach_money),
@@ -109,12 +71,19 @@ class CustomDrawer extends StatelessWidget {
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
-                      child: const Text('Cancel', style: TextStyle(color: CupertinoColors.inactiveGray),),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: CupertinoColors.inactiveGray),
+                      ),
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue),
                       onPressed: () => Navigator.pop(context, true),
-                      child: const Text("Logout", style: TextStyle(color: Colors.white),),
+                      child: const Text(
+                        "Logout",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -125,8 +94,9 @@ class CustomDrawer extends StatelessWidget {
                 authservise.signOut();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
-                      (route) => false,
+                  MaterialPageRoute(
+                      builder: (context) => ChooseAccountScreen()),
+                  (route) => false,
                 );
               }
             },

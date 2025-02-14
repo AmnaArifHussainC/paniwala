@@ -10,8 +10,6 @@ class SupplierDashboardScreen extends StatefulWidget {
 }
 
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
-  int _totalProducts = 0;
-  String? _supplierId;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
