@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/authentication/supplier/supplier_login_screen.dart';
 
 import '../../config/custome_widgets/choose_screen_cards.dart';
 import '../authentication/rider/rider_login_scree.dart';
@@ -52,7 +53,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SupplierRegisterScreen()));
+                                      SupplerLoginScreen()));
                         },
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",

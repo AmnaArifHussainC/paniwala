@@ -3,8 +3,6 @@ import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart
 import 'package:paniwala/view/consumer/consumer_dashboard.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view/supplier/supplier_dashboard.dart';
-import 'package:paniwala/view/rider/rider_dashboard.dart';
-import 'package:paniwala/view/admin/admin_dashboard.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,12 +22,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _startSplashScreen() async {
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2)); // Show splash for 2 seconds
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
 
     if (isFirstTime) {
+      // Navigate to onboarding screen if first-time user
       await prefs.setBool('isFirstTime', false);
       Navigator.pushReplacement(
         context,
@@ -38,10 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
+    // Check if a user is logged in
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      _navigateBasedOnRole(user.uid);
+      // Navigate based on user role
+      await _navigateBasedOnRole(user.uid);
     } else {
+      // Navigate to ChooseAccountScreen if no user is logged in
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
@@ -49,47 +51,56 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+
   Future<void> _navigateBasedOnRole(String uid) async {
     try {
-      DocumentSnapshot userDoc =
-      await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      List<String> collections = ['Users', 'suppliers', 'riders', 'admins'];
+      DocumentSnapshot? userDoc;
+      String? userRole;
 
-      if (userDoc.exists) {
-        String role = userDoc['role'] ?? 'consumer'; // Default role
+      // Check all collections
+      for (String collection in collections) {
+        userDoc = await FirebaseFirestore.instance.collection(collection).doc(uid).get();
 
-        Widget nextScreen;
-        switch (role) {
-          case 'consumer':
-            nextScreen = HomeScreen();
-            break;
-          case 'supplier':
-            nextScreen = SupplierDashboardScreen();
-            break;
-          // case 'rider':
-          //   nextScreen = RiderDashboard();
-          //   break;
-          // case 'admin':
-          //   nextScreen = AdminDashboard();
-          //   break;
-          default:
-            nextScreen = HomeScreen();
+        if (userDoc.exists) {
+          userRole = userDoc['role'];
+          print("User found in $collection with role: $userRole");
+          break; // Exit loop once user is found
         }
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => nextScreen),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
-        );
       }
+
+      if (userRole == null) {
+        print("User role not found, navigating to ChooseAccountScreen.");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        );
+        return;
+      }
+
+      Widget nextScreen;
+      switch (userRole) {
+        case 'consumer':
+          nextScreen = HomeScreen();
+          break;
+        case 'supplier':
+          nextScreen = SupplierDashboardScreen();
+          break;
+        default:
+          nextScreen = ChooseAccountScreen();
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => nextScreen),
+      );
     } catch (e) {
       print("Error fetching user role: $e");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
+        MaterialPageRoute(
+          builder: (context) => SignInScreen(authViewModel: AuthViewModel()),
+        ),
       );
     }
   }
@@ -102,7 +113,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/icon.png', width: 200),
+            Image.asset('assets/images/icon.png', width: 200), // App logo
             const SizedBox(height: 20),
             const Text(
               "Paniwala",
