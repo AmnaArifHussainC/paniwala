@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/config/services/auth_service.dart';
+import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 
 import '../authentication/supplier/supplier_login_screen.dart';
@@ -124,7 +125,7 @@ class CustomDrawer extends StatelessWidget {
                 authservise.signOut();
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
+                  MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
                       (route) => false,
                 );
               }
