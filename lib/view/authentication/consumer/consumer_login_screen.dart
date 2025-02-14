@@ -3,7 +3,6 @@ import 'package:paniwala/view/consumer/consumer_dashboard.dart';
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
-import '../../../homescreen.dart';
 import '../../../view_model/auth_viewmodel.dart';
 import 'consumer_forgot_password.dart';
 import 'consumer_register.dart';

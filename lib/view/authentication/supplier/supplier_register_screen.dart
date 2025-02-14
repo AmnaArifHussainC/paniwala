@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:paniwala/view/authentication/supplier/supplier_login_screen.dart';
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
@@ -21,45 +26,68 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
   String? selectedFilePath;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final AuthViewModel authViewModel = AuthViewModel(); // Create a local instance of AuthViewModel
+
   bool isLoading = false;
 
-  // Instantiate AuthViewModel
-  final AuthViewModel authViewModel = AuthViewModel();
+  // File picker for uploading PDF
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        selectedFilePath = result.files.single.path!;
+      });
+    }
+  }
 
-
-  // Function to handle registration
-  Future<void> registerSupplier() async {
-    if (_formKey.currentState!.validate()) {
+  // Supplier registration logic
+  Future<void> _registerSupplier() async {
+    if (_formKey.currentState?.validate() ?? false) {
       setState(() {
         isLoading = true;
       });
-      bool isSuccess = await authViewModel.registerSupplier(
-        companyNameController.text,
-        emailController.text,
-        passwordController.text,
-        cnicController.text,
-        phoneController.text,
+
+      // Upload file to Cloudinary
+      String? certificateUrl;
+      if (selectedFilePath != null) {
+        certificateUrl = await authViewModel.uploadToCloudinary(selectedFilePath!);
+      }
+
+      if (certificateUrl == null) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Failed to upload certificate. Please try again.")),
+        );
+        return;
+      }
+
+      // Continue with registration
+      final success = await authViewModel.registerSupplier(
+        cnic: cnicController.text.trim(),
+        phone: phoneController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        companyName: companyNameController.text.trim(),
+        certificateUrl: certificateUrl, // Save Cloudinary URL
       );
+
       setState(() {
         isLoading = false;
       });
-      if (isSuccess) {
+
+      if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registration Successful"),
-            backgroundColor: Colors.green,
-          ),
+          const SnackBar(content: Text("Registration request sent successfully.")),
         );
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registration Failed"),
-            backgroundColor: Colors.red,
-          ),
+          const SnackBar(content: Text("Registration failed. Please try again.")),
         );
       }
     }
@@ -158,21 +186,21 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                   const SizedBox(height: 10),
 
                   ElevatedButton.icon(
-                    onPressed: () {
-                      // Handle file selection logic
-                    },
+                    onPressed: _pickFile,
                     icon: const Icon(Icons.upload_file, color: Colors.blue),
-                    label: const Text(
-                      "Upload PDF Certificate",
-                      style: TextStyle(color: Colors.blue),
+                    label: Text(
+                      selectedFilePath == null
+                          ? "Upload PDF Certificate"
+                          : "Certificate Uploaded",
+                      style: const TextStyle(color: Colors.blue),
                     ),
                   ),
 
                   const SizedBox(height: 20),
 
                   CustomButton(
-                    text: isLoading ? "Requesting..." : "Request has been sent",
-                    onPressed: isLoading ? null : registerSupplier,
+                    text: isLoading ? "Requesting..." : "Send Request",
+                    onPressed: isLoading ? null : _registerSupplier,
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 20),

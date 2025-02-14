@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/authentication/supplier/supplier_register_screen.dart';
 
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
 import '../consumer/consumer_forgot_password.dart';
-
 
 class SupplerLoginScreen extends StatelessWidget {
   SupplerLoginScreen({super.key});
@@ -65,7 +65,8 @@ class SupplerLoginScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   CustomTextField(
                     textinputtype: TextInputType.text,
-                    validator: (value) => ValidationUtils.validatePassword(value),
+                    validator: (value) =>
+                        ValidationUtils.validatePassword(value),
                     controller: passController,
                     hintText: "Password",
                     icon: Icons.lock,
@@ -90,9 +91,7 @@ class SupplerLoginScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   CustomButton(
                     text: "Sign In",
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 10),
@@ -102,7 +101,11 @@ class SupplerLoginScreen extends StatelessWidget {
                       const Text("Don’t have an account?"),
                       TextButton(
                         onPressed: () {
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SupplierRegisterScreen()));
                         },
                         child: const Text(
                           "Register",

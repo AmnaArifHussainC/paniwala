@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 
 import '../../config/services/auth_service.dart';
@@ -25,7 +26,7 @@ class CustomUserDrawer extends StatelessWidget {
                 Icon(Icons.account_circle, size: 80, color: Colors.white),
                 SizedBox(height: 10),
                 Text(
-                  "User Name",  // Replace with actual user name or dynamic data
+                  "User Name", // Replace with actual user name or dynamic data
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ],
@@ -76,11 +77,11 @@ class CustomUserDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
-            onTap: () async{
+            onTap: () async {
               final authservise = AuthService();
               authservise.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>SignInScreen(authViewModel: AuthViewModel(),)), (route)=> false);
-              Navigator.pushReplacementNamed(context, '/login');
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                  builder: (context) => ChooseAccountScreen()), (route)=> false);
             },
           ),
         ],

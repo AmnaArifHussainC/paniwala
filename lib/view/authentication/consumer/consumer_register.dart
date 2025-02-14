@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    bool isSuccess = await widget.authViewModel.register(name, email, password);
+    bool isSuccess = await widget.authViewModel.registerUser(name, email, password);
 
     if (isSuccess) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -4,43 +4,45 @@ class SupplierModel {
   final String uid;
   final String email;
   final String cnic;
-  final String role;
+  final String phone;
   final String companyName;
+  final String role;
   final DateTime createdAt;
+  final String? certificateUrl;
 
   SupplierModel({
     required this.uid,
     required this.email,
     required this.cnic,
+    required this.phone,
     required this.companyName,
     required this.role,
     required this.createdAt,
+    this.certificateUrl,
   });
 
-  // Convert Firestore data to SupplierModel
   factory SupplierModel.fromFirestore(Map<String, dynamic> data, String id) {
-    try {
-      return SupplierModel(
-        uid: id,
-        cnic: data['cnic'] ?? '',
-        email: data['email'] ?? '',
-        companyName: data['company_name'] ?? '',
-        role: data['role'] ?? 'Supplier', // Default role is 'Supplier'
-        createdAt: (data['createdAt'] as Timestamp).toDate(),
-      );
-    } catch (e) {
-      throw Exception('Error parsing SupplierModel: $e');
-    }
+    return SupplierModel(
+      uid: id,
+      email: data['email'] ?? '',
+      cnic: data['cnic'] ?? '',
+      phone: data['phone'] ?? '',
+      companyName: data['company_name'] ?? '',
+      role: data['role'] ?? 'supplier',
+      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      certificateUrl: data['certificateUrl'],
+    );
   }
 
-  // Convert SupplierModel to Firestore-compatible format
   Map<String, dynamic> toFirestore() {
     return {
       'email': email,
-      'company_name': companyName,
       'cnic': cnic,
+      'phone': phone,
+      'company_name': companyName,
       'role': role,
       'createdAt': createdAt,
+      if (certificateUrl != null) 'certificateUrl': certificateUrl,
     };
   }
 }

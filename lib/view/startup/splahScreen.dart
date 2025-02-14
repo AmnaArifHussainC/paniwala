@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
 import 'package:paniwala/view/consumer/consumer_dashboard.dart';
+import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view/supplier/supplier_dashboard.dart';
 import 'package:paniwala/view/rider/rider_dashboard.dart';
 import 'package:paniwala/view/admin/admin_dashboard.dart';
@@ -43,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SignInScreen(authViewModel: AuthViewModel())),
+        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
       );
     }
   }
@@ -61,9 +62,9 @@ class _SplashScreenState extends State<SplashScreen> {
           case 'consumer':
             nextScreen = HomeScreen();
             break;
-          // case 'supplier':
-          //   nextScreen = SupplierDashboard();
-          //   break;
+          case 'supplier':
+            nextScreen = SupplierDashboardScreen();
+            break;
           // case 'rider':
           //   nextScreen = RiderDashboard();
           //   break;
