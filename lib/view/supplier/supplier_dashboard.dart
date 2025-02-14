@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paniwala/view/supplier/product/product_screen.dart';
 import 'package:paniwala/view/supplier/supplier_drawer.dart';
 
 
 class SupplierDashboardScreen extends StatefulWidget {
   @override
-  State<SupplierDashboardScreen> createState() => _SupplierDashboardScreenState();
+  State<SupplierDashboardScreen> createState() =>
+      _SupplierDashboardScreenState();
 }
 
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
@@ -101,13 +103,13 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
-                //   OrderCard(
-                //     orderId: "#202201",
-                //     date: "3 Feb 2025",
-                //     customerName: "John Doe",
-                //     amount: "Rs. 500.00",
-                //     status: "Delivered",
-                //   ),
+                  //   OrderCard(
+                  //     orderId: "#202201",
+                  //     date: "3 Feb 2025",
+                  //     customerName: "John Doe",
+                  //     amount: "Rs. 500.00",
+                  //     status: "Delivered",
+                  //   ),
                 ],
               ),
             ),
@@ -117,7 +119,8 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () async {
-
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddProductScreen()));
         },
         child: const Icon(Icons.add, color: Colors.white),
       ),
