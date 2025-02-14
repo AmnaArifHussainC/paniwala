@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../../config/custome_widgets/supplier_add_product_textformfield.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -15,8 +17,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final TextEditingController priceController = TextEditingController();
 
   List<Map<String, dynamic>> sizesAndPrices = [];
-  List<String> imageUrls = [];
+  List<File> selectedImages = [];
   bool isRefillAvailable = false;
+  final ImagePicker _picker = ImagePicker();
 
   void addSizeAndPrice() {
     if (sizeController.text.isNotEmpty && priceController.text.isNotEmpty) {
@@ -27,6 +30,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
         });
         sizeController.clear();
         priceController.clear();
+      });
+    }
+  }
+
+  Future<void> pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        selectedImages.add(File(pickedFile.path));
       });
     }
   }
@@ -127,15 +140,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             ElevatedButton.icon(
-              onPressed: () {
-
-                  },
+              onPressed: pickImage,
               icon: const Icon(
                 Icons.upload,
                 color: Colors.white,
               ),
               label: const Text(
-                'Upload Images',
+                'Select Images',
                 style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
@@ -145,12 +156,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
               ),
             ),
-            if (imageUrls.isNotEmpty)
+            if (selectedImages.isNotEmpty)
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
-                children: imageUrls
-                    .map((url) => Stack(
+                children: selectedImages
+                    .map((file) => Stack(
                   children: [
                     Container(
                       width: 100,
@@ -158,7 +169,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         image: DecorationImage(
-                          image: NetworkImage(url),
+                          image: FileImage(file),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -170,7 +181,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         icon: const Icon(Icons.close, color: Colors.red),
                         onPressed: () {
                           setState(() {
-                            imageUrls.remove(url);
+                            selectedImages.remove(file);
                           });
                         },
                       ),
@@ -202,7 +213,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Submit logic here
+                  // Submit logic or validation can be added here
                 },
                 child: const Text(
                   'Add Product',
