@@ -144,4 +144,24 @@ class AuthViewModel extends ChangeNotifier {
   }
 
 
+  // Supplier Login
+  Future<bool> loginSupplier(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final supplierModel = await _authService.loginSupplier(email, password);
+      if (supplierModel != null) {
+        _supplier = supplierModel;
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      print("Supplier Login Error: $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+    return false;
+  }
+
+
 }

@@ -1,19 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/authentication/supplier/supplier_register_screen.dart';
+import 'package:paniwala/view/supplier/supplier_dashboard.dart';
 
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/utils/validators.dart';
 import '../consumer/consumer_forgot_password.dart';
 
-class SupplerLoginScreen extends StatelessWidget {
+class SupplerLoginScreen extends StatefulWidget {
   SupplerLoginScreen({super.key});
 
+  @override
+  State<SupplerLoginScreen> createState() => _SupplerLoginScreenState();
+}
+
+class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool isLoading = false;
+
+  Future<void> supplierLogin() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passController.text.trim(),
+        );
+
+        // Navigate to Supplier Dashboard or relevant screen and clear the back stack
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login successful!")),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+              (route) => false, // This clears all previous routes
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login failed: $error")),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,9 +131,11 @@ class SupplerLoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  CustomButton(
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : CustomButton(
                     text: "Sign In",
-                    onPressed: () {},
+                    onPressed: supplierLogin,
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 10),

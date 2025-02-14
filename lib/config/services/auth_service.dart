@@ -184,4 +184,31 @@ class AuthService {
     }
   }
 
+
+
+
+  // Supplier Login
+  Future<SupplierModel?> loginSupplier(String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        // Fetch supplier details from Firestore
+        DocumentSnapshot supplierDoc = await _firestore.collection('suppliers').doc(firebaseUser.uid).get();
+        if (supplierDoc.exists) {
+          return SupplierModel.fromFirestore(supplierDoc.data() as Map<String, dynamic>, supplierDoc.id);
+        }
+      }
+      return null;
+    } catch (e) {
+      print("Supplier Login Error: $e");
+      return null;
+    }
+  }
+
+
 }
