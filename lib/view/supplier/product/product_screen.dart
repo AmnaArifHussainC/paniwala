@@ -107,7 +107,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     elevation: 2,
                     child: ListTile(
                       title: Text('Size: ${sizePrice['size']} L'),
-                      subtitle: Text('Price: \$${sizePrice['price']}'),
+                      subtitle: Text('Price: Rs. ${sizePrice['price']}'),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.redAccent),
                         onPressed: () {
@@ -128,11 +128,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ),
             ElevatedButton.icon(
               onPressed: () {
-                // Placeholder for adding images
-                setState(() {
-                  imageUrls.add("example_image_url");
-                });
-              },
+
+                  },
               icon: const Icon(
                 Icons.upload,
                 color: Colors.white,
