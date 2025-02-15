@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../model/product_model.dart';
+
 
 class ProductService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -35,36 +37,40 @@ class ProductService {
   }
 
   // Store product details in Firestore
-  Future<void> storeProductInFirestore({
-    required bool isRefill,
-    required String supplierId,
-    required String productName,
-    required String productDescription,
-    required double productPrice,
-    required List<String> imageUrls, // List of image URLs
-    required List<Map<String, dynamic>> sizesAndPrices, // List of size and price maps
-  }) async {
+  Future<void> storeProductInFirestore(ProductModel product, String supplierId) async {
     try {
-      final productData = {
-        'isRefill': isRefill,
-        'productName': productName,
-        'productDescription': productDescription,
-        'productPrice': productPrice,
-        'imageUrls': imageUrls, // Store as an array
-        'sizesAndPrices': sizesAndPrices, // Store size and price list
-        'createdAt': FieldValue.serverTimestamp(),
-      };
+      // Convert ProductModel to Firestore format
+      final productData = product.toFirestore();
 
       // Add to supplier's subcollection
       await _firestore
           .collection('suppliers')
           .doc(supplierId)
           .collection('products')
-          .add(productData);
+          .doc(product.id)
+          .set(productData);
 
       print('Product added successfully.');
     } catch (e) {
       print('Error adding product to Firestore: $e');
+    }
+  }
+
+  // Fetch products from Firestore for a supplier
+  Future<List<ProductModel>> fetchProducts(String supplierId) async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('suppliers')
+          .doc(supplierId)
+          .collection('products')
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => ProductModel.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      print('Error fetching products: $e');
+      return [];
     }
   }
 }

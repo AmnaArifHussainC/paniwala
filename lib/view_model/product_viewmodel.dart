@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/services/product_add_service.dart';
+import '../model/product_model.dart';
 
 class ProductViewModel extends ChangeNotifier {
   final ProductService _productService = ProductService();
@@ -47,16 +48,20 @@ class ProductViewModel extends ChangeNotifier {
         throw Exception("No images uploaded.");
       }
 
-      // Store product details in Firestore with image URLs
-      await _productService.storeProductInFirestore(
-        sizesAndPrices: sizesAndPrices,
+      // Create a ProductModel instance
+      final product = ProductModel(
+        id: DateTime.now().millisecondsSinceEpoch.toString(), // Use a unique ID
         isRefill: isRefill,
-        supplierId: supplierId,
         productName: productName,
         productDescription: productDescription,
         productPrice: productPrice,
-        imageUrls: imageUrls, // Pass list of image URLs
+        imageUrls: imageUrls, // Use list of uploaded image URLs
+        sizesAndPrices: sizesAndPrices,
+        createdAt: DateTime.now(),
       );
+
+      // Store product details in Firestore
+      await _productService.storeProductInFirestore(product, supplierId);
     } catch (e) {
       _setErrorMessage('Failed to upload product: $e');
     } finally {
