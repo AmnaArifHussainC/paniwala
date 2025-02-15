@@ -54,45 +54,35 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _navigateBasedOnRole(String uid) async {
     try {
-      List<String> collections = ['Users', 'suppliers', 'riders', 'admins'];
-      DocumentSnapshot? userDoc;
-      String? userRole;
+      print("Checking role for user with UID: $uid");
 
-      // Check all collections
-      for (String collection in collections) {
-        userDoc = await FirebaseFirestore.instance.collection(collection).doc(uid).get();
-
-        if (userDoc.exists) {
-          userRole = userDoc['role'];
-          print("User found in $collection with role: $userRole");
-          break; // Exit loop once user is found
-        }
-      }
-
-      if (userRole == null) {
-        print("User role not found, navigating to ChooseAccountScreen.");
+      // Check in 'Users' collection
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(uid).get();
+      if (userDoc.exists) {
+        print("User found in 'Users' collection.");
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
         return;
       }
 
-      Widget nextScreen;
-      switch (userRole) {
-        case 'consumer':
-          nextScreen = HomeScreen();
-          break;
-        case 'supplier':
-          nextScreen = SupplierDashboardScreen();
-          break;
-        default:
-          nextScreen = ChooseAccountScreen();
+      // Check in 'suppliers' collection
+      DocumentSnapshot supplierDoc = await FirebaseFirestore.instance.collection('suppliers').doc(uid).get();
+      if (supplierDoc.exists) {
+        print("User found in 'suppliers' collection.");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+        );
+        return;
       }
 
+      // If user is not found in either collection
+      print("User not found in Firestore. Navigating to ChooseAccountScreen.");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => nextScreen),
+        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
       );
     } catch (e) {
       print("Error fetching user role: $e");

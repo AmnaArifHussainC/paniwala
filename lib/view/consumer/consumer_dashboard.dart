@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
-
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,39 +9,66 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Map<String, dynamic>> suppliers = [];
+  bool isLoading = true;
+  String searchQuery = '';
 
-  final List<Map<String, dynamic>> suppliers = [
-    {
-      'name': 'Eleanor',
-      'status': 'Closed',
-      'services': 'Big Tanker, Small Tanker, Water Cans',
-      'rating': 4.5,
-      'reviews': '2K',
-      'image': 'https://via.placeholder.com/50',
-      'isFavorite': true
-    },
-    {
-      'name': 'Greg Watson',
-      'status': 'Open',
-      'services': 'Small Tanker, Water Cans',
-      'rating': 3.1,
-      'reviews': '25',
-      'image': 'https://via.placeholder.com/50',
-      'isFavorite': false
-    },
-    {
-      'name': 'Randall Steward',
-      'status': 'Open',
-      'services': 'Big Tanker, Small Tanker, Water Cans',
-      'rating': 4.5,
-      'reviews': '1.8K',
-      'image': 'https://via.placeholder.com/50',
-      'isFavorite': true
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchSuppliers();
+  }
+
+  Future<void> fetchSuppliers() async {
+    try {
+      setState(() {
+        isLoading = true; // Set loading to true before fetching
+      });
+
+      // Fetch the data from Firestore
+      final querySnapshot = await FirebaseFirestore.instance.collection('suppliers').get();
+      print('Fetched suppliers: ${querySnapshot.docs.length}'); // Debugging
+
+      final fetchedSuppliers = querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'companyName': data['company_name'] ?? 'Unknown',
+          'email': data['email'] ?? 'Unknown',
+          'phone': data['phone'] ?? 'N/A',
+        };
+      }).toList();
+
+      // Debugging to check fetched suppliers
+      print('Parsed suppliers: $fetchedSuppliers');
+
+      setState(() {
+        suppliers = fetchedSuppliers;
+        isLoading = false; // Loading complete
+      });
+    } catch (e) {
+      print('Error fetching suppliers: $e'); // Debugging
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load suppliers. Please try again.')),
+      );
+      setState(() {
+        isLoading = false; // Ensure loading stops on error
+      });
+    }
+  }
+
+  void searchSuppliers(String query) {
+    setState(() {
+      searchQuery = query.toLowerCase();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final filteredSuppliers = suppliers.where((supplier) {
+      final companyName = supplier['companyName']?.toLowerCase() ?? '';
+      return companyName.contains(searchQuery);
+    }).toList();
+
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
@@ -60,25 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: CustomUserDrawer(authViewModel: AuthViewModel(),),
+      drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-                  ],
-                )
-
-            ),
-            Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                onChanged: searchSuppliers,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
@@ -87,43 +104,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   border: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                   focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                   enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                  suffixIcon: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.arrow_forward_ios),
-                  ),
                 ),
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: suppliers.length,
+              child: isLoading
+                  ? SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: const Center(child: CircularProgressIndicator()),
+              )
+                  : filteredSuppliers.isEmpty
+                  ? const Center(child: Text('No suppliers available at the moment.'))
+                  : ListView.builder(
+                itemCount: filteredSuppliers.length,
                 itemBuilder: (context, index) {
-                  final supplier = suppliers[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(supplier['image']),
-                    ),
-                    title: Text(supplier['name']),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(supplier['services'], style: const TextStyle(fontSize: 12)),
-                        Row(
-                          children: [
-                            const Icon(Icons.star, color: Colors.amber, size: 16),
-                            Text("${supplier['rating']} (${supplier['reviews']} reviews)"),
-                          ],
-                        ),
-                      ],
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        supplier['isFavorite']
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: supplier['isFavorite'] ? Colors.red : Colors.grey,
+                  final supplier = filteredSuppliers[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        child: Text(supplier['companyName'][0].toUpperCase()),
                       ),
-                      onPressed: () {},
+                      title: Text(supplier['companyName']),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(supplier['email']),
+                          Text('Phone: ${supplier['phone']}'),
+                        ],
+                      ),
                     ),
                   );
                 },
