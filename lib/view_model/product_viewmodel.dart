@@ -21,11 +21,13 @@ class ProductViewModel extends ChangeNotifier {
   }
 
   Future<void> uploadProduct({
+    required bool isRefill,
     required String supplierId,
     required String productName,
     required String productDescription,
     required double productPrice,
     required List<String> imagePaths, // List of image paths
+    required List<Map<String, dynamic>> sizesAndPrices, // Sizes and prices list
   }) async {
     _setLoading(true);
     _setErrorMessage(null);
@@ -47,6 +49,8 @@ class ProductViewModel extends ChangeNotifier {
 
       // Store product details in Firestore with image URLs
       await _productService.storeProductInFirestore(
+        sizesAndPrices: sizesAndPrices,
+        isRefill: isRefill,
         supplierId: supplierId,
         productName: productName,
         productDescription: productDescription,

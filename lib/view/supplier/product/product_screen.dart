@@ -74,6 +74,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
 
     await _productViewModel.uploadProduct(
+      sizesAndPrices: sizesAndPrices,
+      isRefill: isRefillAvailable,
       supplierId: supplierId,
       productName: nameController.text,
       productDescription: descriptionController.text,

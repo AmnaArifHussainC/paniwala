@@ -36,18 +36,22 @@ class ProductService {
 
   // Store product details in Firestore
   Future<void> storeProductInFirestore({
+    required bool isRefill,
     required String supplierId,
     required String productName,
     required String productDescription,
     required double productPrice,
     required List<String> imageUrls, // List of image URLs
+    required List<Map<String, dynamic>> sizesAndPrices, // List of size and price maps
   }) async {
     try {
       final productData = {
+        'isRefill': isRefill,
         'productName': productName,
         'productDescription': productDescription,
         'productPrice': productPrice,
         'imageUrls': imageUrls, // Store as an array
+        'sizesAndPrices': sizesAndPrices, // Store size and price list
         'createdAt': FieldValue.serverTimestamp(),
       };
 
