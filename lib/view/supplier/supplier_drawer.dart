@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/config/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
+import 'package:paniwala/view/supplier/product/supplier_drawer_pro_list_screen.dart';
 
 import '../authentication/rider/rider_register.dart';
 
@@ -50,7 +51,14 @@ class CustomDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Products'),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SupplierProductsScreen(
+                            supplierId: supplierId,
+                          )));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.attach_money),

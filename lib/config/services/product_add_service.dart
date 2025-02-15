@@ -73,4 +73,21 @@ class ProductService {
       return [];
     }
   }
+
+
+  Future<void> deleteProductFromFirestore(String supplierId, String productId) async {
+    try {
+      await _firestore
+          .collection('suppliers')
+          .doc(supplierId)
+          .collection('products')
+          .doc(productId)
+          .delete();
+      print('Product deleted successfully.');
+    } catch (e) {
+      print('Error deleting product: $e');
+    }
+  }
+
+
 }

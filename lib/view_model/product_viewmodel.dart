@@ -68,4 +68,35 @@ class ProductViewModel extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+
+  List<ProductModel> _products = [];
+  List<ProductModel> get products => _products;
+  // Fetch products for a supplier
+  Future<List<ProductModel>> fetchProducts(String supplierId) async {
+    _setLoading(true);
+    _setErrorMessage(null);
+
+    try {
+      final fetchedProducts = await _productService.fetchProducts(supplierId);
+      _products = fetchedProducts;
+      return _products;
+    } catch (e) {
+      _setErrorMessage('Failed to fetch products: $e');
+      return [];
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+
+  Future<void> deleteProduct(String supplierId, String productId) async {
+    try {
+      await _productService.deleteProductFromFirestore(supplierId, productId);
+    } catch (e) {
+      _setErrorMessage('Failed to delete product: $e');
+    }
+  }
+
+
 }
