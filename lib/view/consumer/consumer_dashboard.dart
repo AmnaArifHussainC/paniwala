@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:paniwala/view_model/auth_viewmodel.dart';
 
 import 'consumer_drawer.dart';
 
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: CustomUserDrawer(),
+      drawer: CustomUserDrawer(authViewModel: AuthViewModel(),),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
         child: Column(

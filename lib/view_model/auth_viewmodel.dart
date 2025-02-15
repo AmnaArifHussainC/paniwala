@@ -164,4 +164,21 @@ class AuthViewModel extends ChangeNotifier {
   }
 
 
+  // Sign Out
+  Future<void> signOut() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _authService.signOut();
+      _user = null;
+      _supplier = null;
+      notifyListeners();
+    } catch (e) {
+      print("Sign Out Error: $e");
+    }
+    _isLoading = false;
+    notifyListeners();
+  }
+
+
 }

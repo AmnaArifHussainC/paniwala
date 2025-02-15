@@ -7,7 +7,9 @@ import '../../config/services/auth_service.dart';
 import '../authentication/consumer/consumer_login_screen.dart';
 
 class CustomUserDrawer extends StatelessWidget {
-  const CustomUserDrawer({super.key});
+  final AuthViewModel authViewModel;
+  CustomUserDrawer({super.key, required this.authViewModel });
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,8 +80,7 @@ class CustomUserDrawer extends StatelessWidget {
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
             onTap: () async {
-              final authservise = AuthService();
-              authservise.signOut();
+              await authViewModel.signOut();
               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
                   builder: (context) => ChooseAccountScreen()), (route)=> false);
             },
