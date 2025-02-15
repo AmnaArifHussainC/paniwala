@@ -118,31 +118,31 @@ class AuthService {
   }
 
   // Upload to Cloudinary
-  Future<String?> uploadToCloudinary(String filePath) async {
-    const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dhirdggtq/upload';
-    const uploadPreset = 'paniwala_certificates';
-
-    try {
-      final file = File(filePath);
-      final request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
-        ..fields['upload_preset'] = uploadPreset
-        ..files.add(await http.MultipartFile.fromPath('file', file.path));
-
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(responseBody);
-        return jsonResponse['secure_url'];
-      } else {
-        print("Cloudinary Upload Error: ${response.statusCode}");
-        return null;
-      }
-    } catch (e) {
-      print("Cloudinary Upload Error: $e");
-      return null;
-    }
-  }
+  // Future<String?> uploadToCloudinary(String filePath) async {
+  //   const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dhirdggtq/upload';
+  //   const uploadPreset = 'paniwala_certificates';
+  //
+  //   try {
+  //     final file = File(filePath);
+  //     final request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
+  //       ..fields['upload_preset'] = uploadPreset
+  //       ..files.add(await http.MultipartFile.fromPath('file', file.path));
+  //
+  //     final response = await request.send();
+  //     final responseBody = await response.stream.bytesToString();
+  //
+  //     if (response.statusCode == 200) {
+  //       final jsonResponse = json.decode(responseBody);
+  //       return jsonResponse['secure_url'];
+  //     } else {
+  //       print("Cloudinary Upload Error: ${response.statusCode}");
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     print("Cloudinary Upload Error: $e");
+  //     return null;
+  //   }
+  // }
 
   // Forgot Password
   Future<bool> resetPassword(String email) async {
