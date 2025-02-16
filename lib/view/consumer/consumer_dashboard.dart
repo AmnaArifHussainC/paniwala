@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
 
@@ -22,36 +23,34 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchSuppliers() async {
     try {
       setState(() {
-        isLoading = true; // Set loading to true before fetching
+        isLoading = true;
       });
 
-      // Fetch the data from Firestore
-      final querySnapshot = await FirebaseFirestore.instance.collection('suppliers').get();
-      print('Fetched suppliers: ${querySnapshot.docs.length}'); // Debugging
+      final querySnapshot =
+      await FirebaseFirestore.instance.collection('suppliers').get();
+      print('Fetched suppliers: ${querySnapshot.docs.length}');
 
       final fetchedSuppliers = querySnapshot.docs.map((doc) {
         final data = doc.data();
         return {
+          'id': doc.id, // Store supplier's document ID
           'companyName': data['company_name'] ?? 'Unknown',
           'email': data['email'] ?? 'Unknown',
           'phone': data['phone'] ?? 'N/A',
         };
       }).toList();
 
-      // Debugging to check fetched suppliers
-      print('Parsed suppliers: $fetchedSuppliers');
-
       setState(() {
         suppliers = fetchedSuppliers;
-        isLoading = false; // Loading complete
+        isLoading = false;
       });
     } catch (e) {
-      print('Error fetching suppliers: $e'); // Debugging
+      print('Error fetching suppliers: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to load suppliers. Please try again.')),
       );
       setState(() {
-        isLoading = false; // Ensure loading stops on error
+        isLoading = false;
       });
     }
   }
@@ -79,12 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
       ),
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Padding(
@@ -97,22 +90,18 @@ class _HomeScreenState extends State<HomeScreen> {
               child: TextFormField(
                 onChanged: searchSuppliers,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
                   hintText: 'Search...',
                   hintStyle: const TextStyle(color: Colors.grey),
                   border: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
                 ),
               ),
             ),
             Expanded(
               child: isLoading
-                  ? SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: const Center(child: CircularProgressIndicator()),
-              )
+                  ? const Center(child: CircularProgressIndicator())
                   : filteredSuppliers.isEmpty
                   ? const Center(child: Text('No suppliers available at the moment.'))
                   : ListView.builder(
@@ -120,7 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   final supplier = filteredSuppliers[index];
                   return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 10.0),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.blue,
@@ -134,6 +124,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text('Phone: ${supplier['phone']}'),
                         ],
                       ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SupplierProductListsForCustomers(
+                              supplierId: supplier['id'],
+                              companyName: supplier['companyName'],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
