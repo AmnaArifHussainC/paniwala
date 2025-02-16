@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'customer_order/customer-details-for-order.dart';
+
 class ProductsDetailForConsumer extends StatefulWidget {
   final Map<String, dynamic> product;
 
@@ -107,6 +109,36 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
     });
   }
 
+  Future<void> _showOrderDialog(BuildContext context) async {
+    // Show confirmation dialog
+    final bool? confirmOrder = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirm Order', style: TextStyle(fontWeight: FontWeight.w600,color: Colors.blue),),
+          content: const Text('Are you sure you want to order this product?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('No', style: TextStyle(color: CupertinoColors.inactiveGray),),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Yes', style: TextStyle(color: Colors.blue),),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Show success dialog if confirmed
+    if (confirmOrder == true) {
+
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerDetailsForOrder()));
+    }
+  }
+
+
   void _increaseQuantity() => setState(() => quantity++);
   void _decreaseQuantity() {
     if (quantity > 1) setState(() => quantity--);
@@ -162,7 +194,7 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
 
               // Size selection
               if (sizesAndPrices.isNotEmpty) ...[
-                const Text('Select Size:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text('Select Size: (in litters)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 10,
@@ -204,7 +236,9 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showOrderDialog(context);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 15),
