@@ -16,11 +16,15 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
   bool isRefillAvailable = false;
   int quantity = 1;
   double rating = 3.0;
+  List<Map<String, dynamic>> sizesAndPrices = [];
+  String? selectedSize;
+  double selectedPrice = 0.0;
 
   @override
   void initState() {
     super.initState();
     _checkRefillAvailability();
+    _fetchSizesAndPrices();
   }
 
   Future<void> _checkRefillAvailability() async {
@@ -48,6 +52,59 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
     } catch (e) {
       print("Error checking refill availability: $e");
     }
+  }
+
+  Future<void> _fetchSizesAndPrices() async {
+    print("Fetching sizes and prices...");  // Debugging
+
+    try {
+      final productId = widget.product['id'] ?? '';
+      final supplierId = widget.product['supplierId'] ?? '';
+
+      if (productId.isEmpty || supplierId.isEmpty) {
+        print("Product ID or Supplier ID is empty.");
+        return;
+      }
+
+      final productDoc = await FirebaseFirestore.instance
+          .collection('suppliers')
+          .doc(supplierId)
+          .collection('products')
+          .doc(productId)
+          .get();
+
+      if (productDoc.exists) {
+        print("Product document exists!"); // Debugging
+        final data = productDoc.data();
+        print("Firestore Data: $data"); // Debugging
+
+        final List<dynamic> fetchedSizesAndPrices = data?['sizesAndPrices'] ?? [];
+
+        if (fetchedSizesAndPrices.isNotEmpty) {
+          setState(() {
+            sizesAndPrices = List<Map<String, dynamic>>.from(fetchedSizesAndPrices);
+            selectedSize = sizesAndPrices.first['size'];
+            selectedPrice = (sizesAndPrices.first['price'] as num).toDouble();
+          });
+
+          print("Sizes and Prices: $sizesAndPrices"); // Debugging
+          print("Selected Size: $selectedSize, Price: $selectedPrice"); // Debugging
+        } else {
+          print("No sizesAndPrices found.");
+        }
+      } else {
+        print("Product document does not exist.");
+      }
+    } catch (e) {
+      print("Error fetching sizes and prices: $e");
+    }
+  }
+
+  void _selectSize(String size, double price) {
+    setState(() {
+      selectedSize = size;
+      selectedPrice = price;
+    });
   }
 
   void _increaseQuantity() => setState(() => quantity++);
@@ -102,9 +159,32 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
               Text(widget.product['description'] ?? 'No description available.',
                   style: const TextStyle(fontSize: 16, color: Colors.black87)),
               const SizedBox(height: 10),
-              Text('Price: Rs.${widget.product['price']}',
-                  style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
+
+              // Size selection
+              if (sizesAndPrices.isNotEmpty) ...[
+                const Text('Select Size:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 10,
+                  children: sizesAndPrices.map((sizeData) {
+                    return ChoiceChip(
+                      backgroundColor: Colors.blue.shade100,
+                      label: Text(sizeData['size']),
+                      selected: selectedSize == sizeData['size'],
+                      onSelected: (isSelected) {
+                        if (isSelected) {
+                          _selectSize(sizeData['size'], sizeData['price'].toDouble());
+                        }
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 10),
+                Text('Price: Rs. $selectedPrice',
+                    style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+              ],
+
               Text(
                 isRefillAvailable ? 'Refill is available' : 'Refill is not available',
                 style: TextStyle(fontSize: 16, color: isRefillAvailable ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
@@ -120,19 +200,7 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
                 ],
               ),
               const SizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Rate the Supplier:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  Row(
-                    children: List.generate(5, (index) => IconButton(
-                      onPressed: () => _updateRating(index + 1.0),
-                      icon: Icon(index < rating ? Icons.star : Icons.star_border, color: Colors.amber),
-                    )),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
