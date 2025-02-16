@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:paniwala/view/consumer/product_details_with_orderScreen.dart';
 
 class SupplierProductListsForCustomers extends StatefulWidget {
   final String supplierId;
   final String companyName;
 
-  SupplierProductListsForCustomers({required this.supplierId, required this.companyName});
+  SupplierProductListsForCustomers(
+      {required this.supplierId, required this.companyName});
 
   @override
-  _SupplierProductListsForCustomersState createState() => _SupplierProductListsForCustomersState();
+  _SupplierProductListsForCustomersState createState() =>
+      _SupplierProductListsForCustomersState();
 }
 
-class _SupplierProductListsForCustomersState extends State<SupplierProductListsForCustomers> {
+class _SupplierProductListsForCustomersState
+    extends State<SupplierProductListsForCustomers> {
   List<Map<String, dynamic>> products = [];
   bool isLoading = true;
 
@@ -36,8 +40,10 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
       final fetchedProducts = querySnapshot.docs.map((doc) {
         final data = doc.data();
         return {
+          'id': doc.id, // Include the document ID
           'name': data['productName'] ?? 'Unnamed Product',
           'price': data['productPrice'] ?? 'N/A',
+          'description': data['productDescription'] ?? 'No description available.', // Fetch description
           'imageUrls': (data['imageUrls'] as List<dynamic>?) ?? [], // Ensure it's a list
         };
       }).toList();
@@ -68,7 +74,8 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : products.isEmpty
-          ? const Center(child: Text('No products available for this supplier.'))
+          ? const Center(
+          child: Text('No products available for this supplier.'))
           : Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -107,7 +114,8 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(10)),
                           child: product['imageUrls'].isNotEmpty
                               ? Image.network(
                             product['imageUrls'][0],
@@ -123,7 +131,8 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
                               return Container(
                                 height: 120,
                                 color: Colors.grey[300],
-                                child: const Icon(Icons.error, size: 50, color: Colors.red),
+                                child: const Icon(
+                                    Icons.error, size: 50, color: Colors.red),
                               );
                             },
                           )
@@ -142,7 +151,8 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
                             children: [
                               Text(
                                 product['name'],
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 5),
@@ -158,7 +168,17 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
                             onPressed: () {
-
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductsDetailForConsumer(
+                                    product: {
+                                      ...product, // Pass all product details
+                                      'supplierId': widget.supplierId, // Ensure supplierId is included
+                                    },
+                                  ),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
@@ -166,7 +186,8 @@ class _SupplierProductListsForCustomersState extends State<SupplierProductListsF
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            child: const Text("Buy Now", style: TextStyle(color: Colors.white)),
+                            child: const Text("Buy Now",
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ),
                       ],
