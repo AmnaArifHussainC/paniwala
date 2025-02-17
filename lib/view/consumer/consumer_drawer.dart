@@ -44,29 +44,47 @@ class CustomUserDrawer extends StatelessWidget {
             onTap: () => Navigator.pushReplacementNamed(context, '/home'),
           ),
           ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Profile'),
-            onTap: () => Navigator.pushReplacementNamed(context, '/profile'),
-          ),
-          ListTile(
             leading: const Icon(CupertinoIcons.shopping_cart),
             title: const Text('Order History'),
             onTap: () => Navigator.pushReplacementNamed(context, '/order_history'),
           ),
           ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () => Navigator.pushReplacementNamed(context, '/settings'),
-          ),
-          ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
-            onTap: () async {
-              await authViewModel.signOut();
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
-                    (route) => false,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Confirm Logout"),
+                    content: const Text("Are you sure you want to log out?"),
+                    actions: [
+                      // Cancel Button (White)
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close dialog
+                        },
+                        child: const Text("Cancel"),
+                      ),
+
+                      // Log Out Button (Blue)
+                      ElevatedButton(
+                        onPressed: () async {
+                          await authViewModel.signOut();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+                                (route) => false,
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue, // Blue button
+                        ),
+                        child: const Text("Log Out", style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  );
+                },
               );
             },
           ),

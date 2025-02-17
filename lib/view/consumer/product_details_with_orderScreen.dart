@@ -109,34 +109,6 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
     });
   }
 
-  Future<void> _showOrderDialog(BuildContext context) async {
-    // Show confirmation dialog
-    final bool? confirmOrder = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirm Order', style: TextStyle(fontWeight: FontWeight.w600,color: Colors.blue),),
-          content: const Text('Are you sure you want to order this product?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No', style: TextStyle(color: CupertinoColors.inactiveGray),),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes', style: TextStyle(color: Colors.blue),),
-            ),
-          ],
-        );
-      },
-    );
-
-    // Show success dialog if confirmed
-    if (confirmOrder == true) {
-
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CustomerDetailsForOrder()));
-    }
-  }
 
 
   void _increaseQuantity() => setState(() => quantity++);
@@ -285,8 +257,7 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerDetailsForOrder()));
-                  },
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerDetailsForOrder()));                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 15),
