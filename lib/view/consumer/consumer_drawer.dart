@@ -1,88 +1,73 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 
-import '../../config/services/auth_service.dart';
-import '../authentication/consumer/consumer_login_screen.dart';
-
 class CustomUserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
-  CustomUserDrawer({super.key, required this.authViewModel });
-
+  CustomUserDrawer({super.key, required this.authViewModel});
 
   @override
   Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser; // Get the logged-in user
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // Drawer Header (you can customize it based on your design)
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.account_circle, size: 80, color: Colors.white),
-                SizedBox(height: 10),
+                const Icon(Icons.account_circle, size: 80, color: Colors.white),
+                const SizedBox(height: 10),
                 Text(
-                  "User Name", // Replace with actual user name or dynamic data
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  user?.displayName ?? "User Name", // Display actual user name
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ],
             ),
           ),
 
-          // List of Drawer Items
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
-            onTap: () {
-              // Implement navigation when the user taps on Home
-              Navigator.pushReplacementNamed(context, '/home');
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.heart_fill),
             title: const Text('Favorite'),
-            onTap: () {
-              // Implement navigation when the user taps on Home
-              Navigator.pushReplacementNamed(context, '/home');
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
           ),
           ListTile(
             leading: const Icon(Icons.account_circle),
             title: const Text('Profile'),
-            onTap: () {
-              // Implement navigation when the user taps on Profile
-              Navigator.pushReplacementNamed(context, '/profile');
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, '/profile'),
           ),
           ListTile(
             leading: const Icon(CupertinoIcons.shopping_cart),
             title: const Text('Order History'),
-            onTap: () {
-              // Implement navigation when the user taps on Order History
-              Navigator.pushReplacementNamed(context, '/order_history');
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, '/order_history'),
           ),
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
-            onTap: () {
-              // Implement navigation when the user taps on Settings
-              Navigator.pushReplacementNamed(context, '/settings');
-            },
+            onTap: () => Navigator.pushReplacementNamed(context, '/settings'),
           ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: const Text('Log out'),
             onTap: () async {
               await authViewModel.signOut();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                  builder: (context) => ChooseAccountScreen()), (route)=> false);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+                    (route) => false,
+              );
             },
           ),
         ],
