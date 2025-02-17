@@ -65,8 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final filteredSuppliers = suppliers.where((supplier) {
+    //   final companyName = supplier['companyName']?.toLowerCase() ?? '';
+    //   return companyName.contains(searchQuery);
+    // }).toList();
+
     final filteredSuppliers = suppliers.where((supplier) {
-      final companyName = supplier['companyName']?.toLowerCase() ?? '';
+      final companyName = supplier['address']?.toLowerCase() ?? '';
       return companyName.contains(searchQuery);
     }).toList();
 
