@@ -32,7 +32,6 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
     });
   }
 
-
   void _openAddressScreen() async {
     final newAddress = await Navigator.push(
       context,
@@ -114,6 +113,21 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
             ),
             const SizedBox(height: 20),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddProductScreen()));
+        },
+        backgroundColor: Colors.blue,
+        elevation: 2,
+        shape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
         ),
       ),
     );
