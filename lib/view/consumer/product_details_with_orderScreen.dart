@@ -147,6 +147,8 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
 
   @override
   Widget build(BuildContext context) {
+    double totalPrice = selectedPrice * quantity; // Calculate total price
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
@@ -159,6 +161,7 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Product Images Carousel
               if (widget.product['imageUrls'].isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -186,15 +189,18 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
 
               const SizedBox(height: 20),
 
+              // Product Name
               Text(widget.product['name'], style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
+
+              // Description
               Text(widget.product['description'] ?? 'No description available.',
                   style: const TextStyle(fontSize: 16, color: Colors.black87)),
               const SizedBox(height: 10),
 
-              // Size selection
+              // Size Selection
               if (sizesAndPrices.isNotEmpty) ...[
-                const Text('Select Size: (in litters)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Text('Select Size: (in liters)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 10,
@@ -205,46 +211,88 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
                       selected: selectedSize == sizeData['size'],
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          _selectSize(sizeData['size'], sizeData['price'].toDouble());
+                          setState(() {
+                            _selectSize(sizeData['size'], sizeData['price'].toDouble());
+                          });
                         }
                       },
                     );
                   }).toList(),
                 ),
                 const SizedBox(height: 10),
-                Text('Price: Rs. $selectedPrice',
+                Text('Price per Liter: Rs. $selectedPrice',
                     style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
               ],
 
+              // Refill Availability
               Text(
                 isRefillAvailable ? 'Refill is available' : 'Refill is not available',
                 style: TextStyle(fontSize: 16, color: isRefillAvailable ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
+
+              // Quantity Selector
               Row(
                 children: [
                   const Text('Quantity:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(width: 10),
-                  IconButton(onPressed: _decreaseQuantity, icon: const Icon(Icons.remove, color: CupertinoColors.inactiveGray)),
+                  IconButton(
+                    onPressed: () {
+                      if (quantity > 1) {
+                        setState(() => quantity--);
+                      }
+                    },
+                    icon: const Icon(Icons.remove, color: CupertinoColors.inactiveGray),
+                  ),
                   Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  IconButton(onPressed: _increaseQuantity, icon: const Icon(Icons.add, color: CupertinoColors.inactiveGray)),
+                  IconButton(
+                    onPressed: () {
+                      setState(() => quantity++);
+                    },
+                    icon: const Icon(Icons.add, color: CupertinoColors.inactiveGray),
+                  ),
                 ],
               ),
+
               const SizedBox(height: 20),
 
+              // Total Price Display
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.blue),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Total Bill:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    Text(
+                      'Rs. $totalPrice',
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Purchase Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    _showOrderDialog(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerDetailsForOrder()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  child: const Text("Purchase", style: TextStyle(fontSize: 18, color: Colors.white)),
+                  child: const Text("Proceed to Order", style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),
             ],
@@ -253,4 +301,5 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
       ),
     );
   }
+
 }
