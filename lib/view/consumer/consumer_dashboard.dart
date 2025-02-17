@@ -59,9 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Fix search filtering to use companyName instead of address
     final filteredSuppliers = suppliers.where((supplier) {
-      final companyName = supplier['companyName']?.toLowerCase() ?? '';
+      final companyName = supplier['address']?.toLowerCase() ?? '';
       return companyName.contains(searchQuery);
     }).toList();
 
@@ -91,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   contentPadding: const EdgeInsets.symmetric(
                       vertical: 10.0, horizontal: 20.0),
                   prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search by company name...',
+                  hintText: 'Search by Location....',
                   hintStyle: const TextStyle(color: Colors.grey),
                   border: const OutlineInputBorder(
                       borderSide: BorderSide(width: 1)),
