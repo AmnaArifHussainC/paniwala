@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/supplier/product/product_screen.dart';
 import 'package:paniwala/view/supplier/supplier_drawer.dart';
 
+import '../../config/utils/permitions.dart';
+import '../address/address_screen.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
   @override
@@ -13,7 +14,35 @@ class SupplierDashboardScreen extends StatefulWidget {
 
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String? supplierAddress = "Fetching location...";
 
+  @override
+  void initState() {
+    super.initState();
+    _loadAddress();
+  }
+
+  Future<void> _loadAddress() async {
+    String? address = await LocationUtils.getSavedAddress();
+    if (address == null) {
+      address = await LocationUtils.getCurrentLocation();
+    }
+    setState(() {
+      supplierAddress = address;
+    });
+  }
+
+  void _openAddressScreen() async {
+    final newAddress = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddressScreen()),
+    );
+    if (newAddress != null) {
+      setState(() {
+        supplierAddress = newAddress;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +65,6 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
             _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(LucideIcons.bell, color: Colors.white),
-            onPressed: () {
-              // Handle notifications
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -65,64 +86,34 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                     backgroundImage: AssetImage('assets/images/avatar.png'),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'Welcome!',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Welcome!',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      GestureDetector(
+                        onTap: _openAddressScreen,
+                        child: Text(
+                          supplierAddress ?? "Fetching location...",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Your Orders",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to Product List
-                    },
-                    child: const Text(
-                      "See All",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  //   OrderCard(
-                  //     orderId: "#202201",
-                  //     date: "3 Feb 2025",
-                  //     customerName: "John Doe",
-                  //     amount: "Rs. 500.00",
-                  //     status: "Delivered",
-                  //   ),
-                ],
-              ),
-            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        onPressed: () async {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddProductScreen()));
-        },
-        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
