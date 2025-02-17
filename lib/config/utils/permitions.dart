@@ -5,12 +5,17 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocationUtils {
+  static const String _addressKey = "supplier_address";
+
+  // Get Current Location & Address
   static Future<String?> getCurrentLocation() async {
     try {
-      // Request permission
+      // Request location permission
       LocationPermission permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return "Location permission denied";
+      } else if (permission == LocationPermission.deniedForever) {
+        return "Location permission permanently denied. Enable it in settings.";
       }
 
       // Get current position
@@ -20,13 +25,15 @@ class LocationUtils {
       // Reverse geocode to get address
       List<Placemark> placemarks =
       await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isEmpty) return "Address not found";
+
       Placemark place = placemarks.first;
-
       String address =
-          "${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}";
+      "${place.street ?? ''}, ${place.subLocality ?? ''}, ${place.locality ?? ''}, ${place.country ?? ''}".trim();
 
-      // Store address in Firestore
+      // Save address in Firestore & locally
       await updateSupplierAddress(address);
+      await saveAddressToLocal(address);
 
       return address;
     } catch (e) {
@@ -34,17 +41,16 @@ class LocationUtils {
     }
   }
 
+  // Update Supplier Address in Firestore
   static Future<void> updateSupplierAddress(String address) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await FirebaseFirestore.instance
           .collection('suppliers')
           .doc(user.uid)
-          .update({"address": address});
+          .set({"address": address}, SetOptions(merge: true));
     }
   }
-
-  static const String _addressKey = "supplier_address";
 
   // Get saved address from local storage
   static Future<String?> getSavedAddress() async {
@@ -52,7 +58,7 @@ class LocationUtils {
     return prefs.getString(_addressKey);
   }
 
-  // Save or update supplier address in local storage
+  // Save address to local storage
   static Future<void> saveAddressToLocal(String address) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_addressKey, address);

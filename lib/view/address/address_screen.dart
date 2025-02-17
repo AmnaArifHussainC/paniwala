@@ -6,50 +6,71 @@ class AddressScreen extends StatefulWidget {
   _AddressScreenState createState() => _AddressScreenState();
 }
 
-
 class _AddressScreenState extends State<AddressScreen> {
-  TextEditingController _addressController = TextEditingController();
-  bool _isLoading = false; // To track the loading state
+  final TextEditingController _addressController = TextEditingController();
+  bool _isLoading = false; // Track loading state
+  bool _isFetchingLocation = false; // Track location fetching state
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
 
   Future<void> _fetchCurrentLocation() async {
     setState(() {
-      _isLoading = true; // Show loader when fetching location
+      _isFetchingLocation = true;
     });
 
-    String? address = await LocationUtils.getCurrentLocation();
-
-    setState(() {
-      _isLoading = false; // Hide loader when the location is fetched
+    try {
+      String? address = await LocationUtils.getCurrentLocation();
       if (address != null && address.isNotEmpty) {
-        _addressController.text = address;  // Update the text field with the fetched address
+        _addressController.text = address;
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch location. Try again.')),
+        );
       }
-    });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() {
+        _isFetchingLocation = false;
+      });
+    }
   }
 
   void _saveAddress() async {
-    String newAddress = _addressController.text;
-    if (newAddress.isNotEmpty) {
-      setState(() {
-        _isLoading = true; // Show loader when saving the address
-      });
-
-      await LocationUtils.updateSupplierAddress(newAddress);
-
-      setState(() {
-        _isLoading = false; // Hide loader after saving the address
-      });
-
-      Navigator.pop(context, newAddress);
+    String newAddress = _addressController.text.trim();
+    if (newAddress.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid address.')),
+      );
+      return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    await LocationUtils.updateSupplierAddress(newAddress);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.pop(context, newAddress);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        title: Text("Edit Address", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue, // Blue theme for app bar
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Edit Address", style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
         elevation: 0,
         centerTitle: true,
       ),
@@ -58,83 +79,86 @@ class _AddressScreenState extends State<AddressScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Your Address",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 20),
 
-            // Address TextField with rounded borders and better styling
+            // Address Input Field
             TextField(
               controller: _addressController,
               decoration: InputDecoration(
                 labelText: "Enter your address",
-                labelStyle: TextStyle(color: Colors.black54),
+                labelStyle: const TextStyle(color: Colors.black54),
                 hintText: "e.g., 123 Main St",
-                hintStyle: TextStyle(color: Colors.black38),
+                hintStyle: const TextStyle(color: Colors.black38),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.blue.shade400),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.blue),
+                  borderSide: const BorderSide(color: Colors.blue),
                 ),
-                prefixIcon: Icon(Icons.location_on, color: Colors.blue),
+                prefixIcon: const Icon(Icons.location_on, color: Colors.blue),
               ),
-              style: TextStyle(fontSize: 16),
+              style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
 
-            // Show loading indicator if _isLoading is true
-            if (_isLoading)
-              Center(
-                child: CircularProgressIndicator(),
-              )
-            else
-            // Buttons arranged in rows with blue and white theme
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // "Online Location" Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 5,
+            // Buttons Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Fetch Location Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    onPressed: _fetchCurrentLocation,
-                    child: Text(
-                      "Online Location",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
-                    ),
+                    elevation: 5,
                   ),
-                  // "Save Address" Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: Colors.blue),
-                      ),
-                      elevation: 5,
-                    ),
-                    onPressed: _saveAddress,
-                    child: Text(
-                      "Save Address",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.blue),
-                    ),
+                  onPressed: _isFetchingLocation ? null : _fetchCurrentLocation,
+                  child: _isFetchingLocation
+                      ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  )
+                      : const Text(
+                    "Online Location",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                   ),
-                ],
-              ),
+                ),
+
+                // Save Address Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Colors.blue),
+                    ),
+                    elevation: 5,
+                  ),
+                  onPressed: _isLoading ? null : _saveAddress,
+                  child: _isLoading
+                      ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(color: Colors.blue, strokeWidth: 2),
+                  )
+                      : const Text(
+                    "Save Address",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.blue),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
