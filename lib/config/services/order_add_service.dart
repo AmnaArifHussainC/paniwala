@@ -12,6 +12,7 @@ class OrderService {
     required String userAddress,
     required String productName,
     required String quantitySize,
+    required double price,
   }) async {
     try {
       final orderId = _firestore.collection('orders').doc().id;
@@ -24,6 +25,7 @@ class OrderService {
         userAddress: userAddress,
         productName: productName,
         quantitySize: quantitySize,
+        price: price,
         orderDate: DateTime.now(),
       );
 
