@@ -22,7 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchSuppliers() async {
     try {
-      setState(() => isLoading = true);
+      setState(() {
+        isLoading = true;
+      });
 
       // Fetch suppliers from Firestore
       final querySnapshot =
@@ -47,21 +49,25 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       print('Error fetching suppliers: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to load suppliers. Please try again.')),
+        SnackBar(content: Text('Failed to load suppliers. Please try again.')),
       );
-      setState(() => isLoading = false);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   void searchSuppliers(String query) {
-    setState(() => searchQuery = query.toLowerCase());
+    setState(() {
+      searchQuery = query.toLowerCase();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Fix search filtering to use companyName instead of address
+
     final filteredSuppliers = suppliers.where((supplier) {
-      final companyName = supplier['companyName']?.toLowerCase() ?? '';
+      final companyName = supplier['address']?.toLowerCase() ?? '';
       return companyName.contains(searchQuery);
     }).toList();
 
@@ -88,16 +94,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: TextFormField(
                 onChanged: searchSuppliers,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search by company name...',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2)),
-                ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    hintText: 'Search...',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 1)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2))),
               ),
             ),
             // Supplier List
@@ -106,10 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? const Center(child: CircularProgressIndicator())
                   : filteredSuppliers.isEmpty
                   ? const Center(
-                child: Text(
-                  'No suppliers available at the moment.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
+                child: Text('No suppliers available at the moment.'),
               )
                   : ListView.builder(
                 itemCount: filteredSuppliers.length,
@@ -122,55 +124,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: CircleAvatar(
                         backgroundColor: Colors.blue,
                         child: Text(
-                          supplier['companyName'].isNotEmpty
-                              ? supplier['companyName']
-                              .substring(0, 1)
-                              .toUpperCase()
-                              : '?',
+                          supplier['companyName']
+                              ?.substring(0, 1)
+                              .toUpperCase() ??
+                              '?',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      title: Text(
-                        supplier['companyName'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold),
-                      ),
+                      title: Text(supplier['companyName']),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.email, size: 16, color: Colors.grey),
+                              const Icon(Icons.email, size: 16),
                               const SizedBox(width: 5),
-                              Expanded(
-                                child: Text(
-                                  supplier['email'],
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ),
+                              Text(supplier['email']),
                             ],
                           ),
                           Row(
                             children: [
-                              const Icon(Icons.phone, size: 16, color: Colors.grey),
+                              const Icon(Icons.phone, size: 16),
                               const SizedBox(width: 5),
-                              Text(supplier['phone']),
+                              Text('Phone: ${supplier['phone']}'),
                             ],
                           ),
                           Row(
                             crossAxisAlignment:
                             CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.location_on,
-                                  size: 16, color: Colors.grey),
+                              const Icon(Icons.location_on, size: 16),
                               const SizedBox(width: 5),
                               Expanded(
                                 child: Text(
-                                  supplier['address'],
+                                  'Address: ${supplier['address']}',
                                   style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                      overflow: TextOverflow.clip),
                                 ),
                               ),
                             ],
