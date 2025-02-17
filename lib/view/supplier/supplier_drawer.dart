@@ -1,16 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/config/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view/supplier/product/supplier_drawer_pro_list_screen.dart';
-
 import '../authentication/rider/rider_register.dart';
 
-class CustomDrawer extends StatelessWidget {
+class CustomDrawer extends StatefulWidget {
   final String supplierId; // Supplier ID passed to the drawer
 
   CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
+
+  @override
+  State<CustomDrawer> createState() => _CustomDrawerState();
+}
+
+class _CustomDrawerState extends State<CustomDrawer> {
+  String? companyName;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchSupplierData();
+  }
+
+  void fetchSupplierData() async {
+    User? user = FirebaseAuth.instance.currentUser; // Get logged-in user
+    if (user != null) {
+      DocumentSnapshot supplierSnapshot = await FirebaseFirestore.instance
+          .collection('suppliers') // Firestore collection
+          .doc(user.uid) // Supplier UID
+          .get();
+
+      if (supplierSnapshot.exists) {
+        setState(() {
+          companyName = supplierSnapshot['company_name'] ?? 'No Company';
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +55,24 @@ class CustomDrawer extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.account_circle, size: 80, color: Colors.white),
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.blue, // Blue background
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 80,
+                    color: Colors.white, // White icon for contrast
+                  ),
+                ),
                 const SizedBox(height: 10),
+                Text(
+                  companyName ?? 'Loading...',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
           ),
@@ -56,8 +101,8 @@ class CustomDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => SupplierProductsScreen(
-                            supplierId: supplierId,
-                          )));
+                        supplierId: widget.supplierId,
+                      )));
             },
           ),
           ListTile(
@@ -104,7 +149,7 @@ class CustomDrawer extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ChooseAccountScreen()),
-                  (route) => false,
+                      (route) => false,
                 );
               }
             },
