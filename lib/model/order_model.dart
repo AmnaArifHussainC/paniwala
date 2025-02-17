@@ -8,6 +8,7 @@ class OrderModel {
   final String userAddress;
   final String productName;
   final String quantitySize;
+  final double price;
   final DateTime orderDate;
 
   OrderModel({
@@ -18,6 +19,7 @@ class OrderModel {
     required this.userAddress,
     required this.productName,
     required this.quantitySize,
+    required this.price,
     required this.orderDate,
   });
 
@@ -31,6 +33,7 @@ class OrderModel {
       userAddress: data['userAddress'] ?? '',
       productName: data['productName'] ?? '',
       quantitySize: data['quantitySize'] ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0.0, // Ensure price is a double
       orderDate: (data['orderDate'] as Timestamp).toDate(),
     );
   }
@@ -44,6 +47,7 @@ class OrderModel {
       'userAddress': userAddress,
       'productName': productName,
       'quantitySize': quantitySize,
+      'price': price,
       'orderDate': orderDate,
     };
   }
