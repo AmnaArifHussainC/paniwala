@@ -169,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                   supplier['address'],
                                   style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis,
+                                    // overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ),
