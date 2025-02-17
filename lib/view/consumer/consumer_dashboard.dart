@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Fetch suppliers from Firestore
       final querySnapshot =
-      await FirebaseFirestore.instance.collection('suppliers').get();
+          await FirebaseFirestore.instance.collection('suppliers').get();
       print('Fetched suppliers: ${querySnapshot.docs.length}');
 
       final fetchedSuppliers = querySnapshot.docs.map((doc) {
@@ -93,13 +93,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: TextFormField(
                 onChanged: searchSuppliers,
                 decoration: InputDecoration(
-                  contentPadding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search...',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(borderSide: BorderSide(width: 1)),
-                ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    hintText: 'Search...',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 1)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2))),
               ),
             ),
             // Supplier List
@@ -107,76 +109,78 @@ class _HomeScreenState extends State<HomeScreen> {
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : filteredSuppliers.isEmpty
-                  ? const Center(
-                child: Text('No suppliers available at the moment.'),
-              )
-                  : ListView.builder(
-                itemCount: filteredSuppliers.length,
-                itemBuilder: (context, index) {
-                  final supplier = filteredSuppliers[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 10.0),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: Text(
-                          supplier['companyName']
-                              ?.substring(0, 1)
-                              .toUpperCase() ??
-                              '?',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      title: Text(supplier['companyName']),
-                      subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.email, size: 16),
-                            const SizedBox(width: 5),
-                            Text(supplier['email']),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            const Icon(Icons.phone, size: 16),
-                            const SizedBox(width: 5),
-                            Text('Phone: ${supplier['phone']}'),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.location_on, size: 16),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                'Address: ${supplier['address']}',
-                                style: const TextStyle(overflow: TextOverflow.clip),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SupplierProductListsForCustomers(
-                                  supplierId: supplier['id'],
-                                  companyName: supplier['companyName'],
+                      ? const Center(
+                          child: Text('No suppliers available at the moment.'),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredSuppliers.length,
+                          itemBuilder: (context, index) {
+                            final supplier = filteredSuppliers[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 10.0),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.blue,
+                                  child: Text(
+                                    supplier['companyName']
+                                            ?.substring(0, 1)
+                                            .toUpperCase() ??
+                                        '?',
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
                                 ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+                                title: Text(supplier['companyName']),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.email, size: 16),
+                                        const SizedBox(width: 5),
+                                        Text(supplier['email']),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.phone, size: 16),
+                                        const SizedBox(width: 5),
+                                        Text('Phone: ${supplier['phone']}'),
+                                      ],
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Icon(Icons.location_on, size: 16),
+                                        const SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            'Address: ${supplier['address']}',
+                                            style: const TextStyle(
+                                                overflow: TextOverflow.clip),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SupplierProductListsForCustomers(
+                                        supplierId: supplier['id'],
+                                        companyName: supplier['companyName'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
             ),
           ],
         ),
