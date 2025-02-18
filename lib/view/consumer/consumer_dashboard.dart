@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
@@ -57,6 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => searchQuery = query.toLowerCase());
   }
 
+  void openWhatsApp(String phoneNumber) async {
+    final Uri url = Uri.parse("https://wa.me/$phoneNumber");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      print("Could not launch WhatsApp");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final filteredSuppliers = suppliers.where((supplier) {
@@ -154,7 +163,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               const Icon(Icons.phone, size: 16, color: Colors.grey),
                               const SizedBox(width: 5),
-                              Text(supplier['phone']),
+                              GestureDetector(
+                                onTap: () => openWhatsApp(supplier['phone']),
+                                child: Text(
+                                  supplier['phone'],
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           Row(
@@ -167,9 +185,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               Expanded(
                                 child: Text(
                                   supplier['address'],
-                                  style: const TextStyle(
-                                    // overflow: TextOverflow.ellipsis,
-                                  ),
                                 ),
                               ),
                             ],
