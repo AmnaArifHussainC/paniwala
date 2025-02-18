@@ -36,6 +36,7 @@ dependencies:
 #  cloudinary: ^1.2.0
   geolocator:
   geocoding:
+  geocoder_plus: ^0.0.1
   google_maps_flutter:
   cloud_firestore:
   permission_handler:
