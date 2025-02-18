@@ -55,11 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
-    String address = "${place.subLocality}, ${place.locality}, ${place.country}";
+    String fullAddress = " ${place.street ?? ''}, ${place.subLocality ?? ''}, "
+        "${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
 
     setState(() {
-      userLocation = address;
-      locationController.text = address;
+      userLocation = fullAddress.isNotEmpty ? fullAddress : "Address not available.";
+      locationController.text = userLocation;
     });
   }
 
