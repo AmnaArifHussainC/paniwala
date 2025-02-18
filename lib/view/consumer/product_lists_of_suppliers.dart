@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/consumer/product_details_with_orderScreen.dart';
+
+import '../complaints_feedback/complaintAndFeedback.dart';
 
 class SupplierProductListsForCustomers extends StatefulWidget {
   final String supplierId;
@@ -67,6 +70,23 @@ class _SupplierProductListsForCustomersState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RateSupplierScreen(
+                    supplierId: widget.supplierId,
+                    companyName: widget.companyName,
+                  ),
+                ),
+              );
+            },
+            icon: Icon(CupertinoIcons.archivebox_fill, color: Colors.white),
+          ),
+
+        ],
         title: Text(widget.companyName, style: TextStyle(color: Colors.white)),
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blue,
