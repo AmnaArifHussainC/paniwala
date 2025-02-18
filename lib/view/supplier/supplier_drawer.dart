@@ -6,6 +6,7 @@ import 'package:paniwala/config/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view/supplier/product/supplier_drawer_pro_list_screen.dart';
 import '../authentication/rider/rider_register.dart';
+import '../complaints_feedback/Supplier_complaints_screen_for_supplier.dart';
 
 class CustomDrawer extends StatefulWidget {
   final String supplierId; // Supplier ID passed to the drawer
@@ -103,6 +104,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       builder: (context) => SupplierProductsScreen(
                         supplierId: widget.supplierId,
                       )));
+            },
+          ),
+          ListTile(
+            leading: const Icon(CupertinoIcons.archivebox_fill),
+            title: const Text('Your Complaints'),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SupplierRatingsScreen(supplierId: widget.supplierId,)));
             },
           ),
           ListTile(

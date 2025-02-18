@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class RateSupplierScreen extends StatefulWidget {
@@ -29,12 +30,31 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
     setState(() {
       _isSubmitting = true;
     });
+
     try {
+      // Get current user's details
+      final user = FirebaseAuth.instance.currentUser;
+      final userId = user?.uid;
+      final userEmail = user?.email;
+
+      if (userId == null || userEmail == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not logged in. Please log in to submit feedback.')),
+        );
+        setState(() {
+          _isSubmitting = false;
+        });
+        return;
+      }
+
+      // Add rating to Firestore
       await FirebaseFirestore.instance
           .collection('suppliers')
           .doc(widget.supplierId)
           .collection('ratings')
           .add({
+        'userId': userId,
+        'userEmail': userEmail,
         'rating': _rating,
         'feedback': _feedbackController.text.trim(),
         'complaint': _complaintController.text.trim(),
@@ -45,6 +65,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
         SnackBar(content: Text('Feedback & complaint submitted successfully!')),
       );
 
+      // Clear input fields
       _feedbackController.clear();
       _complaintController.clear();
       setState(() {
@@ -91,7 +112,8 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
                   ),
                   SizedBox(height: 10),
-        
+
+                  // Rating Bar
                   RatingBar.builder(
                     initialRating: _rating,
                     minRating: 1,
@@ -107,7 +129,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     },
                   ),
                   SizedBox(height: 20),
-        
+
                   // Feedback Section
                   Text(
                     'Write Feedback (Optional)',
@@ -125,7 +147,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-        
+
                   // Complaint Section
                   Text(
                     'Write a Complaint (Optional)',
@@ -143,7 +165,8 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
-        
+
+                  // Submit Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
