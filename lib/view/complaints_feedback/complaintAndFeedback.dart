@@ -29,7 +29,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
     setState(() {
       _isSubmitting = true;
     });
-
     try {
       await FirebaseFirestore.instance
           .collection('suppliers')
