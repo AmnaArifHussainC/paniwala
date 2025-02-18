@@ -167,6 +167,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       controller: locationController,
                       decoration: const InputDecoration(
                         hintText: 'Your Location',
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                            width: 2,
+                          )
+                        ),
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -176,8 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: fetchUserLocation, // Ensure this function is defined
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                    ),
                     onPressed: () => saveLocationToFirestore(context, locationController),
-                    child: const Text("Save"),
+                    child: const Text("Save", style: TextStyle(color: Colors.white),),
                   ),
                 ],
               ),
