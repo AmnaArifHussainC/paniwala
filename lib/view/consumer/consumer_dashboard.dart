@@ -31,14 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() => userLocation = "Location services are disabled.");
       return;
     }
 
-    // Check & request location permissions
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -53,28 +51,18 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Get current position (latitude & longitude)
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-    // Reverse geocoding to get address details
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
-    // Construct address in "Plus Code" style manually
-    String formattedAddress = "${place.subLocality}, ${place.locality}, ${place.country}";
-    String plusCode = generatePlusCode(position.latitude, position.longitude); // Generate Plus Code
+    String address = "${place.subLocality}, ${place.locality}, ${place.country}";
 
     setState(() {
-      userLocation = "$plusCode, $formattedAddress"; // Example: "G899+5X6, Muslim Town, Lahore, Pakistan"
-      locationController.text = userLocation;
+      userLocation = address;
+      locationController.text = address;
     });
   }
 
-// Dummy function for generating Plus Code (replace with actual Plus Code logic)
-  String generatePlusCode(double latitude, double longitude) {
-    // This is a placeholder. To generate real Plus Codes, use Google's Open Location Code algorithm.
-    return "G809+5X6"; // Hardcoded example, replace with actual logic if needed.
-  }
   Future<void> saveLocationToFirestore(BuildContext context, TextEditingController locationController) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
