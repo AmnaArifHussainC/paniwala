@@ -1,0 +1,2 @@
+C:/Users/Fatima/StudioProjects/paniwala/android/app/.cxx/Debug/v5qxi5l5/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Fatima/StudioProjects/paniwala/android/app/.cxx/Debug/v5qxi5l5/arm64-v8a/CMakeFiles/rebuild_cache.dir
