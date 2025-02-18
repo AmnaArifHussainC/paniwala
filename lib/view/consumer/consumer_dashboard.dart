@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,13 +17,77 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> suppliers = [];
   bool isLoading = true;
   String searchQuery = '';
+  String userLocation = "Fetching location...";
+  TextEditingController locationController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     fetchSuppliers();
+    fetchUserLocation();
   }
 
+  Future<void> fetchUserLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() => userLocation = "Location services are disabled.");
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() => userLocation = "Location permission denied.");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      setState(() => userLocation = "Location permission permanently denied.");
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks[0];
+
+    String address = "${place.subLocality}, ${place.locality}, ${place.country}";
+
+    setState(() {
+      userLocation = address;
+      locationController.text = address;
+    });
+  }
+
+  Future<void> saveLocationToFirestore(BuildContext context, TextEditingController locationController) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in.')),
+        );
+        return;
+      }
+
+      // Save location in the user's document using their UID
+      await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
+        'location': locationController.text
+      }, SetOptions(merge: true));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location saved successfully!')),
+      );
+    } catch (e) {
+      print('Error saving location: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to save location.')),
+      );
+    }
+  }
   Future<void> fetchSuppliers() async {
     try {
       setState(() => isLoading = true);
@@ -90,6 +157,32 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Location Input
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: locationController,
+                      decoration: const InputDecoration(
+                        hintText: 'Your Location',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.my_location, color: Colors.blue),
+                    onPressed: fetchUserLocation, // Ensure this function is defined
+                  ),
+                  ElevatedButton(
+                    onPressed: () => saveLocationToFirestore(context, locationController),
+                    child: const Text("Save"),
+                  ),
+                ],
+              ),
+            ),
+
             // Search Bar
             Padding(
               padding: const EdgeInsets.all(8.0),
