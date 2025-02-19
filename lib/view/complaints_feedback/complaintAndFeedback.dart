@@ -16,11 +16,28 @@ class RateSupplierScreen extends StatefulWidget {
 class _RateSupplierScreenState extends State<RateSupplierScreen> {
   double _rating = 0;
   TextEditingController _feedbackController = TextEditingController();
-  TextEditingController _complaintController = TextEditingController();
+  TextEditingController _complaintDetailsController = TextEditingController();
   bool _isSubmitting = false;
 
+  String? _selectedComplaintType;
+  Map<String, List<String>> complaintIssues = {
+    'Service Complaint': ['Late delivery', 'Incomplete order', 'Poor packaging'],
+    'Behavior Complaint': ['Rude behavior', 'Unprofessional attitude'],
+    'Technical Complaint': ['App not responding', 'Payment issue', 'Incorrect order processing'],
+  };
+
+  List<String> _currentIssues = [];
+
+  void updateComplaintIssues(String? complaintType) {
+    setState(() {
+      _selectedComplaintType = complaintType;
+      _currentIssues = complaintType != null ? complaintIssues[complaintType]! : [];
+      _complaintDetailsController.text = _currentIssues.join(', ');
+    });
+  }
+
   Future<void> submitFeedback() async {
-    if (_rating == 0 && _feedbackController.text.isEmpty && _complaintController.text.isEmpty) {
+    if (_rating == 0 && _feedbackController.text.isEmpty && _selectedComplaintType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please provide a rating, feedback, or complaint.')),
       );
@@ -32,7 +49,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
     });
 
     try {
-      // Get current user's details
       final user = FirebaseAuth.instance.currentUser;
       final userId = user?.uid;
       final userEmail = user?.email;
@@ -47,7 +63,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
         return;
       }
 
-      // Add rating to Firestore
       await FirebaseFirestore.instance
           .collection('suppliers')
           .doc(widget.supplierId)
@@ -57,7 +72,8 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
         'userEmail': userEmail,
         'rating': _rating,
         'feedback': _feedbackController.text.trim(),
-        'complaint': _complaintController.text.trim(),
+        'complaintType': _selectedComplaintType ?? '',
+        'complaintDetails': _complaintDetailsController.text.trim(),
         'timestamp': FieldValue.serverTimestamp(),
       });
 
@@ -65,11 +81,12 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
         SnackBar(content: Text('Feedback & complaint submitted successfully!')),
       );
 
-      // Clear input fields
       _feedbackController.clear();
-      _complaintController.clear();
+      _complaintDetailsController.clear();
       setState(() {
         _rating = 0;
+        _selectedComplaintType = null;
+        _currentIssues = [];
       });
     } catch (e) {
       print('Error submitting feedback: $e');
@@ -104,7 +121,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                 boxShadow: [BoxShadow(color: Colors.blue.shade100, blurRadius: 10, spreadRadius: 2)],
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
@@ -113,7 +129,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                   ),
                   SizedBox(height: 10),
 
-                  // Rating Bar
                   RatingBar.builder(
                     initialRating: _rating,
                     minRating: 1,
@@ -130,7 +145,6 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Feedback Section
                   Text(
                     'Write Feedback (Optional)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
@@ -148,17 +162,22 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Complaint Section
                   Text(
-                    'Write a Complaint (Optional)',
+                    'Select Complaint Type (Optional)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   SizedBox(height: 10),
-                  TextField(
-                    controller: _complaintController,
-                    maxLines: 3,
+                  DropdownButtonFormField<String>(
+                    value: _selectedComplaintType,
+                    hint: Text('Choose Complaint Type'),
+                    items: complaintIssues.keys.map((String type) {
+                      return DropdownMenuItem<String>(
+                        value: type,
+                        child: Text(type),
+                      );
+                    }).toList(),
+                    onChanged: updateComplaintIssues,
                     decoration: InputDecoration(
-                      hintText: 'Describe your complaint...',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                       fillColor: Colors.blue[50],
                       filled: true,
@@ -166,7 +185,29 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Submit Button
+                  if (_selectedComplaintType != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Complaint Details (Editable)',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _complaintDetailsController,
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: 'Describe your complaint...',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            fillColor: Colors.blue[50],
+                            filled: true,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
