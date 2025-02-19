@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../config/services/order_add_service.dart';
 import '../../../config/utils/validators.dart';
 
 class CustomerDetailsForOrder extends StatefulWidget {
@@ -40,9 +38,6 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
       },
     );
   }
-
-  final OrderService _orderService = OrderService();
-
 
   @override
   Widget build(BuildContext context) {
