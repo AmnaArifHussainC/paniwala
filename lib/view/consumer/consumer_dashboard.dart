@@ -26,7 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     fetchSuppliers();
-    fetchUserLocation();
+    loadSavedLocation();
+  }
+
+  Future<void> loadSavedLocation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedLocation = prefs.getString('saved_location');
+
+    setState(() {
+      userLocation = savedLocation ?? "Fetching location...";
+      locationController.text = userLocation;
+    });
   }
 
   Future<void> fetchUserLocation() async {
@@ -57,13 +67,17 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
-    String fullAddress = " ${place.street ?? ''}, ${place.subLocality ?? ''}, "
+    String fullAddress = "${place.street ?? ''}, ${place.subLocality ?? ''}, "
         "${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
 
     setState(() {
       userLocation = fullAddress.isNotEmpty ? fullAddress : "Address not available.";
       locationController.text = userLocation;
     });
+
+    // Save to SharedPreferences so it's persistent
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('saved_location', userLocation);
   }
 
   Future<void> saveLocationToFirestore(BuildContext context, TextEditingController locationController) async {
@@ -76,10 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // Save location in the user's document using their UID
+      // Save location in Firestore
       await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
         'location': locationController.text
       }, SetOptions(merge: true));
+
+      // Save location in SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('saved_location', locationController.text);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Location saved successfully!')),
@@ -91,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+
+
   Future<void> fetchSuppliers() async {
     try {
       setState(() => isLoading = true);
