@@ -120,16 +120,21 @@ class _HomeScreenState extends State<HomeScreen> {
       await FirebaseFirestore.instance.collection('suppliers').get();
       print('Fetched suppliers: ${querySnapshot.docs.length}');
 
-      final fetchedSuppliers = querySnapshot.docs.map((doc) {
+      List<Map<String, dynamic>> fetchedSuppliers = [];
+
+      for (var doc in querySnapshot.docs) {
         final data = doc.data();
-        return {
-          'id': doc.id, // Store supplier's document ID
+        double avgRating = await getAverageRating(doc.id); // Fetch average rating
+
+        fetchedSuppliers.add({
+          'id': doc.id,
           'companyName': data['company_name'] ?? 'Unknown Company',
           'email': data['email'] ?? 'No Email Provided',
           'phone': data['phone'] ?? 'No Phone Number',
           'address': data['address'] ?? 'No Address Available',
-        };
-      }).toList();
+          'avgRating': avgRating, // Store the average rating
+        });
+      }
 
       setState(() {
         suppliers = fetchedSuppliers;
@@ -141,6 +146,31 @@ class _HomeScreenState extends State<HomeScreen> {
         const SnackBar(content: Text('Failed to load suppliers. Please try again.')),
       );
       setState(() => isLoading = false);
+    }
+  }
+
+// Function to calculate average rating of a supplier
+  Future<double> getAverageRating(String supplierId) async {
+    try {
+      final ratingSnapshot = await FirebaseFirestore.instance
+          .collection('suppliers')
+          .doc(supplierId)
+          .collection('ratings')
+          .get();
+
+      if (ratingSnapshot.docs.isEmpty) return 0.0; // No ratings yet
+
+      double totalRating = 0.0;
+      int count = ratingSnapshot.docs.length;
+
+      for (var doc in ratingSnapshot.docs) {
+        totalRating += (doc.data()['rating'] ?? 0.0).toDouble();
+      }
+
+      return totalRating / count; // Calculate average
+    } catch (e) {
+      print('Error fetching ratings: $e');
+      return 0.0;
     }
   }
 
@@ -271,6 +301,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.star, size: 18, color: Colors.amber),
+                              const SizedBox(width: 5),
+                              Text(
+                                supplier['avgRating'].toStringAsFixed(1), // Display rating
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                           Row(
                             children: [
                               const Icon(Icons.email, size: 16, color: Colors.grey),
