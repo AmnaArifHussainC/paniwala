@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/authentication/supplier/supplier_register_screen.dart';
 import 'package:paniwala/view/supplier/supplier_dashboard.dart';
 
@@ -31,20 +32,37 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
       });
 
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        // Authenticate with Firebase
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passController.text.trim(),
         );
 
-        // Navigate to Supplier Dashboard or relevant screen and clear the back stack
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login successful!")),
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
-              (route) => false, // This clears all previous routes
-        );
+        // Get user details from Firestore
+        final userDoc = await FirebaseFirestore.instance
+            .collection('suppliers')
+            .doc(userCredential.user?.uid)
+            .get();
+
+        if (userDoc.exists && userDoc.data()?['role'] == 'supplier') {
+          // Navigate to Supplier Dashboard if the role is valid
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Login successful!")),
+          );
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+                (route) => false,
+          );
+        } else {
+          // Sign out the user and show an error if not a supplier
+          await FirebaseAuth.instance.signOut();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Access denied. This account is not a supplier.")),
+          );
+        }
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login failed: $error")),

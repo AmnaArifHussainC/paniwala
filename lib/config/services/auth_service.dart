@@ -117,34 +117,7 @@ class AuthService {
     }
   }
 
-  // Upload to Cloudinary
-  // Future<String?> uploadToCloudinary(String filePath) async {
-  //   const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dhirdggtq/upload';
-  //   const uploadPreset = 'paniwala_certificates';
-  //
-  //   try {
-  //     final file = File(filePath);
-  //     final request = http.MultipartRequest('POST', Uri.parse(cloudinaryUrl))
-  //       ..fields['upload_preset'] = uploadPreset
-  //       ..files.add(await http.MultipartFile.fromPath('file', file.path));
-  //
-  //     final response = await request.send();
-  //     final responseBody = await response.stream.bytesToString();
-  //
-  //     if (response.statusCode == 200) {
-  //       final jsonResponse = json.decode(responseBody);
-  //       return jsonResponse['secure_url'];
-  //     } else {
-  //       print("Cloudinary Upload Error: ${response.statusCode}");
-  //       return null;
-  //     }
-  //   } catch (e) {
-  //     print("Cloudinary Upload Error: $e");
-  //     return null;
-  //   }
-  // }
 
-  // Forgot Password
   Future<bool> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
@@ -187,9 +160,10 @@ class AuthService {
 
 
 
-  // Supplier Login
+
   Future<SupplierModel?> loginSupplier(String email, String password) async {
     try {
+      // Authenticate user
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -197,12 +171,27 @@ class AuthService {
       User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
-        // Fetch supplier details from Firestore
-        DocumentSnapshot supplierDoc = await _firestore.collection('suppliers').doc(firebaseUser.uid).get();
-        if (supplierDoc.exists) {
-          return SupplierModel.fromFirestore(supplierDoc.data() as Map<String, dynamic>, supplierDoc.id);
+        // Fetch supplier details from the Firestore 'suppliers' collection
+        DocumentSnapshot supplierDoc =
+        await _firestore.collection('suppliers').doc(firebaseUser.uid).get();
+
+        if (!supplierDoc.exists) {
+          // User is not a supplier
+          print("Error: No supplier record found for this user.");
+          return null; // Prevent access to the supplier dashboard
         }
+
+        // Check the role to ensure it's 'supplier'
+        final data = supplierDoc.data() as Map<String, dynamic>;
+        if (data['role'] != 'supplier') {
+          print("Error: User role is not 'supplier'.");
+          return null; // Stop further processing
+        }
+
+        // Role matches, return SupplierModel
+        return SupplierModel.fromFirestore(data, supplierDoc.id);
       }
+
       return null;
     } catch (e) {
       print("Supplier Login Error: $e");

@@ -51,7 +51,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-
   Future<void> _navigateBasedOnRole(String uid) async {
     try {
       print("Checking role for user with UID: $uid");
@@ -59,27 +58,33 @@ class _SplashScreenState extends State<SplashScreen> {
       // Check in 'Users' collection
       DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(uid).get();
       if (userDoc.exists) {
-        print("User found in 'Users' collection.");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-        return;
+        final role = userDoc['role'];
+        if (role == 'customer') {
+          print("User found in 'Users' collection with role: $role.");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+          return;
+        }
       }
 
       // Check in 'suppliers' collection
       DocumentSnapshot supplierDoc = await FirebaseFirestore.instance.collection('suppliers').doc(uid).get();
       if (supplierDoc.exists) {
-        print("User found in 'suppliers' collection.");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
-        );
-        return;
+        final role = supplierDoc['role'];
+        if (role == 'supplier') {
+          print("User found in 'suppliers' collection with role: $role.");
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+          );
+          return;
+        }
       }
 
-      // If user is not found in either collection
-      print("User not found in Firestore. Navigating to ChooseAccountScreen.");
+      // If user is not found in either collection or role is invalid
+      print("User not found in Firestore or invalid role. Navigating to ChooseAccountScreen.");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
