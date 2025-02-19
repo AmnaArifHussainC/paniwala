@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/services/auth_service.dart';
 import '../../../config/utils/validators.dart';
+import '../../../model/rider_model.dart';
 
-class RiderSignInScreen extends StatelessWidget {
+class RiderSignInScreen extends StatefulWidget {
   RiderSignInScreen({super.key});
 
+  @override
+  _RiderSignInScreenState createState() => _RiderSignInScreenState();
+}
+
+class _RiderSignInScreenState extends State<RiderSignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  // Loading State
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +89,51 @@ class RiderSignInScreen extends StatelessWidget {
 
                   // Sign In Button
                   CustomButton(
-                    text: "Sign In",
-                    onPressed: () {
+                    text: _isLoading ? "Loading..." : "Sign In",
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          _isLoading = true;
+                        });
 
+                        final authService = Provider.of<AuthService>(context, listen: false);
+                        final email = emailController.text.trim();
+                        final password = passController.text.trim();
+
+                        try {
+                          RiderModel? rider = await authService.loginRider(email, password);
+                          if (rider != null) {
+                            // Rider login successful, navigate to Rider Dashboard
+                            Navigator.pushReplacementNamed(context, '/rider_dashboard');
+                          } else {
+                            // Show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Invalid login credentials.")),
+                            );
+                          }
+                        } catch (e) {
+                          // Show error message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Error: ${e.toString()}")),
+                          );
+                        } finally {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
+                      }
                     },
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 10),
+
+                  // Show a CircularProgressIndicator if loading
+                  if (_isLoading)
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
                 ],
               ),
             ),

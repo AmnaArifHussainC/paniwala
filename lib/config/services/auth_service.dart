@@ -265,5 +265,43 @@ class AuthService {
   }
 
 
+  Future<RiderModel?> loginRider(String email, String password) async {
+    try {
+      // Authenticate the user
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        // Fetch rider details from the Firestore 'riders' collection
+        DocumentSnapshot riderDoc =
+        await _firestore.collection('riders').doc(firebaseUser.uid).get();
+
+        if (!riderDoc.exists) {
+          // User is not a rider
+          print("Error: No rider record found for this user.");
+          return null; // Prevent access to the rider dashboard
+        }
+
+        // Check the role to ensure it's 'rider'
+        final data = riderDoc.data() as Map<String, dynamic>;
+        if (data['role'] != 'rider') {
+          print("Error: User role is not 'rider'.");
+          return null; // Stop further processing
+        }
+
+        // Role matches, return RiderModel
+        return RiderModel.fromFirestore(data, riderDoc.id);
+      }
+
+      return null;
+    } catch (e) {
+      print("Rider Login Error: $e");
+      return null;
+    }
+  }
+
 
 }
