@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 
+import 'customer_order/customer_order_history.dart';
+
 class CustomUserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
   CustomUserDrawer({super.key, required this.authViewModel});
@@ -32,7 +34,6 @@ class CustomUserDrawer extends StatelessWidget {
               ],
             ),
           ),
-
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
@@ -46,7 +47,21 @@ class CustomUserDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(CupertinoIcons.shopping_cart),
             title: const Text('Order History'),
-            onTap: () => Navigator.pushReplacementNamed(context, '/order_history'),
+            onTap: () {
+              if (user != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserAllOrderScreen(userId: user.uid),
+                  ),
+                );
+              } else {
+                // Show an error or redirect to login if the user is null
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("User not logged in")),
+                );
+              }
+            },
           ),
           ListTile(
             leading: const Icon(Icons.logout),
@@ -66,14 +81,15 @@ class CustomUserDrawer extends StatelessWidget {
                         },
                         child: const Text("Cancel"),
                       ),
-
                       // Log Out Button (Blue)
                       ElevatedButton(
                         onPressed: () async {
                           await authViewModel.signOut();
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+                            MaterialPageRoute(
+                              builder: (context) => ChooseAccountScreen(),
+                            ),
                                 (route) => false,
                           );
                         },
