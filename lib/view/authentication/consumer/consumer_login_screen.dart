@@ -27,14 +27,21 @@ class _SignInScreenState extends State<SignInScreen> {
         passController.text.trim(),
       );
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign In Successful!')),
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-              (route) => false,
-        );
+        final user = widget.authViewModel.user;
+        if (user != null && user.role == "Users") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Sign In Successful!')),
+          );
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+                (route) => false,
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Invalid role. Access denied.')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login failed. Please try again.')),
@@ -42,7 +49,6 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
-
   Future<void> _signInWithGoogle() async {
     bool success = await widget.authViewModel.signInWithGoogle();
     if (success) {
