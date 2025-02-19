@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,9 +9,14 @@ import '../complaints_feedback/complaintAndFeedback.dart';
 class SupplierProductListsForCustomers extends StatefulWidget {
   final String supplierId;
   final String companyName;
+  final String userId; // Ensure you pass the user's ID
 
-  SupplierProductListsForCustomers(
-      {required this.supplierId, required this.companyName});
+
+  SupplierProductListsForCustomers({
+    required this.supplierId,
+    required this.companyName,
+    required this.userId,
+  });
 
   @override
   _SupplierProductListsForCustomersState createState() =>
@@ -19,14 +25,21 @@ class SupplierProductListsForCustomers extends StatefulWidget {
 
 class _SupplierProductListsForCustomersState
     extends State<SupplierProductListsForCustomers> {
+  String? bookmarkedSupplierId; // Stores the currently bookmarked supplier
   List<Map<String, dynamic>> products = [];
   bool isLoading = true;
+  bool isBookmarked = false;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+
 
   @override
   void initState() {
     super.initState();
     fetchProducts();
+    checkIfBookmarked();
+    _fetchBookmarkedSupplier();
   }
+
 
   Future<void> fetchProducts() async {
     try {
@@ -66,11 +79,160 @@ class _SupplierProductListsForCustomersState
     }
   }
 
+  Future<void> checkIfBookmarked() async {
+    if (userId == null) return;
+
+    final userDoc = await FirebaseFirestore.instance.collection('Users').doc(userId).get();
+    if (userDoc.exists) {
+      List<dynamic> bookmarkedSuppliers = userDoc.data()?['bookmarkedSuppliers'] ?? [];
+      setState(() {
+        isBookmarked = bookmarkedSuppliers.contains(widget.supplierId);
+      });
+    }
+  }
+
+  Future<void> toggleBookmark() async {
+    if (userId == null) return;
+
+    final userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
+
+    try {
+      final userDoc = await userRef.get();
+      List<dynamic> bookmarkedSuppliers = userDoc.exists && userDoc.data() != null
+          ? (userDoc.data()!['bookmarkedSuppliers'] as List<dynamic>? ?? [])
+          : [];
+
+      if (isBookmarked) {
+        bookmarkedSuppliers.remove(widget.supplierId);
+      } else {
+        bookmarkedSuppliers.add(widget.supplierId);
+      }
+
+      await userRef.set({'bookmarkedSuppliers': bookmarkedSuppliers}, SetOptions(merge: true));
+
+      setState(() {
+        isBookmarked = !isBookmarked;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(isBookmarked ? 'Supplier bookmarked!' : 'Bookmark removed.')),
+      );
+    } catch (e) {
+      print('Error updating bookmark: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update bookmark.')));
+    }
+  }
+
+  /// Fetch the currently bookmarked supplier from Firestore
+  Future<void> _fetchBookmarkedSupplier() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(widget.userId)
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          bookmarkedSupplierId = userDoc['bookmarkedSupplier'];
+        });
+      }
+    } catch (e) {
+      print("Error fetching bookmarked supplier: $e");
+    }
+  }
+
+  /// Function to handle bookmarking a supplier
+  void _bookmarkSupplier() async {
+    await _fetchBookmarkedSupplier(); // Ensure we get the latest value
+
+    if (bookmarkedSupplierId == widget.supplierId) {
+      // If the current supplier is already bookmarked, show a message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('You have already bookmarked this supplier!')),
+      );
+      return;
+    }
+
+    if (bookmarkedSupplierId != null && bookmarkedSupplierId!.isNotEmpty) {
+      // If another supplier is already bookmarked, show the confirmation dialog
+      _showReplaceBookmarkDialog();
+    } else {
+      // No previous bookmark, proceed with saving
+      await _saveBookmark(widget.supplierId);
+    }
+  }
+
+  /// Show confirmation dialog before replacing the bookmark
+  void _showReplaceBookmarkDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Change Bookmark?"),
+          content: Text(
+              "You have already bookmarked another supplier. Do you want to replace it with ${widget.companyName}?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context); // Close the dialog
+                await _saveBookmark(widget.supplierId);
+              },
+              child: Text("Yes, Change"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Save the bookmarked supplier to Firestore
+  Future<void> _saveBookmark(String newSupplierId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(widget.userId)
+          .update({'bookmarkedSupplier': newSupplierId});
+
+      setState(() {
+        bookmarkedSupplierId = newSupplierId;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Supplier bookmarked successfully!')),
+      );
+    } catch (e) {
+      print("Error updating bookmark: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to bookmark supplier. Try again.')),
+      );
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(widget.companyName, style: TextStyle(color: Colors.white)),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.blue,
         actions: [
+          IconButton(
+            onPressed: _bookmarkSupplier, // Call the bookmark function
+            icon: Icon(
+              bookmarkedSupplierId == widget.supplierId
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
+              color: Colors.white,
+            ),
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
@@ -85,11 +247,7 @@ class _SupplierProductListsForCustomersState
             },
             icon: Icon(CupertinoIcons.archivebox_fill, color: Colors.white),
           ),
-
         ],
-        title: Text(widget.companyName, style: TextStyle(color: Colors.white)),
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.blue,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

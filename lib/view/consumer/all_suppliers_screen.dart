@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 
@@ -11,6 +12,7 @@ class AllSuppliersScreen extends StatefulWidget {
 }
 
 class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
+  final String userId = FirebaseAuth.instance.currentUser?.uid ?? "";
   List<Map<String, dynamic>> suppliers = [];
   bool isLoading = true;
   String searchQuery = '';
@@ -240,6 +242,7 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
                     MaterialPageRoute(
                       builder: (context) =>
                           SupplierProductListsForCustomers(
+                            userId: userId,  // Add this line
                             supplierId: supplier['id'],
                             companyName: supplier['companyName'],
                           ),
