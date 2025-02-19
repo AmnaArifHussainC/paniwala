@@ -110,7 +110,6 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
     final isSmallScreen = screenWidth < 600;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
         title: const Text("All Suppliers",
           style: TextStyle(
