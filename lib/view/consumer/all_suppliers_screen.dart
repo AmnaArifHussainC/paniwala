@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 
 
@@ -111,6 +110,8 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
     final isSmallScreen = screenWidth < 600;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        elevation: 0,
         title: const Text("All Suppliers",
           style: TextStyle(
             color: Colors.white,
@@ -122,58 +123,57 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
         backgroundColor: Colors.blue,
       ),
       body: Padding(padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children:[
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextFormField(
-          onChanged: searchSuppliers,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(
-                vertical: 10.0, horizontal: 20.0),
-            prefixIcon: const Icon(Icons.search, color: Colors.grey),
-            hintText: 'Search by Location....',
-            hintStyle: const TextStyle(color: Colors.grey),
-            border: const OutlineInputBorder(
-                borderSide: BorderSide(width: 1)),
-            focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 2)),
-          ),
-        ),
-      ),
-      // Supplier List
-      Expanded(
-        child: isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : filteredSuppliers.isEmpty
-            ? const Center(
-          child: Text(
-            'No suppliers available at the moment.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        )
-            : ListView.builder(
-          itemCount: filteredSuppliers.length,
-          itemBuilder: (context, index) {
-            final supplier = filteredSuppliers[index];
-            return Card(
-              margin: const EdgeInsets.symmetric(
-                  vertical: 8.0, horizontal: 10.0),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.blue,
-                  child: Text(
-                    supplier['companyName'].isNotEmpty
-                        ? supplier['companyName']
-                        .substring(0, 1)
-                        .toUpperCase()
-                        : '?',
-                    style: const TextStyle(color: Colors.white),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children:[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  onChanged: searchSuppliers,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    hintText: 'Search by Location....',
+                    hintStyle: const TextStyle(color: Colors.grey),
+                    border: const OutlineInputBorder(
+                        borderSide: BorderSide(width: 1)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.blue, width: 2)),
                   ),
                 ),
-                title: Text(
-                  supplier['companyName'],
+              ),
+              Expanded(
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : filteredSuppliers.isEmpty
+                    ? const Center(
+                  child: Text(
+                    'No suppliers available at the moment.',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+                    : ListView.builder(
+                  itemCount: filteredSuppliers.length,
+                  itemBuilder: (context, index) {
+                    final supplier = filteredSuppliers[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 10.0),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.blue,
+                          child: Text(
+                            supplier['companyName'].isNotEmpty
+                                ? supplier['companyName']
+                                .substring(0, 1)
+                                .toUpperCase()
+                                : '?',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        title: Text(
+                          supplier['companyName'],
                   style: const TextStyle(
                       fontWeight: FontWeight.bold),
                 ),
