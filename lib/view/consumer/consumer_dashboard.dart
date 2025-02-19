@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.my_location, color: Colors.blue),
-                    onPressed: fetchUserLocation, // Ensure this function is defined
+                    onPressed: fetchUserLocation,
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
