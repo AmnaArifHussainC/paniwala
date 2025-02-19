@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paniwala/view/consumer/all_suppliers_screen.dart' show AllSuppliersScreen;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
@@ -245,134 +246,32 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Search Bar
+            // Suppliers List Header with "See All"
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                onChanged: searchSuppliers,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search by Location....',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2)),
-                ),
-              ),
-            ),
-            // Supplier List
-            Expanded(
-              child: isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : filteredSuppliers.isEmpty
-                  ? const Center(
-                child: Text(
-                  'No suppliers available at the moment.',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-              )
-                  : ListView.builder(
-                itemCount: filteredSuppliers.length,
-                itemBuilder: (context, index) {
-                  final supplier = filteredSuppliers[index];
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 10.0),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: Text(
-                          supplier['companyName'].isNotEmpty
-                              ? supplier['companyName']
-                              .substring(0, 1)
-                              .toUpperCase()
-                              : '?',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      title: Text(
-                        supplier['companyName'],
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.star, size: 18, color: Colors.amber),
-                              const SizedBox(width: 5),
-                              Text(
-                                supplier['avgRating'].toStringAsFixed(1), // Display rating
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.email, size: 16, color: Colors.grey),
-                              const SizedBox(width: 5),
-                              Expanded(
-                                child: Text(
-                                  supplier['email'],
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Icon(Icons.phone, size: 16, color: Colors.grey),
-                              const SizedBox(width: 5),
-                              GestureDetector(
-                                onTap: () => openWhatsApp(supplier['phone']),
-                                child: Text(
-                                  supplier['phone'],
-                                  style: const TextStyle(
-                                    color: Colors.blue,
-                                    decoration: TextDecoration.underline,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.location_on,
-                                  size: 16, color: Colors.grey),
-                              const SizedBox(width: 5),
-                              Expanded(
-                                child: Text(
-                                  supplier['address'],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SupplierProductListsForCustomers(
-                                  supplierId: supplier['id'],
-                                  companyName: supplier['companyName'],
-                                ),
-                          ),
-                        );
-                      },
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Suppliers",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AllSuppliersScreen()),
+                      );
+                    },
+                    child: const Text(
+                      "See All",
+                      style: TextStyle(color: Colors.blue),
                     ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
+
           ],
         ),
       ),
