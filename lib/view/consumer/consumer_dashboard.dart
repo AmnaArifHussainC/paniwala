@@ -115,7 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       setState(() => isLoading = true);
 
-      // Fetch suppliers from Firestore
       final querySnapshot =
       await FirebaseFirestore.instance.collection('suppliers').get();
       print('Fetched suppliers: ${querySnapshot.docs.length}');
