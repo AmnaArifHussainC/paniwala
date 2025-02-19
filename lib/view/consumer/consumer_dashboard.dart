@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/consumer/all_suppliers_screen.dart' show AllSuppliersScreen;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
 import 'package:geolocator/geolocator.dart';
@@ -26,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    fetchSuppliers();
     loadSavedLocation();
   }
 
@@ -113,86 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   //fetch
-  Future<void> fetchSuppliers() async {
-    try {
-      setState(() => isLoading = true);
-
-      final querySnapshot =
-      await FirebaseFirestore.instance.collection('suppliers').get();
-      print('Fetched suppliers: ${querySnapshot.docs.length}');
-
-      List<Map<String, dynamic>> fetchedSuppliers = [];
-
-      for (var doc in querySnapshot.docs) {
-        final data = doc.data();
-        double avgRating = await getAverageRating(doc.id); // Fetch average rating
-
-        fetchedSuppliers.add({
-          'id': doc.id,
-          'companyName': data['company_name'] ?? 'Unknown Company',
-          'email': data['email'] ?? 'No Email Provided',
-          'phone': data['phone'] ?? 'No Phone Number',
-          'address': data['address'] ?? 'No Address Available',
-          'avgRating': avgRating, // Store the average rating
-        });
-      }
-
-      setState(() {
-        suppliers = fetchedSuppliers;
-        isLoading = false;
-      });
-    } catch (e) {
-      print('Error fetching suppliers: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to load suppliers. Please try again.')),
-      );
-      setState(() => isLoading = false);
-    }
-  }
 
 // Function to calculate average rating of a supplier
-  Future<double> getAverageRating(String supplierId) async {
-    try {
-      final ratingSnapshot = await FirebaseFirestore.instance
-          .collection('suppliers')
-          .doc(supplierId)
-          .collection('ratings')
-          .get();
 
-      if (ratingSnapshot.docs.isEmpty) return 0.0; // No ratings yet
-
-      double totalRating = 0.0;
-      int count = ratingSnapshot.docs.length;
-
-      for (var doc in ratingSnapshot.docs) {
-        totalRating += (doc.data()['rating'] ?? 0.0).toDouble();
-      }
-
-      return totalRating / count; // Calculate average
-    } catch (e) {
-      print('Error fetching ratings: $e');
-      return 0.0;
-    }
-  }
-
-  void searchSuppliers(String query) {
-    setState(() => searchQuery = query.toLowerCase());
-  }
-
-  void openWhatsApp(String phoneNumber) async {
-    final Uri url = Uri.parse("https://wa.me/$phoneNumber");
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      print("Could not launch WhatsApp");
-    }
-  }
   @override
   Widget build(BuildContext context) {
-    final filteredSuppliers = suppliers.where((supplier) {
-      final companyName = supplier['address']?.toLowerCase() ?? '';
-      return companyName.contains(searchQuery);
-    }).toList();
 
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;

@@ -111,7 +111,11 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
     final isSmallScreen = screenWidth < 600;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All Suppliers"),
+        title: const Text("All Suppliers",
+          style: TextStyle(
+            color: Colors.white
+          ),
+        ),
         backgroundColor: Colors.blue,
       ),
       body: Padding(padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
