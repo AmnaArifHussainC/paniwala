@@ -275,24 +275,24 @@ class AuthService {
       User? firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
-        // Fetch rider details from the Firestore 'riders' collection
+        print("Checking Firestore for rider UID: ${firebaseUser.uid}");
+
         DocumentSnapshot riderDoc =
         await _firestore.collection('riders').doc(firebaseUser.uid).get();
 
         if (!riderDoc.exists) {
-          // User is not a rider
           print("Error: No rider record found for this user.");
-          return null; // Prevent access to the rider dashboard
+          return null;
         }
 
-        // Check the role to ensure it's 'rider'
         final data = riderDoc.data() as Map<String, dynamic>;
-        if (data['role'] != 'rider') {
-          print("Error: User role is not 'rider'.");
-          return null; // Stop further processing
+
+        if (!data.containsKey('role') || data['role'] != 'rider') {
+          print("Error: Role is missing or incorrect.");
+          return null;
         }
 
-        // Role matches, return RiderModel
+        print("Rider login successful: ${data}");
         return RiderModel.fromFirestore(data, riderDoc.id);
       }
 

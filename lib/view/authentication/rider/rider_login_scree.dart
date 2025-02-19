@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
 import '../../../config/services/auth_service.dart';
 import '../../../config/utils/validators.dart';
 import '../../../model/rider_model.dart';
+import '../../rider/rider_dashboard.dart';
 
 class RiderSignInScreen extends StatefulWidget {
   RiderSignInScreen({super.key});
@@ -17,12 +16,9 @@ class RiderSignInScreen extends StatefulWidget {
 class _RiderSignInScreenState extends State<RiderSignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passController = TextEditingController();
-
-  // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Loading State
   bool _isLoading = false;
+  final AuthService _authService = AuthService(); // Direct instance
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +50,6 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Centered "Sign In" Title
                   const Center(
                     child: Text(
                       "Rider Sign In",
@@ -66,7 +61,6 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Email Field
                   CustomTextField(
                     textinputtype: TextInputType.emailAddress,
                     validator: (value) => ValidationUtils.validateEmail(value),
@@ -76,7 +70,6 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Password Field
                   CustomTextField(
                     textinputtype: TextInputType.text,
                     validator: (value) => ValidationUtils.validatePassword(value),
@@ -87,41 +80,39 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // Sign In Button
                   CustomButton(
                     text: _isLoading ? "Loading..." : "Sign In",
                     onPressed: _isLoading
                         ? null
                         : () async {
                       if (_formKey.currentState!.validate()) {
-                        setState(() {
-                          _isLoading = true;
-                        });
-
-                        final authService = Provider.of<AuthService>(context, listen: false);
+                        setState(() => _isLoading = true);
                         final email = emailController.text.trim();
                         final password = passController.text.trim();
+                        print("Attempting to log in rider...");
 
                         try {
-                          RiderModel? rider = await authService.loginRider(email, password);
+                          RiderModel? rider = await _authService.loginRider(email, password);
+
                           if (rider != null) {
-                            // Rider login successful, navigate to Rider Dashboard
-                            Navigator.pushReplacementNamed(context, '/rider_dashboard');
+                            print("Login successful! Navigating to dashboard.");
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => RiderDashboard()),
+                            );
                           } else {
-                            // Show error message
+                            print("Login failed: Invalid credentials.");
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Invalid login credentials.")),
                             );
                           }
                         } catch (e) {
-                          // Show error message
+                          print("Error during login: $e");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Error: ${e.toString()}")),
                           );
                         } finally {
-                          setState(() {
-                            _isLoading = false;
-                          });
+                          if (mounted) setState(() => _isLoading = false);
                         }
                       }
                     },
@@ -129,7 +120,6 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Show a CircularProgressIndicator if loading
                   if (_isLoading)
                     const Center(
                       child: CircularProgressIndicator(),
