@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -156,6 +157,10 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     decoration: InputDecoration(
                       hintText: 'Describe your experience...',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                      ),
                       fillColor: Colors.blue[50],
                       filled: true,
                     ),
@@ -167,22 +172,43 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
                   SizedBox(height: 10),
-                  DropdownButtonFormField<String>(
-                    value: _selectedComplaintType,
-                    hint: Text('Choose Complaint Type'),
-                    items: complaintIssues.keys.map((String type) {
-                      return DropdownMenuItem<String>(
-                        value: type,
-                        child: Text(type),
-                      );
-                    }).toList(),
-                    onChanged: updateComplaintIssues,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                      fillColor: Colors.blue[50],
-                      filled: true,
+                DropdownButtonFormField<String>(
+                  value: _selectedComplaintType,
+                  hint: Text('Choose Complaint Type', style: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 16)),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: Colors.blue[50],
                   ),
+                  dropdownColor: Colors.white,
+                  icon: Icon(Icons.arrow_drop_down, color: Colors.blue, size: 28),
+                  items: complaintIssues.keys.map((String type) {
+                    return DropdownMenuItem<String>(
+                      value: type,
+                      child: Row(
+                        children: [
+                          Icon(
+                            type == 'Service Complaint' ? Icons.build_circle_outlined :
+                            type == 'Behavior Complaint' ? Icons.sentiment_dissatisfied :
+                            Icons.report_problem,
+                            color: Colors.blueAccent,
+                          ),
+                          SizedBox(width: 10),
+                          Text(type, style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: updateComplaintIssues,
+                ),
                   SizedBox(height: 20),
 
                   if (_selectedComplaintType != null)
