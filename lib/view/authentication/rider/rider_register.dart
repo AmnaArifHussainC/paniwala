@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../config/custome_widgets/custome_btn_auth.dart';
 import '../../../config/custome_widgets/custome_text_field.dart';
+import '../../../config/services/auth_service.dart';
 import '../../../config/utils/validators.dart';
 
 class RiderRegisterScreen extends StatefulWidget {
@@ -14,9 +15,58 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController cnicController = TextEditingController();
 
   // Form Key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _isLoading = false;
+
+  // Handle Rider Registration
+  Future<void> _registerRider() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String phone = phoneController.text.trim();
+    String cnic = cnicController.text.trim();
+
+    try {
+      bool success = await AuthService().registerRider(
+        email: email,
+        password: password,
+        cnic: cnic,
+        phone: phone,
+        name: name,
+        licenseUrl: null, // Optional field, pass null for now
+      );
+
+      if (success) {
+        // Show success message and navigate to the next screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Rider registered successfully!")),
+        );
+        Navigator.pop(context); // Go back to the previous screen
+      } else {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration failed. Please try again.")),
+        );
+      }
+    } catch (e) {
+      print("Error during rider registration: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("An error occurred: $e")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +97,6 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Title
                 const Center(
                   child: Text(
                     "Rider Registration",
@@ -59,7 +108,6 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 20),
 
-                // Rider Name
                 CustomTextField(
                   textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validateFullName(value),
@@ -69,7 +117,6 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Company Email
                 CustomTextField(
                   textinputtype: TextInputType.emailAddress,
                   validator: (value) => ValidationUtils.validateEmail(value),
@@ -79,7 +126,6 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Phone Number
                 CustomTextField(
                   textinputtype: TextInputType.phone,
                   validator: (value) => ValidationUtils.validatePhoneNumber(value),
@@ -89,7 +135,15 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Password
+                CustomTextField(
+                  textinputtype: TextInputType.number,
+                  validator: (value) => ValidationUtils.validateCNIC(value),
+                  controller: cnicController,
+                  hintText: "CNIC (13 digits)",
+                  icon: Icons.perm_identity,
+                ),
+                const SizedBox(height: 10),
+
                 CustomTextField(
                   textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validatePassword(value),
@@ -100,7 +154,6 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Confirm Password
                 CustomTextField(
                   textinputtype: TextInputType.text,
                   validator: (value) => ValidationUtils.validateConfirmPassword(
@@ -114,11 +167,18 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                // Register Button
                 CustomButton(
-                  text: "Register Rider",
-                  onPressed: () {
-
+                  text: _isLoading ? "Registering..." : "Register Rider",
+                  onPressed: _isLoading
+                      ? null
+                      : () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      _registerRider(); // Call the registration function
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please fix the errors in the form")),
+                      );
+                    }
                   },
                   color: Colors.blue,
                 ),

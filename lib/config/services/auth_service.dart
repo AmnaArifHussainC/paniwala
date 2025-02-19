@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../../model/rider_model.dart';
 import '../../model/user_model.dart';
 import '../../model/supplier_model.dart';
 
@@ -222,6 +223,47 @@ class AuthService {
       return null;
     }
   }
+
+
+  // Rider Registration
+  Future<bool> registerRider({
+    required String email,
+    required String password,
+    required String cnic,
+    required String phone,
+    required String name,
+    required String? licenseUrl, // Optional field for the rider's license document
+  }) async {
+    try {
+      // Create a new user in Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      String uid = userCredential.user!.uid;
+
+      // Create a RiderModel instance
+      RiderModel rider = RiderModel(
+        uid: uid,
+        email: email,
+        cnic: cnic,
+        phone: phone,
+        name: name,
+        licenseUrl: licenseUrl,
+        role: 'rider',
+        createdAt: DateTime.now(),
+      );
+
+      // Save rider data in Firestore under the 'riders' collection
+      await _firestore.collection('riders').doc(uid).set(rider.toFirestore());
+
+      return true; // Successfully registered rider
+    } catch (e) {
+      print("Rider Registration Error: $e");
+      return false; // Registration failed
+    }
+  }
+
 
 
 }
