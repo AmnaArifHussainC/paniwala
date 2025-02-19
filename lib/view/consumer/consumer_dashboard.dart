@@ -7,6 +7,8 @@ import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
