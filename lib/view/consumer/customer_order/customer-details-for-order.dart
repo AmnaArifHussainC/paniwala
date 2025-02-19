@@ -1,9 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../config/services/order_add_service.dart';
 import '../../../config/utils/validators.dart';
 
 class CustomerDetailsForOrder extends StatefulWidget {
-  const CustomerDetailsForOrder({Key? key}) : super(key: key);
+  final String userId;
+  final String supplierId;
+  final Map<String, dynamic> product;
+  final int quantity;
+  final String? selectedSize;
+  final double totalPrice;
+
+  const CustomerDetailsForOrder({
+    Key? key,
+    required this.userId,
+    required this.supplierId,
+    required this.product,
+    required this.quantity,
+    required this.selectedSize,
+    required this.totalPrice,
+  }) : super(key: key);
 
   @override
   State<CustomerDetailsForOrder> createState() => _CustomerDetailsForOrderState();
@@ -17,8 +34,36 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
   bool _dailyDelivery = false;
   String _deliveryTime = 'Morning';
   bool _refillOnly = false;
+  final OrderServices _orderServices = OrderServices();
 
-  _showOrderPlacedDialog() async {
+  Future<void> _submitOrder() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await _orderServices.saveOrderToFirestore(
+          userId: widget.userId,
+          supplierId: widget.supplierId,
+          name: _nameController.text,
+          phoneNumber: _phoneController.text,
+          address: _addressController.text,
+          dailyDelivery: _dailyDelivery,
+          deliveryTime: _dailyDelivery ? _deliveryTime : "",
+          refill: _refillOnly,
+          product: widget.product,
+          quantity: widget.quantity,
+          selectedSize: widget.selectedSize,
+          totalPrice: widget.totalPrice,
+        );
+
+        _showOrderPlacedDialog();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to place order: $e")),
+        );
+      }
+    }
+  }
+
+  Future<void> _showOrderPlacedDialog() async {
     await showDialog<void>(
       context: context,
       builder: (context) {
@@ -27,7 +72,10 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
           content: const Text('Your order has been successfully booked.'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Close dialog and return
+              },
               child: const Text(
                 'OK',
                 style: TextStyle(color: Colors.blue),
@@ -108,18 +156,9 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
                   child: DropdownButtonFormField<String>(
                     value: _deliveryTime,
                     items: const [
-                      DropdownMenuItem(
-                        value: 'Morning',
-                        child: Text('Morning'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Afternoon',
-                        child: Text('Afternoon'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Evening',
-                        child: Text('Evening'),
-                      ),
+                      DropdownMenuItem(value: 'Morning', child: Text('Morning')),
+                      DropdownMenuItem(value: 'Afternoon', child: Text('Afternoon')),
+                      DropdownMenuItem(value: 'Evening', child: Text('Evening')),
                     ],
                     onChanged: (value) {
                       setState(() {
@@ -151,20 +190,7 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
               ),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    final customerDetails = {
-                      'name': _nameController.text,
-                      'phone': _phoneController.text,
-                      'address': _addressController.text,
-                      'dailyDelivery': _dailyDelivery,
-                      'deliveryTime': _deliveryTime,
-                      'refillOnly': _refillOnly,
-                    };
-                    print('Customer Details: $customerDetails');
-                    _showOrderPlacedDialog();
-                  }
-                },
+                onPressed: _submitOrder,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   backgroundColor: Colors.blue,
@@ -205,10 +231,7 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
           borderRadius: BorderRadius.circular(12),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.blue,
-            width: 2,
-          ),
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
         ),
       ),
     );

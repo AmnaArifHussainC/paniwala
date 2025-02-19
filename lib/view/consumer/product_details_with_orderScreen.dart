@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'customer_order/customer-details-for-order.dart';
 
@@ -57,14 +58,11 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
   }
 
   Future<void> _fetchSizesAndPrices() async {
-    print("Fetching sizes and prices...");  // Debugging
-
     try {
       final productId = widget.product['id'] ?? '';
       final supplierId = widget.product['supplierId'] ?? '';
 
       if (productId.isEmpty || supplierId.isEmpty) {
-        print("Product ID or Supplier ID is empty.");
         return;
       }
 
@@ -76,26 +74,16 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
           .get();
 
       if (productDoc.exists) {
-        print("Product document exists!"); // Debugging
         final data = productDoc.data();
-        print("Firestore Data: $data"); // Debugging
 
         final List<dynamic> fetchedSizesAndPrices = data?['sizesAndPrices'] ?? [];
-
         if (fetchedSizesAndPrices.isNotEmpty) {
           setState(() {
             sizesAndPrices = List<Map<String, dynamic>>.from(fetchedSizesAndPrices);
             selectedSize = sizesAndPrices.first['size'];
             selectedPrice = (sizesAndPrices.first['price'] as num).toDouble();
           });
-
-          print("Sizes and Prices: $sizesAndPrices"); // Debugging
-          print("Selected Size: $selectedSize, Price: $selectedPrice"); // Debugging
-        } else {
-          print("No sizesAndPrices found.");
         }
-      } else {
-        print("Product document does not exist.");
       }
     } catch (e) {
       print("Error fetching sizes and prices: $e");
@@ -109,17 +97,16 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
     });
   }
 
-
-
   void _increaseQuantity() => setState(() => quantity++);
   void _decreaseQuantity() {
     if (quantity > 1) setState(() => quantity--);
   }
-  void _updateRating(double newRating) => setState(() => rating = newRating);
 
   @override
   Widget build(BuildContext context) {
-    double totalPrice = selectedPrice * quantity; // Calculate total price
+    double totalPrice = selectedPrice * quantity;
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? ''; // Get logged-in user ID
+    String supplierId = widget.product['supplierId'] ?? ''; // Get supplier ID
 
     return Scaffold(
       appBar: AppBar(
@@ -133,7 +120,6 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product Images Carousel
               if (widget.product['imageUrls'].isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(15),
@@ -160,17 +146,11 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
                 ),
 
               const SizedBox(height: 20),
-
-              // Product Name
               Text(widget.product['name'], style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-
-              // Description
-              Text(widget.product['description'] ?? 'No description available.',
-                  style: const TextStyle(fontSize: 16, color: Colors.black87)),
+              Text(widget.product['description'] ?? 'No description available.', style: const TextStyle(fontSize: 16, color: Colors.black87)),
               const SizedBox(height: 10),
 
-              // Size Selection
               if (sizesAndPrices.isNotEmpty) ...[
                 const Text('Select Size: (in liters)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
@@ -183,87 +163,70 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
                       selected: selectedSize == sizeData['size'],
                       onSelected: (isSelected) {
                         if (isSelected) {
-                          setState(() {
-                            _selectSize(sizeData['size'], sizeData['price'].toDouble());
-                          });
+                          _selectSize(sizeData['size'], sizeData['price'].toDouble());
                         }
                       },
                     );
                   }).toList(),
                 ),
                 const SizedBox(height: 10),
-                Text('Price per Liter: Rs. $selectedPrice',
-                    style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold)),
+                Text('Price per Liter: Rs. $selectedPrice', style: const TextStyle(fontSize: 18, color: Colors.blue, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
               ],
 
-              // Refill Availability
               Text(
                 isRefillAvailable ? 'Refill is available' : 'Refill is not available',
                 style: TextStyle(fontSize: 16, color: isRefillAvailable ? Colors.green : Colors.red, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
-              // Quantity Selector
               Row(
                 children: [
                   const Text('Quantity:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   const SizedBox(width: 10),
-                  IconButton(
-                    onPressed: () {
-                      if (quantity > 1) {
-                        setState(() => quantity--);
-                      }
-                    },
-                    icon: const Icon(Icons.remove, color: CupertinoColors.inactiveGray),
-                  ),
+                  IconButton(onPressed: _decreaseQuantity, icon: const Icon(Icons.remove, color: CupertinoColors.inactiveGray)),
                   Text('$quantity', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  IconButton(
-                    onPressed: () {
-                      setState(() => quantity++);
-                    },
-                    icon: const Icon(Icons.add, color: CupertinoColors.inactiveGray),
-                  ),
+                  IconButton(onPressed: _increaseQuantity, icon: const Icon(Icons.add, color: CupertinoColors.inactiveGray)),
                 ],
               ),
 
               const SizedBox(height: 20),
 
-              // Total Price Display
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.blue),
-                ),
+                decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(10), border: Border.all(color: Colors.blue)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('Total Bill:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text(
-                      'Rs. $totalPrice',
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                    ),
+                    Text('Rs. $totalPrice', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red)),
                   ],
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              // Purchase Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerDetailsForOrder()));                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: const Text("Proceed to Order", style: TextStyle(fontSize: 18, color: Colors.white)),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CustomerDetailsForOrder(
+                          product: widget.product,
+                          quantity: quantity,
+                          selectedSize: selectedSize,
+                          totalPrice: totalPrice,
+                          supplierId: supplierId,
+                          userId: userId,
+                        ),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, padding: const EdgeInsets.symmetric(vertical: 15)),
+                  child: const Text('Purchase Now', style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
               ),
             ],
@@ -272,5 +235,4 @@ class _ProductsDetailForConsumerState extends State<ProductsDetailForConsumer> {
       ),
     );
   }
-
 }

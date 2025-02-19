@@ -17,14 +17,16 @@ class AuthViewModel extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
+
   // User Login
   Future<bool> login(String email, String password) async {
     _isLoading = true;
     notifyListeners();
     try {
-      final firebaseUser = await _authService.loginUser(email, password);
-      if (firebaseUser != null) {
-        _user = await _authService.getUserData(firebaseUser.uid);
+      // Use the updated loginUser function
+      final userModel = await _authService.loginUser(email, password);
+      if (userModel != null) {
+        _user = userModel;
         notifyListeners();
         return true;
       }

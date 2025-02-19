@@ -113,8 +113,11 @@ class _AllSuppliersScreenState extends State<AllSuppliersScreen> {
       appBar: AppBar(
         title: const Text("All Suppliers",
           style: TextStyle(
-            color: Colors.white
+            color: Colors.white,
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         backgroundColor: Colors.blue,
       ),

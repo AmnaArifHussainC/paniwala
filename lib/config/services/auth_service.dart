@@ -13,15 +13,39 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // User Login Function
-  Future<User?> loginUser(String email, String password) async {
+  Future<UserModel?> loginUser(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+      User? firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        DocumentSnapshot userDoc =
+        await _firestore.collection('Users').doc(firebaseUser.uid).get();
+
+        if (!userDoc.exists) {
+          print("Error: No user record found.");
+          return null;
+        }
+
+        final data = userDoc.data() as Map<String, dynamic>;
+
+        // Debugging output
+        print("User Data from Firestore: $data");
+
+        if (data['role'].toString().toLowerCase().trim() != 'customer') {
+          print("Error: User role is not 'customer'. Found: ${data['role']}");
+          return null;
+        }
+
+
+        return UserModel.fromFirestore(data, userDoc.id);
+      }
+      return null;
     } catch (e) {
-      print("Login Error: $e");
+      print("User Login Error: $e");
       return null;
     }
   }

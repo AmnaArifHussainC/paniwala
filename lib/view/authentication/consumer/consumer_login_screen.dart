@@ -28,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       if (success) {
         final user = widget.authViewModel.user;
-        if (user != null && user.role == "Users") {
+        if (user != null && user.role.toLowerCase() == "customer") {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Sign In Successful!')),
           );
@@ -49,17 +49,25 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
+
   Future<void> _signInWithGoogle() async {
     bool success = await widget.authViewModel.signInWithGoogle();
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google Sign-In Successful!')),
-      );
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-            (route) => false,
-      );
+      final user = widget.authViewModel.user;
+      if (user != null && user.role.toLowerCase() == "customer") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Google Sign-In Successful!')),
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+              (route) => false,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invalid role. Access denied.')),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Google Sign-In failed. Please try again.')),
@@ -131,7 +139,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ElevatedButton.icon(
                     onPressed: widget.authViewModel.isLoading ? null : _signInWithGoogle,
                     icon: Image.asset("assets/images/google.png", height: 24),
-                    label: const Text("Signin with Google"),
+                    label: const Text("Sign in with Google"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
