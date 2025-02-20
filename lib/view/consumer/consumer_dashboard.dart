@@ -7,8 +7,6 @@ import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,8 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    fetchSavedLocation().then((_) {
+      if (userLocation.isEmpty) {
+        fetchUserLocation(); // Only fetch current location if no saved location exists
+      }
+    });
     fetchSuppliers();
-    fetchUserLocation();
   }
 
   Future<void> fetchUserLocation() async {
@@ -66,6 +68,25 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> fetchSavedLocation() async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final docSnapshot = await FirebaseFirestore.instance.collection('Users').doc(user.uid).get();
+
+      if (docSnapshot.exists && docSnapshot.data()?['location'] != null) {
+        setState(() {
+          userLocation = docSnapshot.data()?['location'];
+          locationController.text = userLocation; // Set it in the input field
+        });
+      }
+    } catch (e) {
+      print("Error fetching saved location: $e");
+    }
+  }
+
+
   Future<void> saveLocationToFirestore(BuildContext context, TextEditingController locationController) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -91,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+
   Future<void> fetchSuppliers() async {
     try {
       setState(() => isLoading = true);
@@ -99,7 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final querySnapshot =
       await FirebaseFirestore.instance.collection('suppliers').get();
       print('Fetched suppliers: ${querySnapshot.docs.length}');
-
       final fetchedSuppliers = querySnapshot.docs.map((doc) {
         final data = doc.data();
         return {
