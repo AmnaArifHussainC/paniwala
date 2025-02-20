@@ -25,10 +25,8 @@ class SupplierProductListsForCustomers extends StatefulWidget {
 
 class _SupplierProductListsForCustomersState
     extends State<SupplierProductListsForCustomers> {
-  String? bookmarkedSupplierId; // Stores the currently bookmarked supplier
   List<Map<String, dynamic>> products = [];
   bool isLoading = true;
-  bool isBookmarked = false;
   String? userId = FirebaseAuth.instance.currentUser?.uid;
 
 
@@ -76,19 +74,6 @@ class _SupplierProductListsForCustomersState
       });
     }
   }
-
-  Future<void> checkIfBookmarked() async {
-    if (userId == null) return;
-
-    final userDoc = await FirebaseFirestore.instance.collection('Users').doc(userId).get();
-    if (userDoc.exists) {
-      List<dynamic> bookmarkedSuppliers = userDoc.data()?['bookmarkedSuppliers'] ?? [];
-      setState(() {
-        isBookmarked = bookmarkedSuppliers.contains(widget.supplierId);
-      });
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
