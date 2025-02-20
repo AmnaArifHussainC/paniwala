@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:paniwala/view/consumer/all_suppliers_screen.dart' show AllSuppliersScreen;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:paniwala/view/consumer/product_lists_of_suppliers.dart';
 import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'consumer_drawer.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,17 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    loadSavedLocation();
-  }
-
-  Future<void> loadSavedLocation() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedLocation = prefs.getString('saved_location');
-
-    setState(() {
-      userLocation = savedLocation ?? "Fetching location...";
-      locationController.text = userLocation;
-    });
+    fetchSuppliers();
+    fetchUserLocation();
   }
 
   Future<void> fetchUserLocation() async {
@@ -65,17 +57,13 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
-    String fullAddress = "${place.street ?? ''}, ${place.subLocality ?? ''}, "
+    String fullAddress = " ${place.street ?? ''}, ${place.subLocality ?? ''}, "
         "${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
 
     setState(() {
       userLocation = fullAddress.isNotEmpty ? fullAddress : "Address not available.";
       locationController.text = userLocation;
     });
-
-    // Save to SharedPreferences so it's persistent
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('saved_location', userLocation);
   }
 
   Future<void> saveLocationToFirestore(BuildContext context, TextEditingController locationController) async {
@@ -88,14 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
         return;
       }
 
-      // Save location in Firestore
+      // Save location in the user's document using their UID
       await FirebaseFirestore.instance.collection('Users').doc(user.uid).set({
         'location': locationController.text
       }, SetOptions(merge: true));
-
-      // Save location in SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('saved_location', locationController.text);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Location saved successfully!')),
@@ -107,14 +91,57 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+  Future<void> fetchSuppliers() async {
+    try {
+      setState(() => isLoading = true);
 
+      // Fetch suppliers from Firestore
+      final querySnapshot =
+      await FirebaseFirestore.instance.collection('suppliers').get();
+      print('Fetched suppliers: ${querySnapshot.docs.length}');
 
-  //fetch
+      final fetchedSuppliers = querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'id': doc.id, // Store supplier's document ID
+          'companyName': data['company_name'] ?? 'Unknown Company',
+          'email': data['email'] ?? 'No Email Provided',
+          'phone': data['phone'] ?? 'No Phone Number',
+          'address': data['address'] ?? 'No Address Available',
+        };
+      }).toList();
 
-// Function to calculate average rating of a supplier
+      setState(() {
+        suppliers = fetchedSuppliers;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching suppliers: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load suppliers. Please try again.')),
+      );
+      setState(() => isLoading = false);
+    }
+  }
 
+  void searchSuppliers(String query) {
+    setState(() => searchQuery = query.toLowerCase());
+  }
+
+  void openWhatsApp(String phoneNumber) async {
+    final Uri url = Uri.parse("https://wa.me/$phoneNumber");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      print("Could not launch WhatsApp");
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    final filteredSuppliers = suppliers.where((supplier) {
+      final companyName = supplier['address']?.toLowerCase() ?? '';
+      return companyName.contains(searchQuery);
+    }).toList();
 
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
@@ -144,10 +171,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: const InputDecoration(
                         hintText: 'Your Location',
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          )
+                            borderSide: BorderSide(
+                              color: Colors.blue,
+                              width: 2,
+                            )
                         ),
                         border: OutlineInputBorder(),
                       ),
@@ -155,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.my_location, color: Colors.blue),
-                    onPressed: fetchUserLocation,
+                    onPressed: fetchUserLocation, // Ensure this function is defined
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -168,32 +195,126 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-            // Suppliers List Header with "See All"
+            // Search Bar
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Suppliers",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AllSuppliersScreen()),
-                      );
-                    },
-                    child: const Text(
-                      "See All",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                onChanged: searchSuppliers,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 20.0),
+                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  hintText: 'Search by Location....',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: const OutlineInputBorder(
+                      borderSide: BorderSide(width: 1)),
+                  focusedBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2)),
+                ),
               ),
             ),
-
+            // Supplier List
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : filteredSuppliers.isEmpty
+                  ? const Center(
+                child: Text(
+                  'No suppliers available at the moment.',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              )
+                  : ListView.builder(
+                itemCount: filteredSuppliers.length,
+                itemBuilder: (context, index) {
+                  final supplier = filteredSuppliers[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 10.0),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        child: Text(
+                          supplier['companyName'].isNotEmpty
+                              ? supplier['companyName']
+                              .substring(0, 1)
+                              .toUpperCase()
+                              : '?',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      title: Text(
+                        supplier['companyName'],
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(Icons.email, size: 16, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  supplier['email'],
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Icon(Icons.phone, size: 16, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              GestureDetector(
+                                onTap: () => openWhatsApp(supplier['phone']),
+                                child: Text(
+                                  supplier['phone'],
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.location_on,
+                                  size: 16, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  supplier['address'],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        final uid = FirebaseAuth.instance.currentUser!.uid;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SupplierProductListsForCustomers(
+                                  userId: uid,
+                                  supplierId: supplier['id'],
+                                  companyName: supplier['companyName'],
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
