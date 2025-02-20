@@ -36,8 +36,6 @@ class _SupplierProductListsForCustomersState
   void initState() {
     super.initState();
     fetchProducts();
-    checkIfBookmarked();
-    _fetchBookmarkedSupplier();
   }
 
 
@@ -91,130 +89,6 @@ class _SupplierProductListsForCustomersState
     }
   }
 
-  Future<void> toggleBookmark() async {
-    if (userId == null) return;
-
-    final userRef = FirebaseFirestore.instance.collection('Users').doc(userId);
-
-    try {
-      final userDoc = await userRef.get();
-      List<dynamic> bookmarkedSuppliers = userDoc.exists && userDoc.data() != null
-          ? (userDoc.data()!['bookmarkedSuppliers'] as List<dynamic>? ?? [])
-          : [];
-
-      if (isBookmarked) {
-        bookmarkedSuppliers.remove(widget.supplierId);
-      } else {
-        bookmarkedSuppliers.add(widget.supplierId);
-      }
-
-      await userRef.set({'bookmarkedSuppliers': bookmarkedSuppliers}, SetOptions(merge: true));
-
-      setState(() {
-        isBookmarked = !isBookmarked;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(isBookmarked ? 'Supplier bookmarked!' : 'Bookmark removed.')),
-      );
-    } catch (e) {
-      print('Error updating bookmark: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update bookmark.')));
-    }
-  }
-
-  /// Fetch the currently bookmarked supplier from Firestore
-  Future<void> _fetchBookmarkedSupplier() async {
-    try {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(widget.userId)
-          .get();
-
-      if (userDoc.exists) {
-        setState(() {
-          bookmarkedSupplierId = userDoc['bookmarkedSupplier'];
-        });
-      }
-    } catch (e) {
-      print("Error fetching bookmarked supplier: $e");
-    }
-  }
-
-  /// Function to handle bookmarking a supplier
-  void _bookmarkSupplier() async {
-    await _fetchBookmarkedSupplier(); // Ensure we get the latest value
-
-    if (bookmarkedSupplierId == widget.supplierId) {
-      // If the current supplier is already bookmarked, show a message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You have already bookmarked this supplier!')),
-      );
-      return;
-    }
-
-    if (bookmarkedSupplierId != null && bookmarkedSupplierId!.isNotEmpty) {
-      // If another supplier is already bookmarked, show the confirmation dialog
-      _showReplaceBookmarkDialog();
-    } else {
-      // No previous bookmark, proceed with saving
-      await _saveBookmark(widget.supplierId);
-    }
-  }
-
-  /// Show confirmation dialog before replacing the bookmark
-  void _showReplaceBookmarkDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Change Bookmark?"),
-          content: Text(
-              "You have already bookmarked another supplier. Do you want to replace it with ${widget.companyName}?"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                Navigator.pop(context); // Close the dialog
-                await _saveBookmark(widget.supplierId);
-              },
-              child: Text("Yes, Change"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Save the bookmarked supplier to Firestore
-  Future<void> _saveBookmark(String newSupplierId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(widget.userId)
-          .update({'bookmarkedSupplier': newSupplierId});
-
-      setState(() {
-        bookmarkedSupplierId = newSupplierId;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Supplier bookmarked successfully!')),
-      );
-    } catch (e) {
-      print("Error updating bookmark: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to bookmark supplier. Try again.')),
-      );
-    }
-  }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -224,15 +98,6 @@ class _SupplierProductListsForCustomersState
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Colors.blue,
         actions: [
-          IconButton(
-            onPressed: _bookmarkSupplier, // Call the bookmark function
-            icon: Icon(
-              bookmarkedSupplierId == widget.supplierId
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
-              color: Colors.white,
-            ),
-          ),
           IconButton(
             onPressed: () {
               Navigator.push(
