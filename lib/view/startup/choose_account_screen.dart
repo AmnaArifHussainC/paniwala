@@ -3,9 +3,7 @@ import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart
 
 import '../../config/custome_widgets/choose_screen_cards.dart';
 import '../../view_model/auth_viewmodel.dart';
-import '../../view_model/auth_viewmodel.dart';
-import '../authentication/consumer/consumer_register.dart';
-import 'choose_supplier_rider-screen.dart';
+import 'choose_supplier_rider_screen.dart';
 
 class ChooseAccountScreen extends StatelessWidget {
   const ChooseAccountScreen({super.key});

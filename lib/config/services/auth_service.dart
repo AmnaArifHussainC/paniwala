@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -292,7 +289,7 @@ class AuthService {
           return null;
         }
 
-        print("Rider login successful: ${data}");
+        print("Rider login successful: $data");
         return RiderModel.fromFirestore(data, riderDoc.id);
       }
 

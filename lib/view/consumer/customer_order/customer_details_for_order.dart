@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../config/services/order_add_service.dart';
@@ -13,14 +12,14 @@ class CustomerDetailsForOrder extends StatefulWidget {
   final double totalPrice;
 
   const CustomerDetailsForOrder({
-    Key? key,
+    super.key,
     required this.userId,
     required this.supplierId,
     required this.product,
     required this.quantity,
     required this.selectedSize,
     required this.totalPrice,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomerDetailsForOrder> createState() => _CustomerDetailsForOrderState();
@@ -230,8 +229,8 @@ class _CustomerDetailsForOrderState extends State<CustomerDetailsForOrder> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.blue, width: 2),
         ),
       ),
     );

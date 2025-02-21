@@ -11,7 +11,7 @@ class RiderDashboard extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Rider Dashboard", style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: RiderDrawer(authViewModel: AuthViewModel(),),
       body: Padding(
@@ -30,9 +30,9 @@ class RiderDashboard extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Card(
                     child: ListTile(
-                      leading: Icon(Icons.delivery_dining, color: Colors.blue),
+                      leading: const Icon(Icons.delivery_dining, color: Colors.blue),
                       title: Text("Order #${index + 1}"),
-                      subtitle: Text("Delivery Location: XYZ"),
+                      subtitle: const Text("Delivery Location: XYZ"),
                       trailing: ElevatedButton(
                         onPressed: () {},
                         child: const Text("Accept"),

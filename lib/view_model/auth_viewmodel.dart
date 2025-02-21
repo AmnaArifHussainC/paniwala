@@ -288,8 +288,8 @@ class AuthViewModel {
 
   // Upload to Cloudinary
   Future<String?> uploadToCloudinary(String filePath) async {
-    final cloudinaryCloudName = 'dhirdggtq';
-    final uploadPreset = 'paniwala_certificates';
+    const cloudinaryCloudName = 'dhirdggtq';
+    const uploadPreset = 'paniwala_certificates';
     final url = Uri.parse('https://api.cloudinary.com/v1_1/$cloudinaryCloudName/auto/upload');
 
     try {

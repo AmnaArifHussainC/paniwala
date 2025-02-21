@@ -6,7 +6,7 @@ import 'package:paniwala/config/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
 import 'package:paniwala/view/supplier/product/supplier_drawer_pro_list_screen.dart';
 import '../authentication/rider/rider_register.dart';
-import '../complaints_feedback/Supplier_complaints_screen_for_supplier.dart';
+import '../complaints_feedback/supplier_complaints_screen_for_supplier.dart';
 import 'orders/order.dart';
 
 class CustomDrawer extends StatefulWidget {

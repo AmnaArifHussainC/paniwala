@@ -5,7 +5,7 @@ class RequestDetailsScreen extends StatelessWidget {
   final String supplierId;
   final Map<String, dynamic> requestData;
 
-  RequestDetailsScreen({required this.supplierId, required this.requestData});
+  RequestDetailsScreen({super.key, required this.supplierId, required this.requestData});
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -43,35 +43,35 @@ class RequestDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Request Details"),
+        title: const Text("Request Details"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Email: ${requestData['email']}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text("CNIC: ${requestData['cnic']}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 8),
-            Text("Phone: ${requestData['phone']}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 16),
-            Spacer(),
+            Text("Email: ${requestData['email']}", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text("CNIC: ${requestData['cnic']}", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 8),
+            Text("Phone: ${requestData['phone']}", style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 16),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () => updateSupplierStatus(context, "Accepted"),
-                  child: Text("Accept"),
+                  child: const Text("Accept"),
                 ),
                 ElevatedButton(
                   onPressed: () => updateSupplierStatus(context, "Rejected"),
-                  child: Text("Reject"),
+                  child: const Text("Reject"),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 ),
                 ElevatedButton(
                   onPressed: () => updateSupplierStatus(context, "Blocked"),
-                  child: Text("Block"),
+                  child: const Text("Block"),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
                 ),
               ],

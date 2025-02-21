@@ -17,13 +17,13 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Admin Panel"),
+        title: const Text("Admin Panel"),
       ),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
               child: Text(
                 "Admin Panel",
@@ -31,7 +31,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               ),
             ),
             ListTile(
-              title: Text("Pending Requests"),
+              title: const Text("Pending Requests"),
               onTap: () {
                 setState(() {
                   _filter = "Pending";
@@ -40,7 +40,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               },
             ),
             ListTile(
-              title: Text("Accepted Requests"),
+              title: const Text("Accepted Requests"),
               onTap: () {
                 setState(() {
                   _filter = "Accepted";
@@ -49,7 +49,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               },
             ),
             ListTile(
-              title: Text("Rejected Requests"),
+              title: const Text("Rejected Requests"),
               onTap: () {
                 setState(() {
                   _filter = "Rejected";
@@ -58,7 +58,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               },
             ),
             ListTile(
-              title: Text("Blocked Requests"),
+              title: const Text("Blocked Requests"),
               onTap: () {
                 setState(() {
                   _filter = "Blocked";
@@ -78,7 +78,7 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));

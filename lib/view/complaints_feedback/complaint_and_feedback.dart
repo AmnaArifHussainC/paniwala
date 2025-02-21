@@ -8,7 +8,7 @@ class RateSupplierScreen extends StatefulWidget {
   final String supplierId;
   final String companyName;
 
-  RateSupplierScreen({required this.supplierId, required this.companyName});
+  const RateSupplierScreen({super.key, required this.supplierId, required this.companyName});
 
   @override
   _RateSupplierScreenState createState() => _RateSupplierScreenState();
@@ -16,8 +16,8 @@ class RateSupplierScreen extends StatefulWidget {
 
 class _RateSupplierScreenState extends State<RateSupplierScreen> {
   double _rating = 0;
-  TextEditingController _feedbackController = TextEditingController();
-  TextEditingController _complaintDetailsController = TextEditingController();
+  final TextEditingController _feedbackController = TextEditingController();
+  final TextEditingController _complaintDetailsController = TextEditingController();
   bool _isSubmitting = false;
 
   String? _selectedComplaintType;
@@ -40,7 +40,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
   Future<void> submitFeedback() async {
     if (_rating == 0 && _feedbackController.text.isEmpty && _selectedComplaintType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please provide a rating, feedback, or complaint.')),
+        const SnackBar(content: Text('Please provide a rating, feedback, or complaint.')),
       );
       return;
     }
@@ -56,7 +56,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
 
       if (userId == null || userEmail == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User not logged in. Please log in to submit feedback.')),
+          const SnackBar(content: Text('User not logged in. Please log in to submit feedback.')),
         );
         setState(() {
           _isSubmitting = false;
@@ -79,7 +79,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Feedback & complaint submitted successfully!')),
+        const SnackBar(content: Text('Feedback & complaint submitted successfully!')),
       );
 
       _feedbackController.clear();
@@ -92,7 +92,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
     } catch (e) {
       print('Error submitting feedback: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to submit. Try again.')),
+        const SnackBar(content: Text('Failed to submit. Try again.')),
       );
     }
 
@@ -106,16 +106,16 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
-        title: Text('Rate ${widget.companyName}', style: TextStyle(color: Colors.white)),
+        title: Text('Rate ${widget.companyName}', style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
@@ -124,11 +124,11 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Rate the Supplier',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
                   RatingBar.builder(
                     initialRating: _rating,
@@ -136,21 +136,21 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                     direction: Axis.horizontal,
                     allowHalfRating: true,
                     itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(Icons.star, color: Colors.blue),
+                    itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    itemBuilder: (context, _) => const Icon(Icons.star, color: Colors.blue),
                     onRatingUpdate: (rating) {
                       setState(() {
                         _rating = rating;
                       });
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                  Text(
+                  const Text(
                     'Write Feedback (Optional)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: _feedbackController,
                     maxLines: 3,
@@ -159,37 +159,37 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.blue, width: 2),
+                        borderSide: const BorderSide(color: Colors.blue, width: 2),
                       ),
                       fillColor: Colors.blue[50],
                       filled: true,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                  Text(
+                  const Text(
                     'Select Complaint Type (Optional)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                 DropdownButtonFormField<String>(
                   value: _selectedComplaintType,
-                  hint: Text('Choose Complaint Type', style: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 16)),
+                  hint: const Text('Choose Complaint Type', style: TextStyle(color: CupertinoColors.inactiveGray, fontSize: 16)),
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                      borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                      borderSide: const BorderSide(color: Colors.blue, width: 2),
                     ),
                     filled: true,
                     fillColor: Colors.blue[50],
                   ),
                   dropdownColor: Colors.white,
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.blue, size: 28),
+                  icon: const Icon(Icons.arrow_drop_down, color: Colors.blue, size: 28),
                   items: complaintIssues.keys.map((String type) {
                     return DropdownMenuItem<String>(
                       value: type,
@@ -201,25 +201,25 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                             Icons.report_problem,
                             color: Colors.blueAccent,
                           ),
-                          SizedBox(width: 10),
-                          Text(type, style: TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)),
+                          const SizedBox(width: 10),
+                          Text(type, style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)),
                         ],
                       ),
                     );
                   }).toList(),
                   onChanged: updateComplaintIssues,
                 ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
                   if (_selectedComplaintType != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'Complaint Details (Editable)',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextField(
                           controller: _complaintDetailsController,
                           maxLines: 3,
@@ -230,7 +230,7 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                             filled: true,
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                       ],
                     ),
 
@@ -240,12 +240,12 @@ class _RateSupplierScreenState extends State<RateSupplierScreen> {
                       onPressed: _isSubmitting ? null : submitFeedback,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: _isSubmitting
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text('Submit', style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text('Submit', style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   ),
                 ],

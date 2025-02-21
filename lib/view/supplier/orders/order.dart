@@ -6,7 +6,7 @@ import '../../../model/order_model.dart';
 class SupplierAllOrdersScreen extends StatelessWidget {
   final String supplierId; // Pass the supplier's ID to this screen
 
-  const SupplierAllOrdersScreen({Key? key, required this.supplierId}) : super(key: key);
+  const SupplierAllOrdersScreen({super.key, required this.supplierId});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class SupplierAllOrdersScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Customer Orders", style: TextStyle(color: Colors.white),),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.blue,
         elevation: 4.0,
       ),
@@ -94,14 +94,14 @@ class SupplierAllOrdersScreen extends StatelessWidget {
 class SupplierOrderDetailsScreen extends StatelessWidget {
   final OrderModel order;
 
-  const SupplierOrderDetailsScreen({Key? key, required this.order}) : super(key: key);
+  const SupplierOrderDetailsScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Order Details", style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.white,
         ),
         centerTitle: true,
@@ -121,7 +121,7 @@ class SupplierOrderDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Divider(color: Colors.grey.shade300, thickness: 1),
             const SizedBox(height: 8),
-            Text("Order Details", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const Text("Order Details", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             const SizedBox(height: 8),
             Text("Total Price: Rs,${order.totalPrice.toStringAsFixed(2)}", style: const TextStyle(fontSize: 16)),
             Text("Quantity: ${order.quantity}", style: const TextStyle(fontSize: 16)),

@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:paniwala/view/authentication/supplier/supplier_login_screen.dart';
@@ -83,7 +79,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
+          MaterialPageRoute(builder: (context) => const SupplerLoginScreen()),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -210,16 +206,16 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                     children: [
                       const Text("Already have an account?"),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SupplerLoginScreen()),
-                          );
-                        },
                         child: const Text(
                           "Login",
                           style: TextStyle(color: Colors.blue),
                         ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SupplerLoginScreen()),
+                          );
+                        },
                       ),
                     ],
                   ),

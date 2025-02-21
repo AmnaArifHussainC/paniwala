@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -22,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _startSplashScreen() async {
-    await Future.delayed(Duration(seconds: 2)); // Show splash for 2 seconds
+    await Future.delayed(const Duration(seconds: 2)); // Show splash for 2 seconds
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
@@ -32,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await prefs.setBool('isFirstTime', false);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
       );
       return;
     }
@@ -46,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Navigate to ChooseAccountScreen if no user is logged in
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
       );
     }
   }
@@ -63,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
           print("User found in 'Users' collection with role: $role.");
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
           return;
         }
@@ -87,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("User not found in Firestore or invalid role. Navigating to ChooseAccountScreen.");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
       );
     } catch (e) {
       print("Error fetching user role: $e");

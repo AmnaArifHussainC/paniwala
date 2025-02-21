@@ -46,15 +46,15 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this product?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this product?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context)
                     .pop(false); // User does not want to delete
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(color: CupertinoColors.inactiveGray),
               ),
@@ -63,12 +63,12 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
               onPressed: () {
                 Navigator.of(context).pop(true); // User confirmed deletion
               },
-              child: Text(
-                "Delete",
-                style: TextStyle(color: Colors.white),
-              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                "Delete",
+                style: TextStyle(color: Colors.white),
               ),
             ),
 
@@ -127,7 +127,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
         ),
         centerTitle: true,
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -150,7 +150,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(product.productName,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 8),
@@ -180,8 +180,9 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                                               fit: BoxFit.cover,
                                               loadingBuilder: (context, child,
                                                   loadingProgress) {
-                                                if (loadingProgress == null)
+                                                if (loadingProgress == null) {
                                                   return child;
+                                                }
                                                 return Center(
                                                   child:
                                                       CircularProgressIndicator(
@@ -205,7 +206,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 12),
-                                Text("Available Sizes & Prices:",
+                                const Text("Available Sizes & Prices:",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18)),
@@ -218,7 +219,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                                           vertical: 3),
                                       child: Text(
                                           "${size['size']}L : Rs.${size['price']}",
-                                          style: TextStyle(fontSize: 16)),
+                                          style: const TextStyle(fontSize: 16)),
                                     );
                                   }).toList(),
                                 ),
@@ -233,7 +234,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                     ),
-                                    child: Text("Delete",
+                                    child: const Text("Delete",
                                         style: TextStyle(
                                             color: Colors.white, fontSize: 16)),
                                   ),

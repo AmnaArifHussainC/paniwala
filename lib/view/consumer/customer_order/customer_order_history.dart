@@ -5,7 +5,7 @@ import '../../../model/order_model.dart';
 class UserAllOrderScreen extends StatelessWidget {
   final String userId; // Pass the user's ID to this screen
 
-  const UserAllOrderScreen({Key? key, required this.userId}) : super(key: key);
+  const UserAllOrderScreen({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class UserAllOrderScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("My Orders", style: TextStyle(color: Colors.white),),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.blue,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -103,14 +103,14 @@ class UserAllOrderScreen extends StatelessWidget {
 class OrderDetailsScreen extends StatelessWidget {
   final OrderModel order;
 
-  const OrderDetailsScreen({Key? key, required this.order}) : super(key: key);
+  const OrderDetailsScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Order Details", style: TextStyle(color: Colors.white),),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         backgroundColor: Colors.blue,
       ),
@@ -138,9 +138,9 @@ class OrderDetailsScreen extends StatelessWidget {
                 Text("Phone: ${order.phoneNumber}", style: const TextStyle(fontSize: 16)),
                 Text("Address: ${order.address}", style: const TextStyle(fontSize: 16)),
                 const Divider(height: 24, thickness: 1.5),
-                Text(
+                const Text(
                   "Order Details",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                   ),

@@ -9,6 +9,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -221,15 +223,15 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 onChanged: searchSuppliers,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
                       vertical: 10.0, horizontal: 20.0),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
                   hintText: 'Search by Location....',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
                       borderSide: BorderSide(width: 1)),
-                  focusedBorder: const OutlineInputBorder(
+                  focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blue, width: 2)),
                 ),
               ),

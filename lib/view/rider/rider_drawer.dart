@@ -14,7 +14,7 @@ class RiderDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.blue,
             ),
             accountName: Text("Rider Name"),
@@ -24,29 +24,29 @@ class RiderDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: Icon(Icons.home),
-            title: Text("Home"),
+            leading: const Icon(Icons.home),
+            title: const Text("Home"),
             onTap: () {
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.history),
-            title: Text("Order History"),
+            leading: const Icon(Icons.history),
+            title: const Text("Order History"),
             onTap: () {
               // Navigate to Order History screen (implement later)
               Navigator.pop(context);
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text("Logout"),
+            leading: const Icon(Icons.logout),
+            title: const Text("Logout"),
             onTap: () async{
               await authViewModel.signOut();
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChooseAccountScreen(),
+                  builder: (context) => const ChooseAccountScreen(),
                 ),
                     (route) => false,
               );

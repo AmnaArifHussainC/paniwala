@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paniwala/view/consumer/product_details_with_orderScreen.dart';
 
-import '../complaints_feedback/complaintAndFeedback.dart';
+import '../complaints_feedback/complaint_and_feedback.dart';
 
 class SupplierProductListsForCustomers extends StatefulWidget {
   final String supplierId;

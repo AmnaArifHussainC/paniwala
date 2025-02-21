@@ -8,7 +8,7 @@ import 'customer_order/customer_order_history.dart';
 
 class CustomUserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
-  CustomUserDrawer({super.key, required this.authViewModel});
+  const CustomUserDrawer({super.key, required this.authViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +88,7 @@ class CustomUserDrawer extends StatelessWidget {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChooseAccountScreen(),
+                              builder: (context) => const ChooseAccountScreen(),
                             ),
                                 (route) => false,
                           );

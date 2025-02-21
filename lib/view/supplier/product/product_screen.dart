@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +6,7 @@ import '../../../config/custome_widgets/supplier_add_product_textformfield.dart'
 import '../../../view_model/product_viewmodel.dart';
 
 class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({Key? key}) : super(key: key);
+  const AddProductScreen({super.key});
 
   @override
   State<AddProductScreen> createState() => _AddProductScreenState();
@@ -205,8 +204,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: submitProduct,
-                child: const Text('Add Product', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 15), backgroundColor: Colors.blueAccent),
+                child: const Text('Add Product', style: TextStyle(color: Colors.white)),
               ),
             ),
           ],

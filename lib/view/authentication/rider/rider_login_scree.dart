@@ -7,7 +7,7 @@ import '../../../model/rider_model.dart';
 import '../../rider/rider_dashboard.dart';
 
 class RiderSignInScreen extends StatefulWidget {
-  RiderSignInScreen({super.key});
+  const RiderSignInScreen({super.key});
 
   @override
   _RiderSignInScreenState createState() => _RiderSignInScreenState();
@@ -98,12 +98,12 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                             print("Login successful! Navigating to dashboard.");
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => RiderDashboard()),
+                              MaterialPageRoute(builder: (context) => const RiderDashboard()),
                             );
                           } else {
                             print("Login failed: Invalid credentials.");
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Invalid login credentials.")),
+                              const SnackBar(content: Text("Invalid login credentials.")),
                             );
                           }
                         } catch (e) {

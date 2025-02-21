@@ -10,7 +10,7 @@ import '../../../config/utils/validators.dart';
 import '../consumer/consumer_forgot_password.dart';
 
 class SupplerLoginScreen extends StatefulWidget {
-  SupplerLoginScreen({super.key});
+  const SupplerLoginScreen({super.key});
 
   @override
   State<SupplerLoginScreen> createState() => _SupplerLoginScreenState();
@@ -167,7 +167,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SupplierRegisterScreen()));
+                                      const SupplierRegisterScreen()));
                         },
                         child: const Text(
                           "Register",

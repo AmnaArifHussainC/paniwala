@@ -24,9 +24,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
 
   Future<void> _loadAddress() async {
     String? address = await LocationUtils.getSavedAddress();
-    if (address == null) {
-      address = await LocationUtils.getCurrentLocation();
-    }
+    address ??= await LocationUtils.getCurrentLocation();
     setState(() {
       supplierAddress = address;
     });
@@ -35,7 +33,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   void _openAddressScreen() async {
     final newAddress = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddressScreen()),
+      MaterialPageRoute(builder: (context) => const AddressScreen()),
     );
     if (newAddress != null) {
       setState(() {
@@ -118,14 +116,14 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddProductScreen()));
+              MaterialPageRoute(builder: (context) => const AddProductScreen()));
         },
         backgroundColor: Colors.blue,
         elevation: 2,
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),

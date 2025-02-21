@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class SupplierRatingsScreen extends StatelessWidget {
   final String supplierId;
 
-  SupplierRatingsScreen({required this.supplierId});
+  const SupplierRatingsScreen({super.key, required this.supplierId});
 
   Future<String> _getUserName(String userId) async {
     try {
@@ -25,12 +25,12 @@ class SupplierRatingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Ratings & Feedback',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
@@ -41,11 +41,11 @@ class SupplierRatingsScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text(
                 'Error loading ratings.',
                 style: TextStyle(color: Colors.red, fontSize: 16),
@@ -83,7 +83,7 @@ class SupplierRatingsScreen extends StatelessWidget {
                   final userName = userSnapshot.data ?? 'Fetching user...';
 
                   return Card(
-                    margin: EdgeInsets.only(bottom: 16.0),
+                    margin: const EdgeInsets.only(bottom: 16.0),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 4,
                     child: Padding(
@@ -93,56 +93,56 @@ class SupplierRatingsScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.person, color: Colors.blue),
-                              SizedBox(width: 8),
+                              const Icon(Icons.person, color: Colors.blue),
+                              const SizedBox(width: 8),
                               Text(
                                 userName,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Row(
                             children: [
                               Icon(Icons.star, color: Colors.yellow[700]),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
                                 'Rating: ${rating.toStringAsFixed(1)}',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           if (feedback.isNotEmpty)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Feedback:',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   feedback,
-                                  style: TextStyle(color: Colors.black87, fontSize: 14),
+                                  style: const TextStyle(color: Colors.black87, fontSize: 14),
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                               ],
                             ),
                           if (complaint.isNotEmpty)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Complaint:',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   complaint,
                                   style: TextStyle(color: Colors.red[800], fontSize: 14),
                                 ),
-                                SizedBox(height: 8),
+                                const SizedBox(height: 8),
                               ],
                             ),
                           if (timestamp != null)

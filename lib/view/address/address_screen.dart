@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../config/utils/permitions.dart';
 
 class AddressScreen extends StatefulWidget {
+  const AddressScreen({super.key});
+
   @override
   _AddressScreenState createState() => _AddressScreenState();
 }
@@ -28,7 +30,7 @@ class _AddressScreenState extends State<AddressScreen> {
         _addressController.text = address;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to fetch location. Try again.')),
+          const SnackBar(content: Text('Failed to fetch location. Try again.')),
         );
       }
     } catch (e) {
@@ -46,7 +48,7 @@ class _AddressScreenState extends State<AddressScreen> {
     String newAddress = _addressController.text.trim();
     if (newAddress.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid address.')),
+        const SnackBar(content: Text('Please enter a valid address.')),
       );
       return;
     }
