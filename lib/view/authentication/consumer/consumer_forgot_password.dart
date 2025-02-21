@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/config/services/auth_service.dart';
 
@@ -13,7 +12,7 @@ class ForgotPasswordScreen extends StatelessWidget {
   final AuthService _authservice = AuthService();
 
   // Reset Password Function
-  Future<bool> ForgetPassword(String email, BuildContext context) async {
+  Future<bool> forgetPassword(String email, BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
       bool success = await _authservice.resetPassword(emailController.text.trim());
       if (success) {
@@ -102,17 +101,17 @@ class ForgotPasswordScreen extends StatelessWidget {
                   // Reset Password Button
                   ElevatedButton(
                     onPressed: () async {
-                      ForgetPassword(emailController.text.trim(), context);
+                      forgetPassword(emailController.text.trim(), context);
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      child: Text("Send Reset Link", style: TextStyle(color: Colors.white)),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      child: Text("Send Reset Link", style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],
