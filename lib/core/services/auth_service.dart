@@ -75,18 +75,22 @@ class AuthService {
   // Google Sign-In
   Future<User?> signInWithGoogle() async {
     try {
+      // Reset GoogleSignIn to ensure a fresh sign-in
+      await _googleSignIn.signOut();
+
+      // Start the Google sign-in flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth =
-      await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      UserCredential userCredential =
-      await _auth.signInWithCredential(credential);
 
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      // If this is a new user, add them to Firestore
       if (userCredential.additionalUserInfo!.isNewUser) {
         UserModel newUser = UserModel(
           uid: userCredential.user!.uid,
@@ -97,6 +101,7 @@ class AuthService {
         );
         await _firestore.collection('Users').doc(newUser.uid).set(newUser.toFirestore());
       }
+
       return userCredential.user;
     } catch (e) {
       print("Google Sign-In Error: $e");
@@ -153,12 +158,13 @@ class AuthService {
   // Sign Out
   Future<void> signOut() async {
     try {
-      await _googleSignIn.signOut();
-      await _auth.signOut();
+      await _googleSignIn.disconnect(); // Disconnects the Google account
+      await _auth.signOut(); // Signs out from Firebase
     } catch (e) {
       print("Sign Out Error: $e");
     }
   }
+
 
 
   // get user who use app
