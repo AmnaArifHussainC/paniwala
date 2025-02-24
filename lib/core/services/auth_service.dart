@@ -302,7 +302,7 @@ class AuthService {
           return null;
         }
 
-        print("Rider login successful: ${data}");
+        print("Rider login successful: $data");
         return RiderModel.fromFirestore(data, riderDoc.id);
       }
 

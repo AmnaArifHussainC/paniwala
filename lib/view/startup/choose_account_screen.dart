@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import '../auth/consumer/consumer_login_screen.dart';
-import '../custome_widgets/choose_screen_cards.dart';
+import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
+
+import '../../config/custome_widgets/choose_screen_cards.dart';
+import '../../view_model/auth_viewmodel.dart';
+import '../../view_model/auth_viewmodel.dart';
+import '../authentication/consumer/consumer_register.dart';
 import 'choose_supplier_rider-screen.dart';
 
 class ChooseAccountScreen extends StatelessWidget {
@@ -55,7 +59,9 @@ class ChooseAccountScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignInScreen()));
+                                    builder: (context) => SignInScreen(
+                                          authViewModel: AuthViewModel(),
+                                        )));
                           }),
                       const SizedBox(height: 20),
                       AccountCard(
@@ -74,6 +80,18 @@ class ChooseAccountScreen extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 30),
+                  //
+                  // GestureDetector(
+                  //   onTap: (){},
+                  //   child: const Text(
+                  //     "Already have an account? Log in",
+                  //     style: TextStyle(
+                  //       fontSize: 16,
+                  //       color: Colors.blue,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
