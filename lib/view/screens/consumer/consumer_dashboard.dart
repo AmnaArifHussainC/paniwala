@@ -5,6 +5,8 @@ import '../../../viewModel/locationOndashscreens.dart';
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

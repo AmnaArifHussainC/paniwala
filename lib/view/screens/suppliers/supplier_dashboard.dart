@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
+  const SupplierDashboardScreen({super.key});
+
   @override
   State<SupplierDashboardScreen> createState() =>
       _SupplierDashboardScreenState();
@@ -122,7 +124,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),

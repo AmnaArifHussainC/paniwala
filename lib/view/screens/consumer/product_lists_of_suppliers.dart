@@ -2,7 +2,7 @@
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:paniwala/view/consumer/product_details_with_orderScreen.dart';
+// import 'package:paniwala/view/consumer/product_details_with_order_screen.dart';
 //
 // import '../complaints_feedback/complaintAndFeedback.dart';
 //
