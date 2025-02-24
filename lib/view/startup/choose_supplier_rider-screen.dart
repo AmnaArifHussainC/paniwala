@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../auth/rider/rider_login_screen.dart';
 import '../auth/supplier/supplier_login_screen.dart';
-import '../custome_widgets/choose_screen_cards.dart';
+import '../custom_widgets/choose_screen_cards.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
   @override

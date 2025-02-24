@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../auth/consumer/consumer_login_screen.dart';
-import '../custome_widgets/choose_screen_cards.dart';
+import '../custom_widgets/choose_screen_cards.dart';
 import 'choose_supplier_rider-screen.dart';
 
 class ChooseAccountScreen extends StatelessWidget {

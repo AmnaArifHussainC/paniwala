@@ -3,8 +3,8 @@ import 'package:paniwala/view/auth/supplier/supplier_register_screen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:provider/provider.dart';
 import '../../../core/utils/validators.dart';
-import '../../custome_widgets/custome_btn_auth.dart';
-import '../../custome_widgets/custome_text_field.dart';
+import '../../custom_widgets/custom_btn_auth.dart';
+import '../../custom_widgets/custom_text_field.dart';
 import '../../screens/suppliers/supplier_dashboard.dart';
 import '../consumer/consumer_forgot_password.dart';
 

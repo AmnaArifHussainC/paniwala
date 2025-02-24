@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../custome_widgets/custome_btn_auth.dart';
-import '../../custome_widgets/custome_text_field.dart';
+import '../../custom_widgets/custom_btn_auth.dart';
+import '../../custom_widgets/custom_text_field.dart';
 import '../../screens/consumer/consumer_dashboard.dart';
 import 'consumer_forgot_password.dart';
 import 'consumer_register.dart';
