@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context)=>AuthViewModel()),
-        // ChangeNotifierProvider(create: (context)=>DashScreenProvider()),
       ],
       child: MaterialApp(
         theme: ThemeData(
