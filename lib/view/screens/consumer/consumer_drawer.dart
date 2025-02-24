@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
-import '../../../viewModel/authProviderViewModel.dart';
+import '../../../viewModel/auth_provider_viewmodel.dart';
 
 
 class CustomUserDrawer extends StatelessWidget {
@@ -83,7 +83,7 @@ class CustomUserDrawer extends StatelessWidget {
                       // Log Out Button (Blue)
                       ElevatedButton(
                         onPressed: () async {
-                          await authViewModel.SiginOut();
+                          await authViewModel.signOut();
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/supplier/supplier_register_screen.dart';
-import 'package:paniwala/viewModel/authProviderViewModel.dart';
+import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:provider/provider.dart';
 import '../../../core/utils/validators.dart';
 import '../../custome_widgets/custome_btn_auth.dart';

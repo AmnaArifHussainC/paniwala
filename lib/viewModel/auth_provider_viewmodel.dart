@@ -9,7 +9,6 @@ class AuthViewModel with ChangeNotifier {
   UserModel? _user;
   SupplierModel? _supplier;
   RiderModel? _rider;
-
   bool _isLoading = false;
 
   UserModel? get user => _user;
@@ -122,7 +121,7 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> SiginOut() async{
+  Future<void> signOut() async{
     _isLoading = true;
     notifyListeners();
     try{
@@ -266,5 +265,4 @@ class AuthViewModel with ChangeNotifier {
       return false;
     }
   }
-
 }

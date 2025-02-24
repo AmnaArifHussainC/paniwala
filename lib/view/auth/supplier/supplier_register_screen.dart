@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/utils/cloudinary.dart';
 import '../../../core/utils/file_pick.dart';
 import '../../../core/utils/validators.dart';
-import '../../../viewModel/authProviderViewModel.dart';
+import '../../../viewModel/auth_provider_viewmodel.dart';
 import '../../custome_widgets/custome_text_field.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
