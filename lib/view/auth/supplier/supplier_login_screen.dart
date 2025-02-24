@@ -51,6 +51,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
