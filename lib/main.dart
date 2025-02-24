@@ -1,10 +1,10 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/startup/splahScreen.dart';
+import 'package:paniwala/view/startup/splash_screen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:paniwala/viewModel/consumer_dash_screen_viewmodel_pro.dart';
-import 'package:paniwala/viewModel/locationOndashscreens.dart';
+import 'package:paniwala/viewModel/location_on_dash_screens.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 

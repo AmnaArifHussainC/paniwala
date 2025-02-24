@@ -42,7 +42,7 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
-  // Google Siginin
+  // Google Sign in
   Future<bool> signInWithGoogle() async {
     _isLoading = true;
     notifyListeners();

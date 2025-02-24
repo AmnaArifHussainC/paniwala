@@ -15,8 +15,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  @override
-
   Future<void> _resetPassword(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -93,17 +91,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     builder: (context, authViewModel, child) {
                       return ElevatedButton(
                         onPressed: authViewModel.isLoading ? null : () => _resetPassword(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           child: Text(
                             authViewModel.isLoading ? "Sending..." : "Send Reset Link",
                             style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
                           ),
                         ),
                       );

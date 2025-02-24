@@ -42,7 +42,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  SupplierDashboardScreen()));
+                  const SupplierDashboardScreen()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -105,7 +105,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen()),
+                            builder: (context) => const ForgotPasswordScreen()),
                       ),
                       child: const Text("Forgot Password?",
                           style: TextStyle(color: Colors.blue)),
@@ -132,7 +132,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SupplierRegisterScreen()),
+                              builder: (context) => const SupplierRegisterScreen()),
                         ),
                         child: const Text("Register",
                             style: TextStyle(color: Colors.blue)),

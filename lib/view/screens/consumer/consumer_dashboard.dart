@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../../viewModel/locationOndashscreens.dart';
+import '../../../viewModel/location_on_dash_screens.dart';
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatelessWidget {

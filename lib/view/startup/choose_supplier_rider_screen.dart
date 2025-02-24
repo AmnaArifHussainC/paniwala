@@ -5,6 +5,8 @@ import '../auth/supplier/supplier_login_screen.dart';
 import '../custom_widgets/choose_screen_cards.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
+  const ChooseSupplierTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -52,7 +54,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SupplerLoginScreen()));
+                                      const SupplerLoginScreen()));
                         },
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",
@@ -64,7 +66,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RiderSignInScreen()));
+                                  builder: (context) => const RiderSignInScreen()));
                         },
                         image: "assets/images/rider.png",
                         title: "Rider",

@@ -69,7 +69,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
 
     if (success) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => SupplerLoginScreen()));
+          MaterialPageRoute(builder: (context) => const SupplerLoginScreen()));
     }
   }
 
@@ -173,7 +173,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                           authViewModel.isLoading
                               ? "Requesting..."
                               : "Send Request",
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       );
                     },
@@ -187,7 +187,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SupplerLoginScreen()),
+                              builder: (context) => const SupplerLoginScreen()),
                         ),
                         child: const Text("Login",
                             style: TextStyle(color: Colors.blue)),
