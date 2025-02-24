@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewModel/authProviderViewModel.dart';
-import '../../../viewModel/consumerDashScreenViewModelPro.dart';
+import '../../../viewModel/locationOndashscreens.dart';
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final provider = Provider.of<DashScreenProvider>(context);
-    // final filteredSuppliers = provider.suppliers.where((supplier) {
-    //   final companyName = supplier['address']?.toLowerCase() ?? '';
-    //   return companyName.contains(provider.searchQuery);
-    // }).toList();
-
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
+
+    // Access LocationViewModel from context
+    final locationViewModel = Provider.of<LocationViewModel>(context);
+
+    // Trigger location fetching when the screen is built
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final hasPermission = await locationViewModel.hasLocationPermission();
+      if (!hasPermission) {
+        final permissionGranted = await locationViewModel.requestLocationPermission();
+        if (permissionGranted) {
+          await locationViewModel.fetchCurrentLocation();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Location permission is required to proceed.'),
+            ),
+          );
+        }
+      }
+    });
+
+    // Mocked suppliers for demo purposes
+    final filteredSuppliers = []; // Replace with actual suppliers data
 
     return Scaffold(
       appBar: AppBar(
@@ -30,104 +47,24 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Location Input
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      // controller: provider.locationController,
-                      decoration: const InputDecoration(
-                        hintText: 'Your Location',
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                            width: 2,
-                          ),
-                        ),
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.my_location, color: Colors.blue),
-                    // onPressed: provider.fetchUserLocation,
-                    onPressed: (){},
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
-                    // onPressed: provider.saveLocationToFirestore,
-                    onPressed: (){},
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Search Bar
+            // Location Display
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                // onChanged: provider.searchSuppliers,
-                onTap: (){},
+                readOnly: true, // Make the field read-only
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 20.0),
-                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                  hintText: 'Search by Location....',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 1)),
+                  hintText: locationViewModel.address ?? 'Fetching location...',
                   focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2)),
+                    borderSide: BorderSide(
+                      color: Colors.blue,
+                      width: 2,
+                    ),
+                  ),
+                  border: const OutlineInputBorder(),
                 ),
               ),
             ),
-
-            // Supplier List
-            // Expanded(
-            //   child: provider.isLoading
-            //       ? const Center(child: CircularProgressIndicator())
-            //       : filteredSuppliers.isEmpty
-            //       ? const Center(
-            //     child: Text(
-            //       'No suppliers available at the moment.',
-            //       style: TextStyle(fontSize: 16, color: Colors.grey),
-            //     ),
-            //   )
-            //       : ListView.builder(
-            //     itemCount: filteredSuppliers.length,
-            //     itemBuilder: (context, index) {
-            //       final supplier = filteredSuppliers[index];
-            //       return Card(
-            //         margin: const EdgeInsets.symmetric(
-            //             vertical: 8.0, horizontal: 10.0),
-            //         child: ListTile(
-            //           leading: CircleAvatar(
-            //             backgroundColor: Colors.blue,
-            //             child: Text(
-            //               supplier['companyName'].isNotEmpty
-            //                   ? supplier['companyName']
-            //                   .substring(0, 1)
-            //                   .toUpperCase()
-            //                   : '?',
-            //               style:
-            //               const TextStyle(color: Colors.white),
-            //             ),
-            //           ),
-            //           title: Text(supplier['companyName']),
-            //           subtitle: Text(supplier['address']),
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
+            // Add more widgets here...
           ],
         ),
       ),

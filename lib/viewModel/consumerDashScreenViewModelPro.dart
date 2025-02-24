@@ -7,7 +7,6 @@
 // class DashScreenProvider with ChangeNotifier {
 //   List<Map<String, dynamic>> suppliers = [];
 //   bool isLoading = true;
-//   String searchQuery = '';
 //   String userLocation = "Fetching location...";
 //   final TextEditingController locationController = TextEditingController();
 //
@@ -60,6 +59,9 @@
 //     fullAddress.isNotEmpty ? fullAddress : "Address not available.";
 //     locationController.text = userLocation;
 //     notifyListeners();
+//
+//     // Re-fetch suppliers based on updated location
+//     fetchSuppliers();
 //   }
 //
 //   Future<void> fetchSavedLocation() async {
@@ -74,6 +76,9 @@
 //         userLocation = docSnapshot.data()?['location'];
 //         locationController.text = userLocation;
 //         notifyListeners();
+//
+//         // Re-fetch suppliers based on saved location
+//         fetchSuppliers();
 //       }
 //     } catch (e) {
 //       print("Error fetching saved location: $e");
@@ -103,7 +108,8 @@
 //       final querySnapshot =
 //       await FirebaseFirestore.instance.collection('suppliers').get();
 //
-//       suppliers = querySnapshot.docs.map((doc) {
+//       suppliers = querySnapshot.docs
+//           .map((doc) {
 //         final data = doc.data();
 //         return {
 //           'id': doc.id,
@@ -112,7 +118,11 @@
 //           'phone': data['phone'] ?? 'No Phone Number',
 //           'address': data['address'] ?? 'No Address Available',
 //         };
-//       }).toList();
+//       })
+//           .where((supplier) => supplier['address']
+//           .toLowerCase()
+//           .contains(userLocation.toLowerCase()))
+//           .toList();
 //
 //       isLoading = false;
 //       notifyListeners();
@@ -121,10 +131,5 @@
 //       isLoading = false;
 //       notifyListeners();
 //     }
-//   }
-//
-//   void searchSuppliers(String query) {
-//     searchQuery = query.toLowerCase();
-//     notifyListeners();
 //   }
 // }

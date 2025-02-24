@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:paniwala/view/startup/splahScreen.dart';
 import 'package:paniwala/viewModel/authProviderViewModel.dart';
 import 'package:paniwala/viewModel/consumerDashScreenViewModelPro.dart';
+import 'package:paniwala/viewModel/locationOndashscreens.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context)=>AuthViewModel()),
-        // ChangeNotifierProvider(create: (context)=>DashScreenProvider()),
+        ChangeNotifierProvider(create: (context)=>LocationViewModel()),
       ],
       child: MaterialApp(
         theme: ThemeData(
