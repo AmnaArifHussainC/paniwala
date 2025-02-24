@@ -68,26 +68,26 @@ class LocationService {
     if (user == null) return;
 
     final String uid = user.uid;
-    final _firestore = FirebaseFirestore.instance;
+    final firestore = FirebaseFirestore.instance;
 
     // Check user's role and update the address in the corresponding collection
-    dynamic userData = await getUserByUID(uid, _firestore);
+    dynamic userData = await getUserByUID(uid, firestore);
     if (userData != null) {
       if (userData is UserModel) {
         print("Updating address for User.");
-        await _firestore.collection('Users').doc(uid).set(
+        await firestore.collection('Users').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );
       } else if (userData is SupplierModel) {
         print("Updating address for Supplier.");
-        await _firestore.collection('suppliers').doc(uid).set(
+        await firestore.collection('suppliers').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );
       } else if (userData is RiderModel) {
         print("Updating address for Rider.");
-        await _firestore.collection('riders').doc(uid).set(
+        await firestore.collection('riders').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );
