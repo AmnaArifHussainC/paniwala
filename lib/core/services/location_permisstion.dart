@@ -15,6 +15,19 @@ class LocationService {
   static String get addressKey => _addressKey;
 
 
+  static Future<String?> getSublocality(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        return placemarks.first.subLocality;
+      }
+    } catch (e) {
+      print("Error fetching sublocality: $e");
+    }
+    return null;
+  }
+
+
   // Check if location permission is granted
   static Future<bool> hasPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -68,26 +81,26 @@ class LocationService {
     if (user == null) return;
 
     final String uid = user.uid;
-    final firestore = FirebaseFirestore.instance;
+    final _firestore = FirebaseFirestore.instance;
 
     // Check user's role and update the address in the corresponding collection
-    dynamic userData = await getUserByUID(uid, firestore);
+    dynamic userData = await getUserByUID(uid, _firestore);
     if (userData != null) {
       if (userData is UserModel) {
         print("Updating address for User.");
-        await firestore.collection('Users').doc(uid).set(
+        await _firestore.collection('Users').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );
       } else if (userData is SupplierModel) {
         print("Updating address for Supplier.");
-        await firestore.collection('suppliers').doc(uid).set(
+        await _firestore.collection('suppliers').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );
       } else if (userData is RiderModel) {
         print("Updating address for Rider.");
-        await firestore.collection('riders').doc(uid).set(
+        await _firestore.collection('riders').doc(uid).set(
           {"address": address},
           SetOptions(merge: true),
         );

@@ -3,15 +3,13 @@ import 'package:provider/provider.dart';
 
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../custom_widgets/custom_btn_auth.dart';
-import '../../custom_widgets/custom_text_field.dart';
+import '../../custome_widgets/custome_btn_auth.dart';
+import '../../custome_widgets/custome_text_field.dart';
 import '../../screens/consumer/consumer_dashboard.dart';
 import 'consumer_forgot_password.dart';
 import 'consumer_register.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
-
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
@@ -36,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
           );
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => HomeScreen()),
                 (route) => false,
           );
         } else {
@@ -62,7 +60,7 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
             (route) => false,
       );
     } else {
@@ -123,7 +121,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: TextButton(
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
                       ),
                       child: const Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
                     ),
@@ -155,7 +153,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextButton(
                         onPressed: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          MaterialPageRoute(builder: (context) => RegisterScreen()),
                         ),
                         child: const Text("Register Now", style: TextStyle(color: Colors.blue)),
                       ),

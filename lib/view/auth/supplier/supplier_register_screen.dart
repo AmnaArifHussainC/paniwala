@@ -5,7 +5,7 @@ import '../../../core/utils/cloudinary.dart';
 import '../../../core/utils/file_pick.dart';
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../custom_widgets/custom_text_field.dart';
+import '../../custome_widgets/custome_text_field.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
   const SupplierRegisterScreen({super.key});
@@ -69,7 +69,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
 
     if (success) {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const SupplerLoginScreen()));
+          MaterialPageRoute(builder: (context) => SupplerLoginScreen()));
     }
   }
 
@@ -173,7 +173,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                           authViewModel.isLoading
                               ? "Requesting..."
                               : "Send Request",
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white),
                         ),
                       );
                     },
@@ -187,7 +187,7 @@ class _SupplierRegisterScreenState extends State<SupplierRegisterScreen> {
                         onPressed: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SupplerLoginScreen()),
+                              builder: (context) => SupplerLoginScreen()),
                         ),
                         child: const Text("Login",
                             style: TextStyle(color: Colors.blue)),

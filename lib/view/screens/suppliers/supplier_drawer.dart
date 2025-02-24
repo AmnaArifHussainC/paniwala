@@ -10,7 +10,7 @@ import '../../startup/choose_account_screen.dart';
 class CustomDrawer extends StatefulWidget {
   final String supplierId; // Supplier ID passed to the drawer
 
-  const CustomDrawer({super.key, required this.supplierId});
+  CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
@@ -158,7 +158,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ChooseAccountScreen()),
+                      builder: (context) => ChooseAccountScreen()),
                       (route) => false,
                 );
               }

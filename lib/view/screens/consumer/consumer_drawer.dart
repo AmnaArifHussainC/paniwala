@@ -7,7 +7,7 @@ import '../../../viewModel/auth_provider_viewmodel.dart';
 
 class CustomUserDrawer extends StatelessWidget {
   final AuthViewModel authViewModel;
-  const CustomUserDrawer({super.key, required this.authViewModel});
+  CustomUserDrawer({super.key, required this.authViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class CustomUserDrawer extends StatelessWidget {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const ChooseAccountScreen(),
+                              builder: (context) => ChooseAccountScreen(),
                             ),
                                 (route) => false,
                           );

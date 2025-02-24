@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
-  const SupplierDashboardScreen({super.key});
-
   @override
   State<SupplierDashboardScreen> createState() =>
       _SupplierDashboardScreenState();
@@ -17,30 +15,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // _loadAddress();
   }
-  //
-  // Future<void> _loadAddress() async {
-  //   String? address = await LocationUtils.getSavedAddress();
-  //   if (address == null) {
-  //     address = await LocationUtils.getCurrentLocation();
-  //   }
-  //   setState(() {
-  //     supplierAddress = address;
-  //   });
-  // }
-  //
-  // void _openAddressScreen() async {
-  //   final newAddress = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => AddressScreen()),
-  //   );
-  //   if (newAddress != null) {
-  //     setState(() {
-  //       supplierAddress = newAddress;
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +99,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        child: const Icon(
+        child: Icon(
           Icons.add,
           color: Colors.white,
         ),
