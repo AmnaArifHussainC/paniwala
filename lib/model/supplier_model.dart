@@ -9,10 +9,10 @@ class SupplierModel {
   final String role;
   final DateTime createdAt;
   final String? certificateUrl;
-  final String address;
+  // final String address;
 
   SupplierModel({
-    required this.address,
+    // required this.address,
     required this.uid,
     required this.email,
     required this.cnic,
@@ -26,7 +26,7 @@ class SupplierModel {
   factory SupplierModel.fromFirestore(Map<String, dynamic> data, String id) {
     return SupplierModel(
       uid: id,
-      address: data['address'] ?? '',
+      // address: data['address'] ?? '',
       email: data['email'] ?? '',
       cnic: data['cnic'] ?? '',
       phone: data['phone'] ?? '',

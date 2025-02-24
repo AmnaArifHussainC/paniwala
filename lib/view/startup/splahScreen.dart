@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/authentication/consumer/consumer_login_screen.dart';
-import 'package:paniwala/view/consumer/consumer_dashboard.dart';
+import 'package:paniwala/core/services/auth_service.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
-import 'package:paniwala/view/supplier/supplier_dashboard.dart';
-import 'package:paniwala/view_model/auth_viewmodel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../model/rider_model.dart';
+import '../../model/supplier_model.dart';
+import '../../model/user_model.dart';
+import '../auth/consumer/consumer_login_screen.dart';
+import '../screens/consumer/consumer_dashboard.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,6 +17,8 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+
+  final  _authService = AuthService();
   void initState() {
     super.initState();
     _startSplashScreen();
@@ -25,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(Duration(seconds: 2)); // Show splash for 2 seconds
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;  //null to true
 
     if (isFirstTime) {
       // Navigate to onboarding screen if first-time user
@@ -51,39 +54,37 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+
   Future<void> _navigateBasedOnRole(String uid) async {
     try {
       print("Checking role for user with UID: $uid");
 
-      // Check in 'Users' collection
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('Users').doc(uid).get();
-      if (userDoc.exists) {
-        final role = userDoc['role'];
-        if (role == 'customer') {
-          print("User found in 'Users' collection with role: $role.");
+      final user = await _authService.getUserByUID(uid);
+
+      if (user != null) {
+        if (user is UserModel && user.role == 'customer') {
+          print("User found in 'Users' collection with role: ${user.role}.");
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
           return;
+        } else if (user is SupplierModel && user.role == 'supplier') {
+          print("User found in 'Suppliers' collection with role: ${user.role}.");
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+          // );
+          // return;
+        } else if (user is RiderModel && user.role == 'rider') {
+          print("User found in 'Riders' collection with role: ${user.role}.");
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => RiderDashboardScreen()),
+          // );
+          // return;
         }
       }
-
-      // Check in 'suppliers' collection
-      DocumentSnapshot supplierDoc = await FirebaseFirestore.instance.collection('suppliers').doc(uid).get();
-      if (supplierDoc.exists) {
-        final role = supplierDoc['role'];
-        if (role == 'supplier') {
-          print("User found in 'suppliers' collection with role: $role.");
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
-          );
-          return;
-        }
-      }
-
-      // If user is not found in either collection or role is invalid
       print("User not found in Firestore or invalid role. Navigating to ChooseAccountScreen.");
       Navigator.pushReplacement(
         context,
@@ -93,9 +94,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Error fetching user role: $e");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => SignInScreen(authViewModel: AuthViewModel()),
-        ),
+        MaterialPageRoute(builder: (context) => SignInScreen()),
       );
     }
   }
