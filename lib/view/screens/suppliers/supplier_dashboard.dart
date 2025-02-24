@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
+
+import '../../../viewModel/locationOndashscreens.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
   @override
@@ -10,17 +13,27 @@ class SupplierDashboardScreen extends StatefulWidget {
 
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? supplierAddress = "Fetching location...";
 
   @override
   void initState() {
     super.initState();
+    _fetchLocation();
+  }
+
+  void _fetchLocation() async {
+    final locationViewModel =
+    Provider.of<LocationViewModel>(context, listen: false);
+    await locationViewModel.fetchCurrentLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     final String supplierId = currentUser?.uid ?? "unknownSupplierId";
+
+    // Listen to location changes
+    final locationViewModel = Provider.of<LocationViewModel>(context);
+    final supplierAddress = locationViewModel.address ?? "Fetching location...";
 
     return Scaffold(
       key: _scaffoldKey,
@@ -70,10 +83,11 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
-                        // onTap: _openAddressScreen,
-                        onTap: (){},
+                        onTap: () {
+                          // Handle tap if needed
+                        },
                         child: Text(
-                          supplierAddress ?? "Fetching location...",
+                          supplierAddress,
                           style: const TextStyle(
                             color: Colors.white,
                             decoration: TextDecoration.underline,
@@ -91,15 +105,14 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => AddProductScreen()));
+          // Handle floating action button press if needed
         },
         backgroundColor: Colors.blue,
         elevation: 2,
         shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),

@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/startup/splahScreen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
-import 'package:paniwala/viewModel/consumer_dash_screen_viewmodel_pro.dart';
 import 'package:paniwala/viewModel/locationOndashscreens.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
