@@ -39,21 +39,27 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 10),
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue
+                ),
                 onPressed: () async {
                   await locationProvider.updateUserLocation(manualLocationController.text);
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.edit),
-                label: Text("Save Manual Location"),
+                icon: Icon(Icons.edit, color: Colors.white,),
+                label: Text("Save Manual Location", style: TextStyle(color: Colors.white),),
               ),
               SizedBox(height: 10),
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue
+                ),
                 onPressed: () async {
                   await locationProvider.saveUserLocation();
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.location_on),
-                label: Text("Fetch Current Location"),
+                icon: Icon(Icons.location_on, color: Colors.white,),
+                label: Text("Fetch Current Location", style: TextStyle(color: Colors.white),),
               ),
             ],
           ),
