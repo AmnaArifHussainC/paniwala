@@ -74,7 +74,6 @@ class LocationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future<void> updateUserLocation(String newLocation) async {
     if (newLocation.isNotEmpty) {
       _userLocation = newLocation;
@@ -106,7 +105,6 @@ class LocationViewModel extends ChangeNotifier {
       }
     }
   }
-
 
   void _showPermissionDialog(BuildContext context, {bool forceLogout = false}) {
     showDialog(

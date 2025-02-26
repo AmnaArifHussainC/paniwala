@@ -90,7 +90,7 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
                             print("Attempting to log in rider...");
 
                             bool success =
-                            await authViewModel.loginRider(email, password);
+                            await authViewModel.loginRider(email, password,context);
 
                             if (success) {
                               print("Login successful! Navigating to dashboard.");

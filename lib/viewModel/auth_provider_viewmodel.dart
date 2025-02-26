@@ -184,14 +184,18 @@ class AuthViewModel with ChangeNotifier {
   }
 
   // login supplier
-  Future<bool> loginSupplier(String email, String password) async {
+  Future<bool> loginSupplier(String email, String password, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     try {
       _supplier = await _authService.loginSupplier(email, password);
       _isLoading = false;
       notifyListeners();
-      return _supplier != null;
+      if(_supplier!=null){
+        await LocationService().requestLocationPermission(context);
+        return true;
+      }
+      return false;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -251,7 +255,7 @@ class AuthViewModel with ChangeNotifier {
 
 
 // Rider Login
-  Future<bool> loginRider(String email, String password) async {
+  Future<bool> loginRider(String email, String password, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
 
@@ -259,8 +263,11 @@ class AuthViewModel with ChangeNotifier {
       _rider = await _authService.loginRider(email, password);
       _isLoading = false;
       notifyListeners();
-
-      return _rider != null;
+          if(_rider!=null){
+            await LocationService().requestLocationPermission(context);
+            return true;
+          }
+          return false;
     } catch (e) {
       _isLoading = false;
       notifyListeners();

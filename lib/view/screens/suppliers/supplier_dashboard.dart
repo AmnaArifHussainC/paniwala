@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
+import '../../../config/components/dialogs/location_dialog.dart';
 import '../../../viewModel/locationOndashscreens.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
@@ -14,6 +15,11 @@ class SupplierDashboardScreen extends StatefulWidget {
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,51 +43,68 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundImage: AssetImage('assets/images/avatar.png'),
+      body: Consumer<LocationViewModel>(
+        builder: (context, locationProvider, child) {
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: const BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
                   ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      const Text(
-                        'Welcome!',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                      const CircleAvatar(
+                        radius: 30,
+                        backgroundImage: AssetImage('assets/images/avatar.png'),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          // Handle tap if needed
-                        },
-                        child: Text("ss"
-                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Welcome!',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.location_on_sharp,
+                                color: Colors.white,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  showLocationDialog(context, locationProvider);
+                                },
+                                child: Text(
+                                  locationProvider.userLocation ?? "Click to enter location",
+                                  style: TextStyle(color: Colors.white),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis, // Prevents text overflow
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          );
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -30,6 +30,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
     bool loginSuccess = await authViewModel.loginSupplier(
       emailController.text.trim(),
       passController.text.trim(),
+      context,
     );
 
     authViewModel.loading(false); // Stop loading

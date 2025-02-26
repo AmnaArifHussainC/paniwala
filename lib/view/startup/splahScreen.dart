@@ -8,6 +8,7 @@ import '../../model/supplier_model.dart';
 import '../../model/user_model.dart';
 import '../auth/consumer/consumer_login_screen.dart';
 import '../screens/consumer/consumer_dashboard.dart';
+import '../screens/suppliers/supplier_dashboard.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -71,11 +72,11 @@ class _SplashScreenState extends State<SplashScreen> {
           return;
         } else if (user is SupplierModel && user.role == 'supplier') {
           print("User found in 'Suppliers' collection with role: ${user.role}.");
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
-          // );
-          // return;
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+          );
+          return;
         } else if (user is RiderModel && user.role == 'rider') {
           print("User found in 'Riders' collection with role: ${user.role}.");
           // Navigator.pushReplacement(
