@@ -48,6 +48,7 @@ class AuthService {
     }
   }
 
+
   // User Registration
   Future<User?> registerUser(String email, String password, String name) async {
     try {
