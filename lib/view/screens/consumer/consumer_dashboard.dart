@@ -4,33 +4,25 @@ import '../../../viewModel/auth_provider_viewmodel.dart';
 import '../../../viewModel/locationOndashscreens.dart';
 import 'consumer_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isEditing = false;
+  TextEditingController locationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 600;
-
-    final locationViewModel = Provider.of<LocationViewModel>(context);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final hasPermission = await locationViewModel.hasLocationPermission();
-      if (!hasPermission) {
-        final permissionGranted = await locationViewModel.requestLocationPermission();
-        if (permissionGranted) {
-          await locationViewModel.fetchCurrentLocation();
-          // Assuming latitude and longitude are available
-          await locationViewModel.fetchSublocality(0.0, 0.0); // Replace with actual lat/lng
-          if (locationViewModel.sublocality != null) {
-            await locationViewModel.fetchSuppliersInSublocality(locationViewModel.sublocality!);
-          }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permission is required to proceed.')),
-          );
-        }
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
@@ -38,40 +30,63 @@ class HomeScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: isSmallScreen ? 10.0 : 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                  hintText: locationViewModel.address ?? 'Fetching location...',
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            locationViewModel.sublocality != null
-                ? Expanded(
-              child: ListView.builder(
-                itemCount: locationViewModel.suppliers.length,
-                itemBuilder: (context, index) {
-                  final supplier = locationViewModel.suppliers[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(supplier['companyName'] ?? 'Unknown'),
-                      subtitle: Text(supplier['email'] ?? 'No email'),
+      body: Consumer<LocationViewModel>(
+        builder: (context, locationProvider, child) {
+          locationController.text = locationProvider.userLocation ?? "No location available";
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Your Location:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: isEditing
+                          ? TextField(
+                        controller: locationController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Enter your location",
+                        ),
+                        onSubmitted: (value) {
+                          setState(() {
+                            isEditing = false;
+                          });
+                        },
+                      )
+                          : GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isEditing = true;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            locationProvider.userLocation ?? "Click to enter location",
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                },
-              ),
-            )
-                : const Center(child: Text('No suppliers available in your sublocality.')),
-          ],
-        ),
+                    SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(Icons.location_on, color: Colors.blue),
+                      onPressed: () => locationProvider.requestLocationPermission(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

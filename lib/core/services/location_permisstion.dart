@@ -1,156 +1,95 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../model/rider_model.dart';
-import '../../model/supplier_model.dart';
-import '../../model/user_model.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:flutter/material.dart';
 
 class LocationService {
-  static const String _addressKey = "user_address";
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Expose _addressKey via a getter
-  static String get addressKey => _addressKey;
+  Future<void> requestLocationPermission(BuildContext context) async {
+    LocationPermission permission = await Geolocator.checkPermission();
 
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showPermissionDialog(context);
+        return;
+      } else if (permission == LocationPermission.deniedForever) {
+        _showPermissionDialog(context, forceLogout: true);
+        return;
+      }
+    }
 
-  static Future<String?> getSublocality(double latitude, double longitude) async {
+    _saveUserLocation();
+  }
+
+  Future<void> _saveUserLocation() async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        return placemarks.first.subLocality;
+      User? user = _auth.currentUser;
+      if (user != null) {
+        String? role = await _getUserRole(user.uid);
+        if (role != null) {
+          Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+          List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+          String address = "${placemarks.first.street}, ${placemarks.first.subLocality}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}, ${placemarks.first.country}";
+
+          await _firestore.collection(role).doc(user.uid).set({
+            'location': address,
+          }, SetOptions(merge: true));
+        }
       }
     } catch (e) {
-      print("Error fetching sublocality: $e");
+      print("Error saving location: $e");
+    }
+  }
+
+  Future<String?> _getUserRole(String uid) async {
+    List<String> collections = ['Users', 'suppliers', 'riders'];
+    for (String collection in collections) {
+      DocumentSnapshot doc = await _firestore.collection(collection).doc(uid).get();
+      if (doc.exists) {
+        return collection;
+      }
     }
     return null;
   }
 
-
-  // Check if location permission is granted
-  static Future<bool> hasPermission() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
-  }
-
-// Request location permission
-  static Future<bool> requestPermission() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    return permission == LocationPermission.always || permission == LocationPermission.whileInUse;
-  }
-
-
-  // Get Current Location & Address
-  static Future<String?> getCurrentLocation() async {
-    try {
-      // Request location permission
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return "Location permission denied";
-      } else if (permission == LocationPermission.deniedForever) {
-        return "Location permission permanently denied. Enable it in settings.";
+  Future<String?> getUserLocation() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      String? role = await _getUserRole(user.uid);
+      if (role != null) {
+        DocumentSnapshot doc = await _firestore.collection(role).doc(user.uid).get();
+        return doc.exists ? doc['location'] as String? : null;
       }
-
-      // Get current position
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      // Reverse geocode to get address
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemarks.isEmpty) return "Address not found";
-
-      Placemark place = placemarks.first;
-      String address =
-      "${place.street ?? ''}, ${place.subLocality ?? ''}, ${place.locality ?? ''}, ${place.country ?? ''}".trim();
-
-      // Save address based on role
-      await saveAddressBasedOnRole(address);
-      await saveAddressToLocal(address);
-
-      return address;
-    } catch (e) {
-      return "Error getting location: $e";
     }
+    return null;
   }
 
-  // Save address to Firestore based on user role
-  static Future<void> saveAddressBasedOnRole(String address) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
-
-    final String uid = user.uid;
-    final _firestore = FirebaseFirestore.instance;
-
-    // Check user's role and update the address in the corresponding collection
-    dynamic userData = await getUserByUID(uid, _firestore);
-    if (userData != null) {
-      if (userData is UserModel) {
-        print("Updating address for User.");
-        await _firestore.collection('Users').doc(uid).set(
-          {"address": address},
-          SetOptions(merge: true),
-        );
-      } else if (userData is SupplierModel) {
-        print("Updating address for Supplier.");
-        await _firestore.collection('suppliers').doc(uid).set(
-          {"address": address},
-          SetOptions(merge: true),
-        );
-      } else if (userData is RiderModel) {
-        print("Updating address for Rider.");
-        await _firestore.collection('riders').doc(uid).set(
-          {"address": address},
-          SetOptions(merge: true),
-        );
-      }
-    } else {
-      print("User role not found.");
-    }
-  }
-
-  // General method to fetch user data by UID
-  static Future<dynamic> getUserByUID(String uid, FirebaseFirestore firestore) async {
-    try {
-      // Check in "Users" collection
-      DocumentSnapshot userDoc = await firestore.collection('Users').doc(uid).get();
-      if (userDoc.exists) {
-        print("User found in Users collection.");
-        return UserModel.fromFirestore(userDoc.data() as Map<String, dynamic>, uid);
-      }
-
-      // Check in "Suppliers" collection
-      DocumentSnapshot supplierDoc = await firestore.collection('suppliers').doc(uid).get();
-      if (supplierDoc.exists) {
-        print("User found in Suppliers collection.");
-        return SupplierModel.fromFirestore(supplierDoc.data() as Map<String, dynamic>, uid);
-      }
-
-      // Check in "Riders" collection
-      DocumentSnapshot riderDoc = await firestore.collection('riders').doc(uid).get();
-      if (riderDoc.exists) {
-        print("User found in Riders collection.");
-        return RiderModel.fromFirestore(riderDoc.data() as Map<String, dynamic>, uid);
-      }
-
-      print("User not found in any collection.");
-      return null;
-    } catch (e) {
-      print("Error fetching user data: $e");
-      return null;
-    }
-  }
-
-  // Get saved address from local storage
-  static Future<String?> getSavedAddress() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_addressKey);
-  }
-
-  // Save address to local storage
-  static Future<void> saveAddressToLocal(String address) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_addressKey, address);
+  void _showPermissionDialog(BuildContext context, {bool forceLogout = false}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text("Location Permission Required"),
+        content: Text("We need your location to proceed. Please enable location access."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (forceLogout) {
+                await _auth.signOut();
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+              } else {
+                Navigator.pop(context);
+                requestLocationPermission(context);
+              }
+            },
+            child: Text(forceLogout ? "Logout" : "Try Again"),
+          ),
+        ],
+      ),
+    );
   }
 }

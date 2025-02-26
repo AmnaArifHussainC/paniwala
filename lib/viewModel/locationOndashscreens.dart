@@ -1,94 +1,121 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
-import '../core/services/location_permisstion.dart';
+import 'package:flutter/foundation.dart';
 
 class LocationViewModel extends ChangeNotifier {
-  String? _address;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String? _userLocation;
   bool _isLoading = false;
+  bool _hasCheckedLocation = false;
 
-  String? get address => _address; // Expose the address to the UI
-  bool get isLoading => _isLoading; // Expose loading state
+  String? get userLocation => _userLocation;
+  bool get isLoading => _isLoading;
 
-  String? _sublocality;
-  List<Map<String, dynamic>> _suppliers = [];
+  Future<void> requestLocationPermission(BuildContext context) async {
+    if (_hasCheckedLocation) return; // Ensure it runs only once
+    _hasCheckedLocation = true;
 
-  List<Map<String, dynamic>> get suppliers => _suppliers;
-  String? get sublocality => _sublocality;
+    LocationPermission permission = await Geolocator.checkPermission();
 
-  Future<void> fetchSuppliersInSublocality(String sublocality) async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('suppliers')
-          .where('sublocality', isEqualTo: sublocality)
-          .get();
-
-      _suppliers = querySnapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-      notifyListeners();
-    } catch (e) {
-      print("Error fetching suppliers: $e");
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showPermissionDialog(context);
+        return;
+      } else if (permission == LocationPermission.deniedForever) {
+        _showPermissionDialog(context, forceLogout: true);
+        return;
+      }
     }
+
+    await saveUserLocation();
   }
 
-  Future<void> fetchSublocality(double latitude, double longitude) async {
-    _sublocality = await LocationService.getSublocality(latitude, longitude);
-    notifyListeners();
-  }
-
-
-  // Request location permission
-  Future<bool> requestLocationPermission() async {
-    try {
-      bool permissionGranted = await LocationService.requestPermission();
-      return permissionGranted;
-    } catch (e) {
-      print("Error requesting location permission: $e");
-      return false;
-    }
-  }
-
-  // Check if location permission is granted
-  Future<bool> hasLocationPermission() async {
-    try {
-      return await LocationService.hasPermission();
-    } catch (e) {
-      print("Error checking location permission: $e");
-      return false;
-    }
-  }
-
-  // Fetch current location
-  Future<void> fetchCurrentLocation() async {
+  Future<void> saveUserLocation() async {
     _isLoading = true;
     notifyListeners();
 
     try {
-      String? currentAddress = await LocationService.getCurrentLocation();
-      if (currentAddress != null) {
-        _address = currentAddress;
+      User? user = _auth.currentUser;
+      if (user != null) {
+        String? role = await _getUserRole(user.uid);
+        if (role != null) {
+          DocumentSnapshot userDoc = await _firestore.collection(role).doc(user.uid).get();
+          if (!userDoc.exists || userDoc['location'] == null) { // Only save if location is not already stored
+            Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+            String address = "${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.country}";
+
+            await _firestore.collection(role).doc(user.uid).set({
+              'location': address,
+            }, SetOptions(merge: true));
+
+            _userLocation = address;
+          }
+        }
       }
     } catch (e) {
-      print("Error fetching current location: $e");
+      print("Error saving location: $e");
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  // Get saved address
-  Future<void> getSavedAddress() async {
+  Future<void> fetchUserLocation() async {
     _isLoading = true;
     notifyListeners();
 
-    try {
-      String? savedAddress = await LocationService.getSavedAddress();
-      if (savedAddress != null) {
-        _address = savedAddress;
+    User? user = _auth.currentUser;
+    if (user != null) {
+      String? role = await _getUserRole(user.uid);
+      if (role != null) {
+        DocumentSnapshot doc = await _firestore.collection(role).doc(user.uid).get();
+        _userLocation = doc.exists ? doc['location'] as String? : null;
       }
-    } catch (e) {
-      print("Error fetching saved address: $e");
     }
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<String?> _getUserRole(String uid) async {
+    List<String> collections = ['Users', 'suppliers', 'riders'];
+    for (String collection in collections) {
+      DocumentSnapshot doc = await _firestore.collection(collection).doc(uid).get();
+      if (doc.exists) {
+        return collection;
+      }
+    }
+    return null;
+  }
+
+  void _showPermissionDialog(BuildContext context, {bool forceLogout = false}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text("Location Permission Required"),
+        content: Text("We need your location to proceed. Please enable location access."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (forceLogout) {
+                await _auth.signOut();
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+              } else {
+                Navigator.pop(context);
+                requestLocationPermission(context);
+              }
+            },
+            child: Text(forceLogout ? "Logout" : "Try Again"),
+          ),
+        ],
+      ),
+    );
   }
 }

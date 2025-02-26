@@ -14,26 +14,11 @@ class SupplierDashboardScreen extends StatefulWidget {
 class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchLocation();
-  }
-
-  void _fetchLocation() async {
-    final locationViewModel =
-    Provider.of<LocationViewModel>(context, listen: false);
-    await locationViewModel.fetchCurrentLocation();
-  }
 
   @override
   Widget build(BuildContext context) {
     final User? currentUser = FirebaseAuth.instance.currentUser;
     final String supplierId = currentUser?.uid ?? "unknownSupplierId";
-
-    // Listen to location changes
-    final locationViewModel = Provider.of<LocationViewModel>(context);
-    final supplierAddress = locationViewModel.address ?? "Fetching location...";
 
     return Scaffold(
       key: _scaffoldKey,
@@ -86,13 +71,8 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                         onTap: () {
                           // Handle tap if needed
                         },
-                        child: Text(
-                          supplierAddress,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                        child: Text("ss"
+                      ),
                       ),
                     ],
                   ),
