@@ -25,6 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
       bool success = await authViewModel.loginUser(
         emailController.text.trim(),
         passController.text.trim(),
+        context,
       );
       if (success) {
         final user = authViewModel.user;
@@ -52,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _signInWithGoogle() async {
     final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
-    bool success = await authViewModel.signInWithGoogle();
+    bool success = await authViewModel.signInWithGoogle(context);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(

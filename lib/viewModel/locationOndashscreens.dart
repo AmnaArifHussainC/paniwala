@@ -4,14 +4,18 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/material.dart';
 
+import '../core/services/location_permisstion.dart';
+
 class LocationViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   String? _userLocation;
   bool _isLoading = false;
 
   String? get userLocation => _userLocation;
   bool get isLoading => _isLoading;
+
 
   Future<void> fetchUserLocation() async {
     _isLoading = true;
@@ -86,6 +90,47 @@ class LocationViewModel extends ChangeNotifier {
         }
       }
     }
+  }
+
+  Future<void> _requestLocationPermission(BuildContext context) async {
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        _showPermissionDialog(context);
+        return;
+      } else if (permission == LocationPermission.deniedForever) {
+        _showPermissionDialog(context, forceLogout: true);
+        return;
+      }
+    }
+  }
+
+
+  void _showPermissionDialog(BuildContext context, {bool forceLogout = false}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text("Location Permission Required"),
+        content: Text("We need your location to proceed. Please enable location access."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              if (forceLogout) {
+                await _auth.signOut();
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+              } else {
+                Navigator.pop(context);
+                _requestLocationPermission(context);
+              }
+            },
+            child: Text(forceLogout ? "Logout" : "Try Again"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<String?> _getUserRole(String uid) async {

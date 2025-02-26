@@ -10,14 +10,11 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug, // Use debug mode to bypass App Check
   );
-
   runApp(MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

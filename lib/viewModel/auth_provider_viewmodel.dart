@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/core/services/location_permisstion.dart';
 import '../../model/user_model.dart';
 import '../core/services/auth_service.dart';
 import '../model/rider_model.dart';
@@ -23,17 +24,18 @@ class AuthViewModel with ChangeNotifier {
   }
 
   // User login
-  Future<bool> loginUser(String email, String password) async {
+  Future<bool> loginUser(String email, String password, BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     try {
       _user = await _authService.loginUser(email, password);
       _isLoading = false;
       notifyListeners();
-      if(_user== null){
-          return false;
+      if(_user!= null){
+          await LocationService().requestLocationPermission(context);
+          return true;
       }
-      return true;
+      return false;
     } catch (e) {
       _isLoading = false;
       notifyListeners();
@@ -43,7 +45,7 @@ class AuthViewModel with ChangeNotifier {
   }
 
   // Google Siginin
-  Future<bool> signInWithGoogle() async {
+  Future<bool> signInWithGoogle(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
 
@@ -59,6 +61,7 @@ class AuthViewModel with ChangeNotifier {
         );
         _isLoading = false;
         notifyListeners();
+        await LocationService().requestLocationPermission(context);
         return true;
       }
     } catch (e) {
