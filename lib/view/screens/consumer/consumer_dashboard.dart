@@ -10,15 +10,55 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isEditing = false;
-  TextEditingController locationController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
     });
+  }
+
+  void _showLocationDialog(BuildContext context, LocationViewModel locationProvider) {
+    TextEditingController manualLocationController = TextEditingController(text: locationProvider.userLocation);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Edit Location"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: manualLocationController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: "Enter Location Manually",
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  await locationProvider.updateUserLocation(manualLocationController.text);
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.edit),
+                label: Text("Save Manual Location"),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  await locationProvider.saveUserLocation();
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.location_on),
+                label: Text("Fetch Current Location"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -32,8 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Consumer<LocationViewModel>(
         builder: (context, locationProvider, child) {
-          locationController.text = locationProvider.userLocation ?? "No location available";
-
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -41,47 +79,26 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Text("Your Location:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: isEditing
-                          ? TextField(
-                        controller: locationController,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Enter your location",
-                        ),
-                        onSubmitted: (value) {
-                          setState(() {
-                            isEditing = false;
-                          });
-                        },
-                      )
-                          : GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isEditing = true;
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                GestureDetector(
+                  onTap: () => _showLocationDialog(context, locationProvider),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
                           child: Text(
                             locationProvider.userLocation ?? "Click to enter location",
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ),
-                      ),
+                        Icon(Icons.edit, color: Colors.blue),
+                      ],
                     ),
-                    SizedBox(width: 10),
-                    IconButton(
-                      icon: Icon(Icons.location_on, color: Colors.blue),
-                      onPressed: () => locationProvider.requestLocationPermission(context),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
