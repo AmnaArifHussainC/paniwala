@@ -48,9 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
       await _navigateBasedOnRole(user.uid);
     } else {
       // Navigate to ChooseAccountScreen if no user is logged in
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+            (route) => false, // This removes all previous routes from the stack
       );
     }
   }
@@ -65,16 +66,18 @@ class _SplashScreenState extends State<SplashScreen> {
       if (user != null) {
         if (user is UserModel && user.role == 'customer') {
           print("User found in 'Users' collection with role: ${user.role}.");
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
+                (route) => false,
           );
           return;
         } else if (user is SupplierModel && user.role == 'supplier') {
           print("User found in 'Suppliers' collection with role: ${user.role}.");
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+                (route) => false,
           );
           return;
         } else if (user is RiderModel && user.role == 'rider') {
@@ -87,15 +90,17 @@ class _SplashScreenState extends State<SplashScreen> {
         }
       }
       print("User not found in Firestore or invalid role. Navigating to ChooseAccountScreen.");
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+            (route) => false,
       );
     } catch (e) {
       print("Error fetching user role: $e");
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => SignInScreen()),
+            (route) => false,
       );
     }
   }
