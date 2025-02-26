@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../config/components/custome_widgets/custome_btn_auth.dart';
+import '../../../config/components/custome_widgets/custome_text_field.dart';
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../custome_widgets/custome_btn_auth.dart';
-import '../../custome_widgets/custome_text_field.dart';
 
 class RiderRegisterScreen extends StatefulWidget {
   @override

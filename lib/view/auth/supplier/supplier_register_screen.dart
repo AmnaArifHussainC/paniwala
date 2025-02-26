@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:paniwala/view/auth/supplier/supplier_login_screen.dart';
 import 'package:provider/provider.dart';
+import '../../../config/components/custome_widgets/custome_text_field.dart';
 import '../../../core/utils/cloudinary.dart';
 import '../../../core/utils/file_pick.dart';
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
-import '../../custome_widgets/custome_text_field.dart';
 
 class SupplierRegisterScreen extends StatefulWidget {
   const SupplierRegisterScreen({super.key});

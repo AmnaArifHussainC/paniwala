@@ -13,9 +13,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
-    });
+    Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
   }
 
 
