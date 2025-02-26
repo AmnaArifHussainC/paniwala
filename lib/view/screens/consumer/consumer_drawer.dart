@@ -2,17 +2,42 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:paniwala/view/startup/choose_account_screen.dart';
+import '../../../core/services/auth_service.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
 
-
-class CustomUserDrawer extends StatelessWidget {
+class CustomUserDrawer extends StatefulWidget {
   final AuthViewModel authViewModel;
-  CustomUserDrawer({super.key, required this.authViewModel});
+
+  const CustomUserDrawer({super.key, required this.authViewModel});
+
+  @override
+  _CustomUserDrawerState createState() => _CustomUserDrawerState();
+}
+
+class _CustomUserDrawerState extends State<CustomUserDrawer> {
+  final AuthService _authService = AuthService(); // Initialize auth service
+  String _userName = "User Name"; // Default name
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName(); // Fetch user name when drawer is created
+  }
+
+  Future<void> _fetchUserName() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      var userData = await _authService.getUserByUID(user.uid); // Fetch user data from Firestore
+      if (userData != null) {
+        setState(() {
+          _userName = userData.name ?? "User Name"; // Update UI with fetched name
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final User? user = FirebaseAuth.instance.currentUser; // Get the logged-in user
-
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -27,7 +52,7 @@ class CustomUserDrawer extends StatelessWidget {
                 const Icon(Icons.account_circle, size: 80, color: Colors.white),
                 const SizedBox(height: 10),
                 Text(
-                  user?.displayName ?? "User Name", // Display actual user name
+                  _userName, // Display fetched user name
                   style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ],
@@ -47,19 +72,7 @@ class CustomUserDrawer extends StatelessWidget {
             leading: const Icon(CupertinoIcons.shopping_cart),
             title: const Text('Order History'),
             onTap: () {
-              // if (user != null) {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => UserAllOrderScreen(userId: user.uid),
-              //     ),
-              //   );
-              // } else {
-              //   // Show an error or redirect to login if the user is null
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     const SnackBar(content: Text("User not logged in")),
-              //   );
-              // }
+              // Future feature
             },
           ),
           ListTile(
@@ -73,17 +86,15 @@ class CustomUserDrawer extends StatelessWidget {
                     title: const Text("Confirm Logout"),
                     content: const Text("Are you sure you want to log out?"),
                     actions: [
-                      // Cancel Button (White)
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop(); // Close dialog
+                          Navigator.of(context).pop();
                         },
                         child: const Text("Cancel"),
                       ),
-                      // Log Out Button (Blue)
                       ElevatedButton(
                         onPressed: () async {
-                          await authViewModel.signOut();
+                          await widget.authViewModel.signOut();
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -93,7 +104,7 @@ class CustomUserDrawer extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue, // Blue button
+                          backgroundColor: Colors.blue,
                         ),
                         child: const Text("Log Out", style: TextStyle(color: Colors.white)),
                       ),
