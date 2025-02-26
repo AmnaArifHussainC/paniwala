@@ -65,37 +65,40 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                         backgroundImage: AssetImage('assets/images/avatar.png'),
                       ),
                       const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Welcome!',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on_sharp,
-                                color: Colors.white,
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  showLocationDialog(context, locationProvider);
-                                },
-                                child: Text(
-                                  locationProvider.userLocation ?? "Click to enter location",
-                                  style: TextStyle(color: Colors.white),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis, // Prevents text overflow
+                      Expanded(
+                        child: Column( 
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Welcome!',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_sharp,
+                                  color: Colors.white,
                                 ),
-                              ),
-                            ],
-                          ),
-
-                        ],
+                                Flexible(
+                                  child: InkWell(
+                                    onTap: () {
+                                      showLocationDialog(context, locationProvider);
+                                    },
+                                    child: Text(
+                                      maxLines: 2,
+                                      locationProvider.userLocation ?? "Click to enter location",
+                                      style: TextStyle(color: Colors.white),
+                                      overflow: TextOverflow.ellipsis, // Prevents text overflow
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
