@@ -45,6 +45,8 @@ class LocationService {
     }
   }
 
+
+
   Future<String?> _getUserRole(String uid) async {
     List<String> collections = ['Users', 'suppliers', 'riders'];
     for (String collection in collections) {

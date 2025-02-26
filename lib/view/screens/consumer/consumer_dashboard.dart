@@ -18,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+
   void _showLocationDialog(BuildContext context, LocationViewModel locationProvider) {
     TextEditingController manualLocationController = TextEditingController(text: locationProvider.userLocation);
 

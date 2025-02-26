@@ -58,6 +58,7 @@ class LocationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+
   Future<void> updateUserLocation(String newLocation) async {
     if (newLocation.isNotEmpty) {
       _userLocation = newLocation;
