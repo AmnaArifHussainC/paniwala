@@ -41,7 +41,19 @@ class LocationViewModel extends ChangeNotifier {
         if (role != null) {
           Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
           List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-          String address = "${placemarks.first.street}, ${placemarks.first.locality}, ${placemarks.first.country}";
+
+          print("Placemark Details: ${placemarks.first}");
+
+          Placemark place = placemarks.first;
+
+          String address =
+              "${place.street ?? ''}, "
+              "${place.subLocality ?? ''}, "
+              "${place.locality ?? ''}, "
+              "${place.administrativeArea ?? ''}, "
+              "${place.country ?? ''}";
+
+          address = address.replaceAll(RegExp(r',\s+,'), ',').trim();
 
           await _firestore.collection(role).doc(user.uid).set({
             'location': address,
