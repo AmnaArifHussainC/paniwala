@@ -17,7 +17,7 @@ class LocationViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
 
-  Future<void> fetchUserLocation() async {
+  Future<String?> fetchUserLocation() async {
     _isLoading = true;
     notifyListeners();
 
@@ -32,6 +32,8 @@ class LocationViewModel extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+    return _userLocation; // Return the fetched location
+
   }
 
   Future<void> saveUserLocation() async {
@@ -141,4 +143,39 @@ class LocationViewModel extends ChangeNotifier {
     }
     return null;
   }
+  Future<List<DocumentSnapshot>> fetchFilteredSuppliers() async {
+    User? user = _auth.currentUser;
+    if (user == null) return [];
+
+    // Get the user's location
+    String? userLocation = await fetchUserLocation();
+    if (userLocation == null) return [];
+
+    // Parse user's location into components
+    List<String> userLocationParts = userLocation.split(',').map((e) => e.trim()).toList();
+
+    QuerySnapshot snapshot = await _firestore.collection('suppliers').get();
+    List<DocumentSnapshot> filteredSuppliers = [];
+
+    for (var doc in snapshot.docs) {
+      String supplierLocation = doc['location'] ?? '';
+      List<String> supplierLocationParts = supplierLocation.split(',').map((e) => e.trim()).toList();
+
+      // Check hierarchical matching from country to street
+      bool isMatching = false;
+      for (int i = 0; i < userLocationParts.length && i < supplierLocationParts.length; i++) {
+        if (userLocationParts[i] == supplierLocationParts[i]) {
+          isMatching = true; // If any part matches, consider this supplier
+          break;
+        }
+      }
+
+      if (isMatching) {
+        filteredSuppliers.add(doc);
+      }
+    }
+
+    return filteredSuppliers;
+  }
+
 }

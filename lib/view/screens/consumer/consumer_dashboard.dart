@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../config/components/dialogs/location_dialog.dart';
@@ -11,12 +12,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<DocumentSnapshot> _suppliers = [];
+
   @override
   void initState() {
     super.initState();
     Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
+    _loadSuppliers();
   }
 
+  Future<void> _loadSuppliers() async {
+    List<DocumentSnapshot> suppliers = await Provider.of<LocationViewModel>(context, listen: false).fetchFilteredSuppliers();
+    setState(() {
+      _suppliers = suppliers;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +65,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icon(Icons.edit, color: Colors.blue),
                       ],
                     ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text("Available Suppliers:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _suppliers.length,
+                    itemBuilder: (context, index) {
+                      var supplier = _suppliers[index];
+                      return ListTile(
+                        title: Text(supplier['company_name']),
+                        subtitle: Text(supplier['location']),
+                        leading: Icon(Icons.store),
+                      );
+                    },
                   ),
                 ),
               ],
