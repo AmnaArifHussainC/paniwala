@@ -74,10 +74,56 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: _suppliers.length,
                     itemBuilder: (context, index) {
                       var supplier = _suppliers[index];
-                      return ListTile(
-                        title: Text(supplier['company_name']),
-                        subtitle: Text(supplier['location']),
-                        leading: Icon(Icons.store),
+                      return Card(
+                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 4, // Adds a shadow effect
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Company Name
+                              Text(
+                                supplier['company_name'] ?? 'Unknown',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+
+                              // Location (Wrapped to prevent overflow)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the top
+                                children: [
+                                  Icon(Icons.location_on, color: Colors.blue),
+                                  SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      supplier['location'] ?? 'Not available',
+                                      style: TextStyle(fontSize: 16),
+                                      softWrap: true, // Ensures text wraps
+                                      overflow: TextOverflow.visible, // Keeps the text readable
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+
+                              // Phone Number
+                              Row(
+                                children: [
+                                  Icon(Icons.phone, color: Colors.green),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    supplier['phone'] ?? 'No phone available',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ),
