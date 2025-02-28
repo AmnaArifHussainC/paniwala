@@ -52,8 +52,8 @@ class LocationViewModel extends ChangeNotifier {
         }
       }
     }
-  }
 
+  }
 
 
   Future<void> saveUserLocation() async {

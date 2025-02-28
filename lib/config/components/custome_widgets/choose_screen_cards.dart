@@ -6,7 +6,7 @@ class AccountCard extends StatelessWidget {
   final String description;
   final VoidCallback onTap;
 
-  const AccountCard({
+  const AccountCard({super.key,
     required this.image,
     required this.title,
     required this.description,

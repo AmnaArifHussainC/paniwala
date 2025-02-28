@@ -5,7 +5,6 @@ import 'package:paniwala/view/startup/splahScreen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:paniwala/viewModel/locationOndashscreens.dart';
 import 'package:provider/provider.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
