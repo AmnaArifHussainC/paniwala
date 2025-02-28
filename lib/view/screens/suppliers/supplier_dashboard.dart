@@ -78,7 +78,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                             ),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.location_on_sharp,
                                   color: Colors.white,
                                 ),
@@ -90,7 +90,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                                     child: Text(
                                       maxLines: 2,
                                       locationProvider.userLocation ?? "Click to enter location",
-                                      style: TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                       overflow: TextOverflow.ellipsis, // Prevents text overflow
                                     ),
                                   ),

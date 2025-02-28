@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/components/custome_widgets/choose_screen_cards.dart';
 import '../auth/consumer/consumer_login_screen.dart';
-import 'choose_supplier_rider-screen.dart';
+import 'choose_supplier_rider_screen.dart';
 
 class ChooseAccountScreen extends StatelessWidget {
   const ChooseAccountScreen({super.key});
@@ -55,7 +55,7 @@ class ChooseAccountScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignInScreen()));
+                                    builder: (context) => const SignInScreen()));
                           }),
                       const SizedBox(height: 20),
                       AccountCard(

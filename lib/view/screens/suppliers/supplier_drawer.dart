@@ -10,7 +10,7 @@ import '../../startup/choose_account_screen.dart';
 class CustomDrawer extends StatefulWidget {
   final String supplierId; // Supplier ID passed to the drawer
 
-  CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
+  const CustomDrawer({Key? key, required this.supplierId}) : super(key: key);
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
@@ -83,7 +83,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => RiderRegisterScreen()));
+                      builder: (context) => const RiderRegisterScreen()));
             },
           ),
           ListTile(
@@ -158,7 +158,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ChooseAccountScreen()),
+                      builder: (context) => const ChooseAccountScreen()),
                       (route) => false,
                 );
               }
