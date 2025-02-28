@@ -7,6 +7,8 @@ import '../../../viewModel/location_on_dash_screens.dart';
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }

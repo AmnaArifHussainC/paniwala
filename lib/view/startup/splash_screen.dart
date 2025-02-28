@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Error fetching user role: $e");
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => SignInScreen()),
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
             (route) => false,
       );
     }

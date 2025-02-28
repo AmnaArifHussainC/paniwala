@@ -37,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
           );
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
                 (route) => false,
           );
         } else {
@@ -63,7 +63,7 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
             (route) => false,
       );
     } else {

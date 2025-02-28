@@ -5,6 +5,8 @@ import '../auth/rider/rider_login_scree.dart';
 import '../auth/supplier/supplier_login_screen.dart';
 
 class ChooseSupplierTypeScreen extends StatelessWidget {
+  const ChooseSupplierTypeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

@@ -41,7 +41,7 @@ class _SupplerLoginScreenState extends State<SupplerLoginScreen> {
       );
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => SupplierDashboardScreen()),
+        MaterialPageRoute(builder: (context) => const SupplierDashboardScreen()),
             (route) => false,
       );
     } else {

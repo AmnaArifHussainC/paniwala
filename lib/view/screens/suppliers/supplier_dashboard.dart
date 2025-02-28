@@ -7,6 +7,8 @@ import '../../../config/components/dialogs/location_dialog.dart';
 import '../../../viewModel/location_on_dash_screens.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
+  const SupplierDashboardScreen({super.key});
+
   @override
   State<SupplierDashboardScreen> createState() =>
       _SupplierDashboardScreenState();

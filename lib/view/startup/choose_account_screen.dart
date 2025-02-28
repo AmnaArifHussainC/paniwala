@@ -67,7 +67,7 @@ class ChooseAccountScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      ChooseSupplierTypeScreen()));
+                                      const ChooseSupplierTypeScreen()));
                         },
                       ),
                     ],
