@@ -58,17 +58,6 @@ class LocationService {
     return null;
   }
 
-  Future<String?> getUserLocation() async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      String? role = await _getUserRole(user.uid);
-      if (role != null) {
-        DocumentSnapshot doc = await _firestore.collection(role).doc(user.uid).get();
-        return doc.exists ? doc['location'] as String? : null;
-      }
-    }
-    return null;
-  }
 
   void _showPermissionDialog(BuildContext context, {bool forceLogout = false}) {
     showDialog(
