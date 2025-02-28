@@ -17,9 +17,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
-    _loadSuppliers();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<LocationViewModel>(context, listen: false).fetchUserLocation();
+    });
   }
+
 
   Future<void> _loadSuppliers() async {
     List<DocumentSnapshot> suppliers = await Provider.of<LocationViewModel>(context, listen: false).fetchFilteredSuppliers();
@@ -39,6 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Consumer<LocationViewModel>(
         builder: (context, locationProvider, child) {
+          // ✅ Reload suppliers whenever location changes
+          if (locationProvider.userLocation != null) {
+            _loadSuppliers();
+          }
+
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -79,22 +86,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        elevation: 4, // Adds a shadow effect
+                        elevation: 4,
                         child: Padding(
                           padding: EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Company Name
                               Text(
                                 supplier['company_name'] ?? 'Unknown',
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(height: 8),
-
-                              // Location (Wrapped to prevent overflow)
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment.start, // Aligns text to the top
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Icon(Icons.location_on, color: Colors.blue),
                                   SizedBox(width: 6),
@@ -102,15 +106,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Text(
                                       supplier['location'] ?? 'Not available',
                                       style: TextStyle(fontSize: 16),
-                                      softWrap: true, // Ensures text wraps
-                                      overflow: TextOverflow.visible, // Keeps the text readable
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
                                     ),
                                   ),
                                 ],
                               ),
                               SizedBox(height: 8),
-
-                              // Phone Number
                               Row(
                                 children: [
                                   Icon(Icons.phone, color: Colors.green),

@@ -17,8 +17,9 @@ class LocationViewModel extends ChangeNotifier {
 
   Future<String?> fetchUserLocation() async {
     _isLoading = true;
-    notifyListeners();
-
+    Future.microtask(() {
+      notifyListeners();
+    });
     User? user = _auth.currentUser;
     if (user != null) {
       String? role = await _getUserRole(user.uid);
@@ -29,10 +30,31 @@ class LocationViewModel extends ChangeNotifier {
     }
 
     _isLoading = false;
-    notifyListeners();
-    return _userLocation; // Return the fetched location
-
+    Future.microtask(() {
+      notifyListeners();
+    });
+    return _userLocation;
   }
+
+  Future<void> updateUserLocation(String newLocation) async {
+    if (newLocation.isNotEmpty) {
+      _userLocation = newLocation;
+      Future.microtask(() {
+        notifyListeners();
+      });
+      User? user = _auth.currentUser;
+      if (user != null) {
+        String? role = await _getUserRole(user.uid);
+        if (role != null) {
+          await _firestore.collection(role).doc(user.uid).set({
+            'location': newLocation,
+          }, SetOptions(merge: true));
+        }
+      }
+    }
+  }
+
+
 
   Future<void> saveUserLocation() async {
     _isLoading = true;
@@ -74,22 +96,6 @@ class LocationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUserLocation(String newLocation) async {
-    if (newLocation.isNotEmpty) {
-      _userLocation = newLocation;
-      notifyListeners();
-
-      User? user = _auth.currentUser;
-      if (user != null) {
-        String? role = await _getUserRole(user.uid);
-        if (role != null) {
-          await _firestore.collection(role).doc(user.uid).set({
-            'location': newLocation,
-          }, SetOptions(merge: true));
-        }
-      }
-    }
-  }
 
   Future<void> _requestLocationPermission(BuildContext context) async {
     LocationPermission permission = await Geolocator.checkPermission();
