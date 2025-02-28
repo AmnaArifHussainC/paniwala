@@ -6,6 +6,8 @@ import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
 
 class RiderRegisterScreen extends StatefulWidget {
+  const RiderRegisterScreen({super.key});
+
   @override
   _RiderRegisterScreenState createState() => _RiderRegisterScreenState();
 }
