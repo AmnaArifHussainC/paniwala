@@ -44,7 +44,7 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
-  // Google Siginin
+  // Google Sign in
   Future<bool> signInWithGoogle(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
