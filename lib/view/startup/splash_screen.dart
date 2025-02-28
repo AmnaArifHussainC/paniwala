@@ -19,13 +19,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   final  _authService = AuthService();
+  @override
   void initState() {
     super.initState();
     _startSplashScreen();
   }
 
   Future<void> _startSplashScreen() async {
-    await Future.delayed(Duration(seconds: 2)); // Show splash for 2 seconds
+    await Future.delayed(const Duration(seconds: 2)); // Show splash for 2 seconds
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstTime = prefs.getBool('isFirstTime') ?? true;  //null to true
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
       await prefs.setBool('isFirstTime', false);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
       );
       return;
     }
@@ -49,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Navigate to ChooseAccountScreen if no user is logged in
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
             (route) => false, // This removes all previous routes from the stack
       );
     }
@@ -91,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("User not found in Firestore or invalid role. Navigating to ChooseAccountScreen.");
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => ChooseAccountScreen()),
+        MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
             (route) => false,
       );
     } catch (e) {

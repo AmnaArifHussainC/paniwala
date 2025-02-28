@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Pani Wala", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Consumer<LocationViewModel>(
@@ -51,12 +51,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Your Location:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
+                const Text("Your Location:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () => showLocationDialog(context, locationProvider),
                   child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
@@ -66,60 +66,60 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                           child: Text(
                             locationProvider.userLocation ?? "Click to enter location",
-                            style: TextStyle(fontSize: 16, color: Colors.black),
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ),
-                        Icon(Icons.edit, color: Colors.blue),
+                        const Icon(Icons.edit, color: Colors.blue),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
-                Text("Available Suppliers:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 16),
+                const Text("Available Suppliers:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Expanded(
                   child: ListView.builder(
                     itemCount: _suppliers.length,
                     itemBuilder: (context, index) {
                       var supplier = _suppliers[index];
                       return Card(
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         elevation: 4,
                         child: Padding(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 supplier['company_name'] ?? 'Unknown',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.location_on, color: Colors.blue),
-                                  SizedBox(width: 6),
+                                  const Icon(Icons.location_on, color: Colors.blue),
+                                  const SizedBox(width: 6),
                                   Expanded(
                                     child: Text(
                                       supplier['location'] ?? 'Not available',
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                       softWrap: true,
                                       overflow: TextOverflow.visible,
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Icon(Icons.phone, color: Colors.green),
-                                  SizedBox(width: 6),
+                                  const Icon(Icons.phone, color: Colors.green),
+                                  const SizedBox(width: 6),
                                   Text(
                                     supplier['phone'] ?? 'No phone available',
-                                    style: TextStyle(fontSize: 16),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 ],
                               ),

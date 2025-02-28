@@ -1,7 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:paniwala/view/startup/splahScreen.dart';
+import 'package:paniwala/view/startup/splash_screen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:paniwala/viewModel/locationOndashscreens.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ void main() async {
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug, // Use debug mode to bypass App Check
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           primaryColor: Colors.blue,
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
             color: Colors.white,
           )
         ),
