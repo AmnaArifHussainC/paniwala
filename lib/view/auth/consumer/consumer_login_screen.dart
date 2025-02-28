@@ -10,6 +10,8 @@ import 'consumer_forgot_password.dart';
 import 'consumer_register.dart';
 
 class SignInScreen extends StatefulWidget {
+  const SignInScreen({super.key});
+
   @override
   _SignInScreenState createState() => _SignInScreenState();
 }
@@ -122,7 +124,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: TextButton(
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ForgotPasswordScreen()),
+                        MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
                       ),
                       child: const Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
                     ),
@@ -154,7 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextButton(
                         onPressed: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterScreen()),
+                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
                         ),
                         child: const Text("Register Now", style: TextStyle(color: Colors.blue)),
                       ),

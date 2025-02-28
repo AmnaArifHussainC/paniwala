@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
 import '../../../config/components/dialogs/location_dialog.dart';
-import '../../../viewModel/locationOndashscreens.dart';
+import '../../../viewModel/location_on_dash_screens.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
   @override

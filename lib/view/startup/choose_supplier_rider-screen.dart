@@ -52,7 +52,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      SupplerLoginScreen()));
+                                      const SupplerLoginScreen()));
                         },
                         image: "assets/images/companyowner.png",
                         title: "Company Owner",
@@ -64,7 +64,7 @@ class ChooseSupplierTypeScreen extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => RiderSignInScreen()));
+                                  builder: (context) => const RiderSignInScreen()));
                         },
                         image: "assets/images/rider.png",
                         title: "Rider",

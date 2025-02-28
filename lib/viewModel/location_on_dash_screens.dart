@@ -117,8 +117,8 @@ class LocationViewModel extends ChangeNotifier {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: Text("Location Permission Required"),
-        content: Text("We need your location to proceed. Please enable location access."),
+        title: const Text("Location Permission Required"),
+        content: const Text("We need your location to proceed. Please enable location access."),
         actions: [
           TextButton(
             onPressed: () async {

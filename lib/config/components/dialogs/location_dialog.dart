@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../viewModel/locationOndashscreens.dart';
+import '../../../viewModel/location_on_dash_screens.dart';
 
 void showLocationDialog(BuildContext context, LocationViewModel locationProvider) {
   TextEditingController manualLocationController = TextEditingController(text: locationProvider.userLocation);

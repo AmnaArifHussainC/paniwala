@@ -40,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SignInScreen()),
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => SignInScreen()),
+                            MaterialPageRoute(builder: (context) => const SignInScreen()),
                           );
                         },
                         child: const Text("Login", style: TextStyle(color: Colors.blue)),
