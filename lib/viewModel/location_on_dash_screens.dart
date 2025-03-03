@@ -162,7 +162,7 @@ class LocationViewModel extends ChangeNotifier {
     List<DocumentSnapshot> filteredSuppliers = [];
 
     for (var doc in snapshot.docs) {
-      String supplierLocation = doc['location'] ?? '';
+      String supplierLocation = (doc['location'] is String) ? doc['location'] : '';
       List<String> supplierLocationParts = supplierLocation.split(',').map((e) => e.trim()).toList();
 
       // Check hierarchical matching from country to street
