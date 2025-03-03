@@ -155,7 +155,6 @@ class LocationViewModel extends ChangeNotifier {
     String? userLocation = await fetchUserLocation();
     if (userLocation == null) return [];
 
-    // Parse user's location into components
     List<String> userLocationParts = userLocation.split(',').map((e) => e.trim()).toList();
 
     QuerySnapshot snapshot = await _firestore.collection('suppliers').get();
