@@ -161,7 +161,14 @@ class LocationViewModel extends ChangeNotifier {
     List<DocumentSnapshot> filteredSuppliers = [];
 
     for (var doc in snapshot.docs) {
-      String supplierLocation = (doc['location'] is String) ? doc['location'] : '';
+      var data = doc.data() as Map<String, dynamic>?; // Convert document data to a map
+
+      if (data == null || !data.containsKey('location')) {
+        print('Skipping document ${doc.id}, missing "location" field');
+        continue; // Skip this document if 'location' is missing
+      }
+
+      String supplierLocation = data['location'] ?? ''; // Default to an empty string
       List<String> supplierLocationParts = supplierLocation.split(',').map((e) => e.trim()).toList();
 
       // Check hierarchical matching from country to street
