@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:paniwala/view/startup/splash_screen.dart';
 import 'package:paniwala/viewModel/auth_provider_viewmodel.dart';
 import 'package:paniwala/viewModel/location_on_dash_screens.dart';
+import 'package:paniwala/viewModel/product_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context)=>AuthViewModel()),
         ChangeNotifierProvider(create: (context)=>LocationViewModel()),
+        ChangeNotifierProvider(create: (context) => ProductViewModel()),
+
       ],
       child: MaterialApp(
         theme: ThemeData(

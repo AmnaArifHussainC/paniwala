@@ -5,6 +5,7 @@ import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
 import '../../../config/components/dialogs/location_dialog.dart';
 import '../../../viewModel/location_on_dash_screens.dart';
+import 'add_product_screen.dart';
 
 class SupplierDashboardScreen extends StatefulWidget {
   const SupplierDashboardScreen({super.key});
@@ -113,7 +114,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Handle floating action button press if needed
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> AddProductScreen()));
         },
         backgroundColor: Colors.blue,
         elevation: 2,
