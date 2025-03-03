@@ -43,7 +43,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           hintText: widget.hintText,
           prefixIcon: Icon(widget.icon, color: _isFocused ? Colors.blue : Colors.grey),
           filled: true,
-          fillColor: _isFocused ? Colors.blue.withValues() : Colors.white,
+          fillColor: _isFocused ? Colors.blue.withOpacity(0.1) : Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: _isFocused ? Colors.blue : Colors.grey),
