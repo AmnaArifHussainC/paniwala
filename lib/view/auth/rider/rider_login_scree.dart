@@ -4,6 +4,7 @@ import '../../../config/components/custome_widgets/custome_btn_auth.dart';
 import '../../../config/components/custome_widgets/custome_text_field.dart';
 import '../../../core/utils/validators.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
+import '../../screens/rider/rider_dasbboard.dart';
 
 class RiderSignInScreen extends StatefulWidget {
   const RiderSignInScreen({super.key});
@@ -94,10 +95,10 @@ class _RiderSignInScreenState extends State<RiderSignInScreen> {
 
                             if (success) {
                               print("Login successful! Navigating to dashboard.");
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => RiderDashboard()),
-                              // );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => RiderDashboard()),
+                              );
                             } else {
                               print("Login failed: Invalid credentials.");
                               ScaffoldMessenger.of(context).showSnackBar(
