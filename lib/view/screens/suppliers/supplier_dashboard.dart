@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:paniwala/view/screens/suppliers/supplier_product_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:paniwala/view/screens/suppliers/supplier_drawer.dart';
 
@@ -128,7 +129,7 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => AddProductScreen()),
+                        MaterialPageRoute(builder: (context) => SupplierProductsScreen()),
                       );
                     },
                   ),
