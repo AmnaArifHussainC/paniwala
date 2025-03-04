@@ -103,6 +103,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         title: const Text('Add Product', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
