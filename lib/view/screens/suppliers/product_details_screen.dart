@@ -14,7 +14,10 @@ class ProductDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(product['productName'] ?? "Product Details"),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+        title: Text(product['productName'] ?? "Product Details", style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
