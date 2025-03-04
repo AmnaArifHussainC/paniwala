@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:paniwala/core/services/auth_service.dart';
 import 'package:provider/provider.dart';
 import 'package:paniwala/viewModel/product_view_model.dart';
+import 'package:paniwala/core/services/auth_service.dart';
 import '../../../config/components/custome_widgets/custome_btn_auth.dart';
 import '../../../config/components/custome_widgets/custome_text_field.dart';
-import '../../../core/utils/image_pick.dart';
+import '../../../core/utils/add_product_helpers.dart';
 
 class AddProductScreen extends StatefulWidget {
   @override
@@ -14,7 +13,6 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
-  final AuthService authservice = AuthService();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController productDescriptionController = TextEditingController();
@@ -22,78 +20,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
   List<Map<String, dynamic>> sizesAndPrices = [];
   List<File> imageFiles = [];
 
-  String? getCurrentUserId() {
-    return FirebaseAuth.instance.currentUser?.uid;
-  }
-
-  Future<void> pickMultipleImages() async {
-    try {
-      List<File> pickedImages = await ImagePickerUtil.pickMultipleImages();
-      if (pickedImages.isNotEmpty) {
-        setState(() {
-          imageFiles.addAll(pickedImages);
-        });
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to pick images: $e")),
-      );
-    }
-  }
-
-  void removeImage(int index) {
+  void updateSizes(List<Map<String, dynamic>> updatedSizes) {
     setState(() {
-      imageFiles.removeAt(index);
+      sizesAndPrices = updatedSizes;
     });
   }
 
-  void addSizePriceField() {
+  void updateImages(List<File> updatedImages) {
     setState(() {
-      sizesAndPrices.add({'size': '', 'price': ''});
-    });
-  }
-
-  void removeSizePriceField(int index) {
-    setState(() {
-      sizesAndPrices.removeAt(index);
-    });
-  }
-
-  void submitProduct(ProductViewModel productViewModel) {
-    if (!_formKey.currentState!.validate()) return;
-
-    if (imageFiles.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select at least one image.")),
-      );
-      return;
-    }
-
-    final String? currentUserId = getCurrentUserId();
-
-    if (currentUserId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("User not logged in! Please log in first.")),
-      );
-      return;
-    }
-
-    productViewModel.addProduct(
-      supplierId: currentUserId,
-      isRefill: isRefill,
-      productName: productNameController.text,
-      productDescription: productDescriptionController.text,
-      imagePaths: imageFiles.map((file) => file.path).toList(),
-      sizesAndPrices: sizesAndPrices,
-    ).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Product added successfully!")),
-      );
-      Navigator.pop(context);
-    }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to add product: $error")),
-      );
+      imageFiles = updatedImages;
     });
   }
 
@@ -105,9 +40,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       appBar: AppBar(
         title: const Text('Add Product', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blueAccent,
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -151,7 +84,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => removeSizePriceField(index),
+                        onPressed: () => ProductHelper.removeSizePriceField(index, sizesAndPrices, updateSizes),
                       ),
                     ],
                   );
@@ -159,12 +92,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(text: "Add Size & Price", onPressed: addSizePriceField)),
+                width: double.infinity,
+                child: CustomButton(text: "Add Size & Price", onPressed: () => ProductHelper.addSizePriceField(sizesAndPrices, updateSizes)),
+              ),
               const SizedBox(height: 10),
               SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(text: "Pick Images", onPressed: pickMultipleImages)),
+                width: double.infinity,
+                child: CustomButton(text: "Pick Images", onPressed: () => ProductHelper.pickMultipleImages(imageFiles, updateImages, context)),
+              ),
               const SizedBox(height: 10),
               Wrap(
                 children: imageFiles.asMap().entries.map((entry) {
@@ -184,7 +119,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         top: 2,
                         right: 2,
                         child: GestureDetector(
-                          onTap: () => removeImage(index),
+                          onTap: () => ProductHelper.removeImage(index, imageFiles, updateImages),
                           child: Container(
                             decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.red.withOpacity(0.8)),
                             padding: const EdgeInsets.all(4),
@@ -200,8 +135,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               productViewModel.isLoading
                   ? const CircularProgressIndicator()
                   : SizedBox(
-                  width: double.infinity,
-                  child: CustomButton(text: "Add Product", onPressed: () => submitProduct(productViewModel))),
+                width: double.infinity,
+                child: CustomButton(
+                  text: "Add Product",
+                  onPressed: () => ProductHelper.submitProduct(_formKey, context, productViewModel, productNameController, productDescriptionController, isRefill, imageFiles, sizesAndPrices),
+                ),
+              ),
             ],
           ),
         ),
@@ -209,6 +148,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 }
+
 Widget _buildTextField(String label, String hint, Function(String) onChanged, {bool isNumber = false}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8),
