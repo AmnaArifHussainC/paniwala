@@ -127,7 +127,7 @@ class ProductDetailsScreen extends StatelessWidget {
                               style: const TextStyle(fontSize: 16),
                             ),
                             Text(
-                              "\$${product['sizesAndPrices'][index]['price']?.toString() ?? "N/A"}",
+                              "Rs. ${product['sizesAndPrices'][index]['price']?.toString() ?? "N/A"}",
                               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
                             ),
 
