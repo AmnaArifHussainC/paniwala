@@ -134,9 +134,9 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                     },
                   ),
                   CustomSupplierCard(
-                    icon: Icons.delivery_dining,
-                    title: 'Deliveries',
-                    subtitle: 'Track delivery status',
+                    icon: Icons.card_travel,
+                    title: 'New Orders',
+                    subtitle: 'Track new Orders here',
                     color: Colors.green,
                     onTap: () {
                       // Add navigation or action for deliveries
@@ -144,17 +144,17 @@ class _SupplierDashboardScreenState extends State<SupplierDashboardScreen> {
                   ),
                   CustomSupplierCard(
                     icon: Icons.analytics,
-                    title: 'Analytics',
-                    subtitle: 'View performance stats',
+                    title: 'Pending orders',
+                    subtitle: 'View pending orders status',
                     color: Colors.purple,
                     onTap: () {
                       // Add navigation or action for analytics
                     },
                   ),
                   CustomSupplierCard(
-                    icon: Icons.settings,
-                    title: 'Settings',
-                    subtitle: 'Manage account settings',
+                    icon: Icons.cabin_sharp,
+                    title: 'Payment',
+                    subtitle: 'Manage payment status here',
                     color: Colors.blueGrey,
                     onTap: () {
                       // Add navigation or action for settings
