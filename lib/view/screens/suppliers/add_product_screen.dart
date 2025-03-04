@@ -41,6 +41,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
+  // Remove selected image
+  void removeImage(int index) {
+    setState(() {
+      imageFiles.removeAt(index);
+    });
+  }
+
   // Add new size & price entry
   void addSizePriceField() {
     setState(() {
@@ -57,7 +64,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   // Validate and submit form
   void submitProduct(ProductViewModel productViewModel) {
-
     if (!_formKey.currentState!.validate()) return;
 
     if (imageFiles.isEmpty) {
@@ -87,7 +93,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Product added successfully!")),
       );
-      Navigator.pop(context); // Navigate back after adding product
+      Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Failed to add product: $error")),
@@ -104,9 +110,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         title: const Text('Add Product', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blueAccent,
         elevation: 0,
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -154,7 +158,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ElevatedButton.icon(
                 onPressed: addSizePriceField,
                 icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text("Add Size & Price",style: TextStyle(color: Colors.white),),
+                label: const Text("Add Size & Price", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
               ),
 
@@ -162,19 +166,55 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ElevatedButton.icon(
                 onPressed: pickMultipleImages,
                 icon: const Icon(Icons.image, color: Colors.white),
-                label: const Text("Pick Images",style: TextStyle(color: Colors.white),),
+                label: const Text("Pick Images", style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
               ),
 
               const SizedBox(height: 10),
+
+              /// **Image Preview with Delete Option**
               Wrap(
-                children: imageFiles.map((file) => Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.file(file, width: 100, height: 100, fit: BoxFit.cover),
-                  ),
-                )).toList(),
+                children: imageFiles.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  File file = entry.value;
+
+                  return Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            file,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 2,
+                        right: 2,
+                        child: GestureDetector(
+                          onTap: () => removeImage(index),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.red.withOpacity(0.8),
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              Icons.close,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
 
               const SizedBox(height: 20),
@@ -182,7 +222,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ? const CircularProgressIndicator()
                   : ElevatedButton(
                 onPressed: () => submitProduct(productViewModel),
-                child: const Text("Add Product", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: Colors.white)),
+                child: const Text("Add Product", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   backgroundColor: Colors.blueAccent,
