@@ -66,19 +66,28 @@ class ProductViewModel extends ChangeNotifier {
 
   // Fetch products of the logged-in supplier
   Future<void> fetchSupplierProducts() async {
-    final String? supplierId = FirebaseAuth.instance.currentUser?.uid;
-    if (supplierId == null) return;
+    final User? currentUser = FirebaseAuth.instance.currentUser;
+
+    // Ensure the user is logged in
+    if (currentUser == null) {
+      print("No user is logged in");
+      return;
+    }
+
+    final String supplierId = currentUser.uid; // Get the logged-in supplier's ID
 
     isLoading = true;
     notifyListeners();
 
     try {
+      // Query Firestore for products with the logged-in supplier's ID
       final snapshot = await _firestore
           .collection('products')
           .where('supplierId', isEqualTo: supplierId)
           .get();
 
-      supplierProducts = snapshot.docs.map((doc) => doc.data()).toList();
+      // Map fetched data to supplierProducts
+      supplierProducts = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
     } catch (e) {
       print("Error fetching products: $e");
     }
@@ -86,6 +95,8 @@ class ProductViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+
   Future<void> deleteProduct(String productId) async {
     try {
       await _firestore.collection('products').doc(productId).delete();
