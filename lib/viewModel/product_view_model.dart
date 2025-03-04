@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../core/utils/cloudinary.dart';
@@ -8,8 +9,12 @@ import '../model/product_model.dart';
 class ProductViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CloudinaryService _cloudinaryService = CloudinaryService();
+  List<Map<String, dynamic>> supplierProducts = [];
+
 
   bool isLoading = false;
+
+  // Fetch products of the logged-in supplier
 
   Future<void> addProduct({
     required String supplierId,
@@ -56,6 +61,38 @@ class ProductViewModel extends ChangeNotifier {
       isLoading = false;
       notifyListeners();
       print("Error adding product: $e");
+    }
+  }
+
+  // Fetch products of the logged-in supplier
+  Future<void> fetchSupplierProducts() async {
+    final String? supplierId = FirebaseAuth.instance.currentUser?.uid;
+    if (supplierId == null) return;
+
+    isLoading = true;
+    notifyListeners();
+
+    try {
+      final snapshot = await _firestore
+          .collection('products')
+          .where('supplierId', isEqualTo: supplierId)
+          .get();
+
+      supplierProducts = snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
+
+    isLoading = false;
+    notifyListeners();
+  }
+  Future<void> deleteProduct(String productId) async {
+    try {
+      await _firestore.collection('products').doc(productId).delete();
+      supplierProducts.removeWhere((product) => product['id'] == productId);
+      notifyListeners();
+    } catch (e) {
+      print("Error deleting product: $e");
     }
   }
 }

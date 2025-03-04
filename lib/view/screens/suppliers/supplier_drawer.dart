@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/screens/suppliers/supplier_product_screen.dart';
 
 import '../../../core/services/auth_service.dart';
 import '../../auth/rider/rider_register.dart';
@@ -97,12 +98,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
             leading: const Icon(Icons.category),
             title: const Text('Products'),
             onTap: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SupplierProductsScreen(
-              //           supplierId: widget.supplierId,
-              //         )));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SupplierProductsScreen()
+                  )
+              );
             },
           ),
           ListTile(

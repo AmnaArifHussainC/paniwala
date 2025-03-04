@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProductModel {
-  final String id; // Product ID
+  final String id;
   final String supplierId; // Supplier ID
   final bool isRefill;
   final String productName;
@@ -39,6 +40,7 @@ class ProductModel {
   // Convert ProductModel to Firestore-compatible map
   Map<String, dynamic> toFirestore() {
     return {
+      'id':id,
       'supplierId': supplierId,
       'isRefill': isRefill,
       'productName': productName,

@@ -57,6 +57,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   // Validate and submit form
   void submitProduct(ProductViewModel productViewModel) {
+
     if (!_formKey.currentState!.validate()) return;
 
     if (imageFiles.isEmpty) {
