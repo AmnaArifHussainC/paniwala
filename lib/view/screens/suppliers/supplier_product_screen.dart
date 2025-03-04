@@ -92,7 +92,7 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                       children: [
                         Text(
                           product['sizesAndPrices'] != null && product['sizesAndPrices'].isNotEmpty
-                              ? "\$${product['sizesAndPrices'][0]['price']}"
+                              ? "Rs. ${product['sizesAndPrices'][0]['price']}"
                               : "N/A",
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
