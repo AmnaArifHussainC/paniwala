@@ -26,6 +26,9 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         title: const Text("Supplier Details", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
@@ -63,6 +66,14 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     const Icon(Icons.phone, color: Colors.green),
                     const SizedBox(width: 6),
                     Text(supplier['phone'] ?? 'No phone available', style: const TextStyle(fontSize: 16)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(Icons.email, color: Colors.red),
+                    const SizedBox(width: 6),
+                    Text(supplier['email'] ?? 'No email available', style: const TextStyle(fontSize: 16)),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -119,15 +130,13 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                               ),
                               const SizedBox(height: 6),
 
-                              // Product Price (first size and price)
-                              // Display first Size & Price
                               if (sizesAndPrices.isNotEmpty)
                                 Text(
-                                  "Size: ${sizesAndPrices.first['size']} - Price: ${sizesAndPrices.first['price']} PKR",
+                                  "Size: ${sizesAndPrices.first['size']} \n Price: ${sizesAndPrices.first['price']} PKR",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.green,
+                                    color: Colors.blue,
                                   ),
                                 ),
 
