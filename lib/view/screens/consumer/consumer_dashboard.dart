@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot;
 import 'package:flutter/material.dart';
+import 'package:paniwala/view/screens/consumer/supplier_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../config/components/dialogs/location_dialog.dart';
 import '../../../viewModel/auth_provider_viewmodel.dart';
 import '../../../viewModel/location_on_dash_screens.dart';
+import '../../../viewModel/supplier_viewmodal.dart';
 import 'consumer_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -83,7 +85,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemBuilder: (context, index) {
                       var supplier = _suppliers[index];
                       return GestureDetector(
-                        onTap: (){},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider(
+                                create: (context) => SupplierViewModel(),
+                                child: SupplierDetailScreen(supplierId: supplier.id),
+                              ),
+                            ),
+                          );
+                        },
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                           shape: RoundedRectangleBorder(
