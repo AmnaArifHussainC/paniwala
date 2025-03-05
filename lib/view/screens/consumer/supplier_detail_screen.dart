@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:paniwala/core/utils/contact_supplier.dart' show openGmail, openWhatsApp;
 import 'package:provider/provider.dart';
@@ -79,7 +80,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                         supplier['phone'] ?? 'No phone available',
                         style: const TextStyle(
                           fontSize: 16,
-                          color: Colors.blue,  // Make it look clickable
+                          color: Colors.blue, // Make it look clickable
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -149,17 +150,28 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Product Image (if available)
+                                // Product Image Carousel
                                 if (imageUrls.isNotEmpty)
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
-                                      imageUrls.first, // Show only first image
-                                      width: double.infinity,
+                                  CarouselSlider(
+                                    items: imageUrls.map((url) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          url,
+                                          width: double.infinity,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) =>
+                                          const Icon(Icons.image_not_supported, size: 100),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    options: CarouselOptions(
+                                      autoPlay: true,
+                                      enlargeCenterPage: true,
                                       height: 100,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.image_not_supported, size: 100),
+                                      viewportFraction: 1.0,
+                                      autoPlayInterval: const Duration(seconds: 3),
                                     ),
                                   ),
                                 const SizedBox(height: 6),
@@ -167,12 +179,14 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                                 // Product Name
                                 Text(
                                   product['productName'] ?? 'Unknown',
-                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      fontSize: 16, fontWeight: FontWeight.bold),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 6),
 
+                                // Size and Price
                                 if (sizesAndPrices.isNotEmpty)
                                   Text(
                                     "Size: ${sizesAndPrices.first['size']}\nPrice: ${sizesAndPrices.first['price']} PKR",
@@ -182,7 +196,6 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                                       color: Colors.blue,
                                     ),
                                   ),
-
                               ],
                             ),
                           ),
