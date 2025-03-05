@@ -10,3 +10,11 @@ void openWhatsApp(String phoneNumber) async {
     debugPrint("Could not open WhatsApp");
   }
 }
+void openGmail(String email) async {
+  final Uri emailUri = Uri.parse('mailto:$email?subject=&body=');
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri);
+  } else {
+    throw 'Could not launch Gmail';
+  }
+}

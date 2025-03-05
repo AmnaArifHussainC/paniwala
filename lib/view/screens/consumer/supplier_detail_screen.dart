@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:paniwala/core/utils/whatsapp_msg.dart' show openWhatsApp;
+import 'package:paniwala/core/utils/contact_supplier.dart' show openGmail, openWhatsApp;
 import 'package:provider/provider.dart';
 
 import '../../../viewModel/supplier_viewmodal.dart';
@@ -90,7 +90,21 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   children: [
                     const Icon(Icons.email, color: Colors.red),
                     const SizedBox(width: 6),
-                    Text(supplier['email'] ?? 'No email available', style: const TextStyle(fontSize: 16)),
+                    GestureDetector(
+                      onTap: () {
+                        if (supplier['email'] != null && supplier['email'].isNotEmpty) {
+                          openGmail(supplier['email']);
+                        }
+                      },
+                      child: Text(
+                        supplier['email'] ?? 'No email available',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue, // Makes it look like a clickable link
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
