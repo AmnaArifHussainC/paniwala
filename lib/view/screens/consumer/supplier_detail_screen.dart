@@ -127,51 +127,54 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                       List<dynamic> sizesAndPrices = product['sizesAndPrices'] ?? [];
                       List<dynamic> imageUrls = product['imageUrls'] ?? [];
 
-                      return Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Product Image (if available)
-                              if (imageUrls.isNotEmpty)
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    imageUrls.first, // Show only first image
-                                    width: double.infinity,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                    const Icon(Icons.image_not_supported, size: 100),
+                      return GestureDetector(
+                        onTap: (){},
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Product Image (if available)
+                                if (imageUrls.isNotEmpty)
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.network(
+                                      imageUrls.first, // Show only first image
+                                      width: double.infinity,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.image_not_supported, size: 100),
+                                    ),
                                   ),
-                                ),
-                              const SizedBox(height: 6),
+                                const SizedBox(height: 6),
 
-                              // Product Name
-                              Text(
-                                product['productName'] ?? 'Unknown',
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 6),
-
-                              if (sizesAndPrices.isNotEmpty)
+                                // Product Name
                                 Text(
-                                  "Size: ${sizesAndPrices.first['size']}\nPrice: ${sizesAndPrices.first['price']} PKR",
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                  ),
+                                  product['productName'] ?? 'Unknown',
+                                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                const SizedBox(height: 6),
 
-                            ],
+                                if (sizesAndPrices.isNotEmpty)
+                                  Text(
+                                    "Size: ${sizesAndPrices.first['size']}\nPrice: ${sizesAndPrices.first['price']} PKR",
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+
+                              ],
+                            ),
                           ),
                         ),
                       );
