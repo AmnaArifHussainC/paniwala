@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paniwala/core/utils/whatsapp_msg.dart' show openWhatsApp;
 import 'package:provider/provider.dart';
 
 import '../../../viewModel/supplier_viewmodal.dart';
@@ -67,7 +68,21 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   children: [
                     const Icon(Icons.phone, color: Colors.green),
                     const SizedBox(width: 6),
-                    Text(supplier['phone'] ?? 'No phone available', style: const TextStyle(fontSize: 16)),
+                    GestureDetector(
+                      onTap: () {
+                        if (supplier['phone'] != null) {
+                          openWhatsApp(supplier['phone']!);
+                        }
+                      },
+                      child: Text(
+                        supplier['phone'] ?? 'No phone available',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue,  // Make it look clickable
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
