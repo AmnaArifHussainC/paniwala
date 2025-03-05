@@ -54,9 +54,11 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   children: [
                     const Icon(Icons.location_on, color: Colors.blue),
                     const SizedBox(width: 6),
-                    Text(
-                      supplier['location'] ?? 'Not available',
-                      style: const TextStyle(fontSize: 16),
+                    Flexible(
+                      child: Text(
+                        supplier['location'] ?? 'Not available',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
