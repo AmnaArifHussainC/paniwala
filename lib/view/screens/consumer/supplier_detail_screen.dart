@@ -26,6 +26,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         title: const Text("Supplier Details", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
@@ -51,9 +52,12 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   children: [
                     const Icon(Icons.location_on, color: Colors.blue),
                     const SizedBox(width: 6),
-                    Text(
-                        supplier['location'] ?? 'Not available',
-                        style: const TextStyle(fontSize: 16),
+                    Flexible(
+                      child: Text(
+                          supplier['location'] ?? 'Not available',
+                          style: const TextStyle(fontSize: 16),
+                        maxLines: 2,
+                      ),
                     ),
                   ],
                 ),

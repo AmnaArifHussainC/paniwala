@@ -31,10 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 2)); // Show splash for 2 seconds
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;  //null to true
+    bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
 
     if (isFirstTime) {
-      // Navigate to onboarding screen if first-time user
       await prefs.setBool('isFirstTime', false);
       Navigator.pushReplacement(
         context,
@@ -43,13 +42,10 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    // Check if a user is logged in
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Navigate based on user role
       await _navigateBasedOnRole(user.uid);
     } else {
-      // Navigate to ChooseAccountScreen if no user is logged in
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const ChooseAccountScreen()),
@@ -115,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/icon.png', width: 200), // App logo
+            Image.asset('assets/images/icon.png', width: 200),
             const SizedBox(height: 20),
             const Text(
               "Paniwala",
