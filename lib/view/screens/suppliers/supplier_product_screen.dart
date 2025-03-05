@@ -56,7 +56,6 @@ class _SupplierProductsScreenState extends State<SupplierProductsScreen> {
                 elevation: 5,
                 child: InkWell(
                   onTap: () {
-                    // Navigate to the Product Details Screen with product data
                     Navigator.push(
                       context,
                       MaterialPageRoute(
