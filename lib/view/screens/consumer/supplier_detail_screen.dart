@@ -3,6 +3,7 @@ import 'package:paniwala/core/utils/contact_supplier.dart' show openGmail, openW
 import 'package:provider/provider.dart';
 
 import '../../../viewModel/supplier_viewmodal.dart';
+import 'con_product_purchase_screen.dart';
 
 class SupplierDetailScreen extends StatefulWidget {
   final String supplierId;
@@ -128,7 +129,16 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                       List<dynamic> imageUrls = product['imageUrls'] ?? [];
 
                       return GestureDetector(
-                        onTap: (){},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductPurchase(
+                                product: product.data() as Map<String, dynamic>, // Convert properly
+                              ),
+                            ),
+                          );
+                        },
                         child: Card(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
