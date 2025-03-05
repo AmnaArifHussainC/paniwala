@@ -26,7 +26,6 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
         title: const Text("Supplier Details", style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue,
       ),
@@ -52,12 +51,9 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                   children: [
                     const Icon(Icons.location_on, color: Colors.blue),
                     const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                          supplier['location'] ?? 'Not available',
-                          style: const TextStyle(fontSize: 16),
-                        maxLines: 2,
-                      ),
+                    Text(
+                      supplier['location'] ?? 'Not available',
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
@@ -71,12 +67,18 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Products List
+                // Products Grid
                 const Text("Products:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Expanded(
                   child: products.isEmpty
                       ? const Center(child: Text("No products available"))
-                      : ListView.builder(
+                      : GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 columns
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.75, // Controls height
+                    ),
                     itemCount: products.length,
                     itemBuilder: (context, index) {
                       var product = products[index];
@@ -84,73 +86,51 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                       List<dynamic> imageUrls = product['imageUrls'] ?? [];
 
                       return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
                         elevation: 4,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // Product Image (if available)
+                              if (imageUrls.isNotEmpty)
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    imageUrls.first, // Show only first image
+                                    width: double.infinity,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                    const Icon(Icons.image_not_supported, size: 100),
+                                  ),
+                                ),
+                              const SizedBox(height: 6),
+
                               // Product Name
                               Text(
                                 product['productName'] ?? 'Unknown',
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 6),
 
-                              // Product Description
-                              // Text(
-                              //   product['productDescription'] ?? '',
-                              //   style: const TextStyle(fontSize: 14, color: Colors.black87),
-                              // ),
-                              // const SizedBox(height: 10),
-
-                              // Product Images (if available)
-                              if (imageUrls.isNotEmpty)
-                                SizedBox(
-                                  height: 120,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: imageUrls.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Image.network(
-                                            imageUrls[index],
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) =>
-                                            const Icon(Icons.image_not_supported, size: 100),
-                                          ),
-                                        ),
-                                      );
-                                    },
+                              // Product Price (first size and price)
+                              // Display first Size & Price
+                              if (sizesAndPrices.isNotEmpty)
+                                Text(
+                                  "Size: ${sizesAndPrices.first['size']} - Price: ${sizesAndPrices.first['price']} PKR",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
                                   ),
                                 ),
-                              const SizedBox(height: 10),
 
-                              // Sizes and Prices
-                              const Text("Sizes & Prices:",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                              Column(
-                                children: sizesAndPrices.map((sizePrice) {
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Size: ${sizePrice['size']}",
-                                          style: const TextStyle(fontSize: 14)),
-                                      Text("Price: ${sizePrice['price']} PKR",
-                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                                    ],
-                                  );
-                                }).toList(),
-                              ),
                             ],
                           ),
                         ),
