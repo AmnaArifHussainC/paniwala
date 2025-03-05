@@ -134,7 +134,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
 
                               if (sizesAndPrices.isNotEmpty)
                                 Text(
-                                  "Size: ${sizesAndPrices.first['size']} \n Price: ${sizesAndPrices.first['price']} PKR",
+                                  "Size: ${sizesAndPrices.first['size']}\nPrice: ${sizesAndPrices.first['price']} PKR",
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
