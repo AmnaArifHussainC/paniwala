@@ -43,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: CustomUserDrawer(authViewModel: AuthViewModel()),
       body: Consumer<LocationViewModel>(
         builder: (context, locationProvider, child) {
-          // ✅ Reload suppliers whenever location changes
           if (locationProvider.userLocation != null) {
             _loadSuppliers();
           }
@@ -83,49 +82,52 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: _suppliers.length,
                     itemBuilder: (context, index) {
                       var supplier = _suppliers[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                supplier['company_name'] ?? 'Unknown',
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Icon(Icons.location_on, color: Colors.blue),
-                                  const SizedBox(width: 6),
-                                  Expanded(
-                                    child: Text(
-                                      supplier['location'] ?? 'Not available',
-                                      style: const TextStyle(fontSize: 16),
-                                      softWrap: true,
-                                      overflow: TextOverflow.visible,
+                      return GestureDetector(
+                        onTap: (){},
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  supplier['company_name'] ?? 'Unknown',
+                                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Icon(Icons.location_on, color: Colors.blue),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        supplier['location'] ?? 'Not available',
+                                        style: const TextStyle(fontSize: 16),
+                                        softWrap: true,
+                                        overflow: TextOverflow.visible,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(Icons.phone, color: Colors.green),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    supplier['phone'] ?? 'No phone available',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.phone, color: Colors.green),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      supplier['phone'] ?? 'No phone available',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
